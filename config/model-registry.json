@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0.0",
+  "models": [
+    {
+      "id": "flux-schnell-fp8",
+      "kind": "IMAGE",
+      "provider": "ComfyUI",
+      "upstream": "black-forest-labs/FLUX.1-schnell",
+      "distribution": "Comfy-Org/flux1-schnell",
+      "filename": "flux1-schnell-fp8.safetensors",
+      "relativeModelPath": "checkpoints/flux1-schnell-fp8.safetensors",
+      "license": "Apache-2.0",
+      "commercialUseApproved": true,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/flux1-schnell",
+      "downloadUrl": "https://huggingface.co/Comfy-Org/flux1-schnell/resolve/main/flux1-schnell-fp8.safetensors?download=true",
+      "expectedBytes": 17236328572,
+      "workflowId": "flux-schnell-fp8-v1",
+      "sha256": "ead426278b49030e9da5df862994f25ce94ab2ee4df38b556ddddb3db093bf72"
+    },
+    {
+      "id": "wan2-2-ti2v-5b",
+      "kind": "VIDEO",
+      "provider": "ComfyUI",
+      "upstream": "Wan-AI/Wan2.2-TI2V-5B",
+      "distribution": "Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "filename": "wan2.2_ti2v_5B_fp16.safetensors",
+      "relativeModelPath": "diffusion_models/wan2.2_ti2v_5B_fp16.safetensors",
+      "license": "Apache-2.0",
+      "commercialUseApproved": true,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "downloadUrl": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors?download=true",
+      "expectedBytes": 9999658848,
+      "workflowId": "wan2-2-ti2v-5b-v1",
+      "sha256": "456f901338bd9eadbded3828b819109a9b68e8a525ca5cf8d0049a69fcfeca1e"
+    },
+    {
+      "id": "wan2-2-vae",
+      "kind": "VIDEO_SUPPORT",
+      "provider": "ComfyUI",
+      "upstream": "Wan-AI/Wan2.2-TI2V-5B",
+      "distribution": "Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "filename": "wan2.2_vae.safetensors",
+      "relativeModelPath": "vae/wan2.2_vae.safetensors",
+      "license": "Apache-2.0",
+      "commercialUseApproved": true,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "downloadUrl": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan2.2_vae.safetensors?download=true",
+      "expectedBytes": 1409400960,
+      "sha256": "e40321bd36b9709991dae2530eb4ac303dd168276980d3e9bc4b6e2b75fed156"
+    },
+    {
+      "id": "wan-umt5-xxl-fp8",
+      "kind": "VIDEO_SUPPORT",
+      "provider": "ComfyUI",
+      "upstream": "Wan-AI/Wan2.2-TI2V-5B",
+      "distribution": "Comfy-Org/Wan_2.1_ComfyUI_repackaged",
+      "filename": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "relativeModelPath": "text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "license": "Apache-2.0",
+      "commercialUseApproved": true,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged",
+      "downloadUrl": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors?download=true",
+      "expectedBytes": 6735906897,
+      "sha256": "c3355d30191f1f066b26d93fba017ae9809dce6c627dda5f6a66eaa651204f68"
+    },
+    {
+      "id": "cosyvoice2-0-5b",
+      "kind": "TTS",
+      "provider": "CosyVoice",
+      "upstream": "FunAudioLLM/CosyVoice2-0.5B",
+      "filename": "model-directory",
+      "license": "Apache-2.0",
+      "commercialUseApproved": true,
+      "sourceUrl": "https://huggingface.co/FunAudioLLM/CosyVoice2-0.5B",
+      "sha256": null,
+      "notes": "Voice reference consent and provenance are separate release gates."
+    }
+  ]
+}

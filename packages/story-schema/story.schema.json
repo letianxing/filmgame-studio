@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/story.schema.json",
+  "title": "FilmGame Story Model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "storyVersion",
+    "status",
+    "brief",
+    "world",
+    "narrativeTone",
+    "visualBible",
+    "characters",
+    "relationships",
+    "locations",
+    "variables",
+    "inventory",
+    "evidence",
+    "chapters",
+    "scenes",
+    "endings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "projectId": { "$ref": "#/$defs/entityId" },
+    "storyVersion": { "type": "integer", "minimum": 1 },
+    "parentStoryVersion": { "type": ["integer", "null"], "minimum": 1 },
+    "status": { "enum": ["DRAFT", "IN_REVIEW", "APPROVED", "LOCKED", "ARCHIVED"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "brief": { "$ref": "#/$defs/projectBrief" },
+    "world": { "$ref": "#/$defs/world" },
+    "narrativeTone": { "$ref": "#/$defs/narrativeTone" },
+    "visualBible": { "$ref": "#/$defs/visualBible" },
+    "characters": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/character" }
+    },
+    "relationships": { "type": "array", "items": { "$ref": "#/$defs/relationship" } },
+    "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
+    "variables": { "type": "array", "items": { "$ref": "#/$defs/variable" } },
+    "inventory": { "type": "array", "items": { "$ref": "#/$defs/inventoryItem" } },
+    "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+    "chapters": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/chapter" } },
+    "scenes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/scene" } },
+    "endings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ending" } },
+    "validation": { "$ref": "#/$defs/validationSummary" },
+    "metadata": { "type": "object", "additionalProperties": true }
+  },
+  "$defs": {
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$",
+      "minLength": 2,
+      "maxLength": 96
+    },
+    "localizedText": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "projectBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "logline", "genre", "playerCount", "targetDurationMinutes", "interactionStyle", "endingTarget"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "logline": { "type": "string", "minLength": 1, "maxLength": 1200 },
+        "genre": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "playerCount": { "type": "integer", "minimum": 4, "maximum": 8 },
+        "targetDurationMinutes": { "type": "integer", "minimum": 15, "maximum": 360 },
+        "interactionStyle": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "endingTarget": { "type": "integer", "minimum": 1, "maximum": 64 },
+        "budgetTier": { "enum": ["PROTOTYPE", "INDIE", "STANDARD", "PREMIUM"] },
+        "specialRequirements": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "world": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["premise", "timePeriod", "setting", "rules"],
+      "properties": {
+        "premise": { "type": "string", "minLength": 1 },
+        "timePeriod": { "type": "string", "minLength": 1 },
+        "setting": { "type": "string", "minLength": 1 },
+        "history": { "type": "array", "items": { "type": "string" } },
+        "rules": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "factions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "narrativeTone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keywords", "pacing", "contentRating"],
+      "properties": {
+        "keywords": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "pacing": { "type": "string", "minLength": 1 },
+        "contentRating": { "type": "string", "minLength": 1 },
+        "avoid": { "type": "array", "items": { "type": "string" } },
+        "dialogueGuidance": { "type": "string" }
+      }
+    },
+    "visualBible": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["style", "palette", "cinematography", "aspectRatio"],
+      "properties": {
+        "style": { "type": "string", "minLength": 1 },
+        "palette": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "cinematography": { "type": "string", "minLength": 1 },
+        "lighting": { "type": "string" },
+        "aspectRatio": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?:[0-9]+(?:\\.[0-9]+)?$" },
+        "negativeConstraints": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "assetLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "revision", "referenceAssetIds", "constraints"],
+      "properties": {
+        "status": { "enum": ["DRAFT", "APPROVED", "LOCKED"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "referenceAssetIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
+        "constraints": { "type": "array", "items": { "type": "string" } },
+        "lockedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "publicProfile", "secrets", "goals", "victoryConditions", "visual", "voice"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "name": { "type": "string", "minLength": 1 },
+        "pronouns": { "type": "string" },
+        "publicProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["role", "summary"],
+          "properties": {
+            "role": { "type": "string", "minLength": 1 },
+            "summary": { "type": "string", "minLength": 1 },
+            "traits": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "secrets": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/secret" } },
+        "goals": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/goal" } },
+        "victoryConditions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/victoryCondition" } },
+        "startingEvidenceIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
+        "startingInventoryIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
+        "visual": { "$ref": "#/$defs/characterVisual" },
+        "voice": { "$ref": "#/$defs/voiceProfile" },
+        "assetLock": { "$ref": "#/$defs/assetLock" }
+      }
+    },
+    "secret": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "summary", "severity"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "summary": { "type": "string", "minLength": 1 },
+        "severity": { "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+        "revealCondition": { "$ref": "#/$defs/condition" }
+      }
+    },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "priority"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "description": { "type": "string", "minLength": 1 },
+        "priority": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "private": { "type": "boolean", "default": true }
+      }
+    },
+    "victoryCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "condition", "score"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "description": { "type": "string", "minLength": 1 },
+        "condition": { "$ref": "#/$defs/condition" },
+        "score": { "type": "integer", "minimum": -1000, "maximum": 1000 }
+      }
+    },
+    "characterVisual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["appearance", "costume", "constraints"],
+      "properties": {
+        "appearance": { "type": "string", "minLength": 1 },
+        "face": { "type": "string" },
+        "hair": { "type": "string" },
+        "body": { "type": "string" },
+        "costume": { "type": "string", "minLength": 1 },
+        "promptTemplate": { "type": "string" },
+        "constraints": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "voiceProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "speakingStyle", "emotion", "speed"],
+      "properties": {
+        "voiceId": { "type": ["string", "null"] },
+        "voiceReferenceAssetId": { "type": ["string", "null"] },
+        "language": { "type": "string", "minLength": 1 },
+        "speakingStyle": { "type": "string", "minLength": 1 },
+        "emotion": { "type": "string", "minLength": 1 },
+        "speed": { "type": "number", "minimum": 0.5, "maximum": 2 }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "fromCharacterId", "toCharacterId", "publicLabel", "privateTruth", "initialTrust"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "fromCharacterId": { "$ref": "#/$defs/entityId" },
+        "toCharacterId": { "$ref": "#/$defs/entityId" },
+        "publicLabel": { "type": "string" },
+        "privateTruth": { "type": "string", "minLength": 1 },
+        "initialTrust": { "type": "integer", "minimum": -100, "maximum": 100 },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "visual", "assetLock"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "visual": { "type": "string", "minLength": 1 },
+        "constraints": { "type": "array", "items": { "type": "string" } },
+        "assetLock": { "$ref": "#/$defs/assetLock" }
+      }
+    },
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "initialValue", "visibility"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "type": { "enum": ["BOOLEAN", "INTEGER", "NUMBER", "STRING", "STRING_SET"] },
+        "initialValue": {},
+        "visibility": { "enum": ["PUBLIC", "SERVER_ONLY", "ROLE_PRIVATE"] },
+        "ownerRoleId": { "$ref": "#/$defs/entityId" },
+        "minimum": { "type": "number" },
+        "maximum": { "type": "number" }
+      }
+    },
+    "inventoryItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "transferable"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "transferable": { "type": "boolean" },
+        "consumable": { "type": "boolean" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "authenticity"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "authenticity": { "enum": ["AUTHENTIC", "FORGED", "AMBIGUOUS"] },
+        "sourceSceneId": { "$ref": "#/$defs/entityId" },
+        "contradictsEvidenceIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "order", "targetDurationMinutes", "sceneIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "title": { "type": "string", "minLength": 1 },
+        "order": { "type": "integer", "minimum": 1 },
+        "targetDurationMinutes": { "type": "integer", "minimum": 1 },
+        "sceneIds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/entityId" } }
+      }
+    },
+    "privateInformation": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "actionsByRole": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/roleAction" } }
+    },
+    "roleAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "intentType", "inputMode"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "intentType": { "type": "string", "minLength": 1 },
+        "inputMode": { "enum": ["NONE", "TARGET_ROLE", "TARGET_EVIDENCE", "TARGET_ITEM", "FREE_TEXT"] },
+        "visibleWhen": { "$ref": "#/$defs/condition" },
+        "enabledWhen": { "$ref": "#/$defs/condition" },
+        "oncePerScene": { "type": "boolean", "default": true }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "chapterId", "title", "locationId", "rolesPresent", "publicInformation", "privateInformationByRole", "availableActionsByRole", "resolutionRules", "nextSceneCandidates", "timing", "fallbackBehavior"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "chapterId": { "$ref": "#/$defs/entityId" },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "locationId": { "$ref": "#/$defs/entityId" },
+        "rolesPresent": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/entityId" } },
+        "publicInformation": { "type": "array", "items": { "type": "string" } },
+        "privateInformationByRole": { "$ref": "#/$defs/privateInformation" },
+        "availableActionsByRole": { "$ref": "#/$defs/actionsByRole" },
+        "resolutionRules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/resolutionRule" } },
+        "stateMutationsOnEnter": { "type": "array", "items": { "$ref": "#/$defs/stateMutation" } },
+        "nextSceneCandidates": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
+        "timing": { "$ref": "#/$defs/timing" },
+        "fallbackBehavior": { "$ref": "#/$defs/fallbackBehavior" },
+        "script": { "type": "string" },
+        "videoAssetId": { "$ref": "#/$defs/entityId" }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decisionSeconds", "discussionSeconds"],
+      "properties": {
+        "decisionSeconds": { "type": "integer", "minimum": 0, "maximum": 3600 },
+        "discussionSeconds": { "type": "integer", "minimum": 0, "maximum": 3600 },
+        "videoDurationSeconds": { "type": "number", "minimum": 0 }
+      }
+    },
+    "fallbackBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["onTimeout", "onInvalidResolution"],
+      "properties": {
+        "onTimeout": { "enum": ["ABSTAIN", "AI_BOT", "DEFAULT_ACTION"] },
+        "defaultActionId": { "$ref": "#/$defs/entityId" },
+        "onInvalidResolution": { "enum": ["RETRY", "USE_FALLBACK_SCENE", "PAUSE_ROOM"] },
+        "fallbackSceneId": { "$ref": "#/$defs/entityId" }
+      }
+    },
+    "resolutionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "priority", "when", "mutations"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "when": { "$ref": "#/$defs/condition" },
+        "mutations": { "type": "array", "items": { "$ref": "#/$defs/stateMutation" } },
+        "nextSceneId": { "$ref": "#/$defs/entityId" },
+        "endingId": { "$ref": "#/$defs/entityId" },
+        "explanation": { "type": "string" }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        { "$ref": "#/$defs/predicate" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["all"],
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["any"],
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/condition" } }
+        }
+      ]
+    },
+    "predicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "operator"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$" },
+        "operator": { "enum": ["EQ", "NE", "GT", "GTE", "LT", "LTE", "IN", "CONTAINS", "EXISTS"] },
+        "value": {}
+      }
+    },
+    "stateMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "path"],
+      "properties": {
+        "operation": { "enum": ["SET", "INCREMENT", "DECREMENT", "ADD_TO_SET", "REMOVE_FROM_SET", "GRANT_ITEM", "REVOKE_ITEM", "REVEAL_EVIDENCE", "SET_RELATIONSHIP"] },
+        "path": { "type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$" },
+        "value": {},
+        "reason": { "type": "string" }
+      }
+    },
+    "ending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "summary", "condition", "priority", "characterResults"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "condition": { "$ref": "#/$defs/condition" },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "hidden": { "type": "boolean", "default": false },
+        "characterResults": { "type": "object", "additionalProperties": { "type": "string" } },
+        "videoAssetId": { "$ref": "#/$defs/entityId" }
+      }
+    },
+    "validationIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message"],
+      "properties": {
+        "code": { "type": "string" },
+        "severity": { "enum": ["INFO", "WARNING", "ERROR"] },
+        "message": { "type": "string" },
+        "entityId": { "$ref": "#/$defs/entityId" },
+        "path": { "type": "string" }
+      }
+    },
+    "validationSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validatedAt", "valid", "issues"],
+      "properties": {
+        "validatedAt": { "type": "string", "format": "date-time" },
+        "valid": { "type": "boolean" },
+        "issues": { "type": "array", "items": { "$ref": "#/$defs/validationIssue" } },
+        "reachableEndingIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
+        "participationScoreByRole": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 } }
+      }
+    }
+  }
+}
+

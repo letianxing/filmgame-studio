@@ -1,0 +1,507 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "snowbound-hotel",
+  "storyVersion": 1,
+  "runtimeVersion": 1,
+  "playerCount": 6,
+  "initialSceneId": "scene-lobby",
+  "roles": [
+    {
+      "id": "journalist",
+      "displayName": "林遥",
+      "publicProfile": "记者：调查酒店改建黑幕的独立记者",
+      "secretSummaries": [
+        "曾用伪造材料逼迫死者接受采访"
+      ],
+      "goalSummaries": [
+        "获得足以公开的完整证据链"
+      ],
+      "victoryConditionSummaries": [
+        "关键证据被公开且本人未被定罪"
+      ]
+    },
+    {
+      "id": "detective",
+      "displayName": "周衡",
+      "publicProfile": "刑警：因私人行程滞留酒店的刑警",
+      "secretSummaries": [
+        "死者曾是其未结案件的秘密线人"
+      ],
+      "goalSummaries": [
+        "保护旧案证人身份并锁定真凶"
+      ],
+      "victoryConditionSummaries": [
+        "真凶被控制且证据链有效"
+      ]
+    },
+    {
+      "id": "psychologist",
+      "displayName": "沈知夏",
+      "publicProfile": "心理学家：受邀参与酒店员工危机干预",
+      "secretSummaries": [
+        "曾违规向死者透露一名病人的诊疗内容"
+      ],
+      "goalSummaries": [
+        "保护病人身份并阻止新的暴力"
+      ],
+      "victoryConditionSummaries": [
+        "无人再次死亡且病人秘密未公开"
+      ]
+    },
+    {
+      "id": "owner",
+      "displayName": "顾承川",
+      "publicProfile": "酒店老板：山顶酒店的实际经营者",
+      "secretSummaries": [
+        "亲手销毁过疗养院死亡事件的部分档案"
+      ],
+      "goalSummaries": [
+        "阻止酒店黑幕公开并保住经营权"
+      ],
+      "victoryConditionSummaries": [
+        "核心档案未公开且酒店未被查封"
+      ]
+    },
+    {
+      "id": "actor",
+      "displayName": "许棠",
+      "publicProfile": "演员：为新片采风而入住酒店的知名演员",
+      "secretSummaries": [
+        "使用假身份入住，真实身份与疗养院旧案有关"
+      ],
+      "goalSummaries": [
+        "隐藏真实身份并取得死者手机"
+      ],
+      "victoryConditionSummaries": [
+        "真实身份未公开且拿到死者手机"
+      ]
+    },
+    {
+      "id": "brother",
+      "displayName": "陈默",
+      "publicProfile": "死者弟弟：赶来处理兄长遗物的年轻男子",
+      "secretSummaries": [
+        "他并非死者亲弟弟，而是旧案受害者家属"
+      ],
+      "goalSummaries": [
+        "逼迫旧案责任人公开承认罪行"
+      ],
+      "victoryConditionSummaries": [
+        "旧案真相公开且责任人受到惩罚"
+      ]
+    }
+  ],
+  "initialState": {
+    "sceneId": "scene-lobby",
+    "phase": "LOBBY",
+    "variables": {
+      "evidence-published": false,
+      "killer-contained": false,
+      "second-death": false,
+      "old-case-exposed": false
+    },
+    "relationships": {
+      "relationship-journalist-detective": -25,
+      "relationship-owner-actor": -40
+    },
+    "evidenceByRole": {
+      "journalist": [
+        "evidence-photo"
+      ],
+      "detective": [],
+      "psychologist": [],
+      "owner": [],
+      "actor": [],
+      "brother": []
+    },
+    "inventoryByRole": {
+      "journalist": [],
+      "detective": [],
+      "psychologist": [],
+      "owner": [
+        "item-master-key"
+      ],
+      "actor": [],
+      "brother": [
+        "item-recorder"
+      ]
+    },
+    "revealedSecrets": [],
+    "historySequence": 0
+  },
+  "scenes": [
+    {
+      "id": "scene-lobby",
+      "videoAssetId": "video-scene-lobby",
+      "rolesPresent": [
+        "journalist",
+        "detective",
+        "psychologist",
+        "owner",
+        "actor",
+        "brother"
+      ],
+      "publicInformation": [
+        "死者在停电前十分钟仍然活着",
+        "档案室门被人打开过"
+      ],
+      "privateInformationByRole": {
+        "journalist": [
+          "照片拍摄时间与老板证词矛盾"
+        ],
+        "owner": [
+          "总钥匙昨晚短暂丢失"
+        ],
+        "actor": [
+          "死者手机藏在大堂附近"
+        ]
+      },
+      "availableActionsByRole": {
+        "journalist": [
+          {
+            "id": "action-journalist-publish",
+            "label": "公开照片",
+            "intentType": "publish_evidence",
+            "inputMode": "TARGET_EVIDENCE"
+          }
+        ],
+        "detective": [
+          {
+            "id": "action-detective-search",
+            "label": "组织搜查",
+            "intentType": "search",
+            "inputMode": "NONE"
+          }
+        ],
+        "psychologist": [
+          {
+            "id": "action-psychologist-observe",
+            "label": "观察应激反应",
+            "intentType": "observe",
+            "inputMode": "TARGET_ROLE"
+          }
+        ],
+        "owner": [
+          {
+            "id": "action-owner-lock",
+            "label": "封锁档案室",
+            "intentType": "lock_location",
+            "inputMode": "NONE"
+          }
+        ],
+        "actor": [
+          {
+            "id": "action-actor-steal",
+            "label": "寻找死者手机",
+            "intentType": "steal",
+            "inputMode": "TARGET_ITEM"
+          }
+        ],
+        "brother": [
+          {
+            "id": "action-brother-accuse",
+            "label": "公开指控老板",
+            "intentType": "accuse",
+            "inputMode": "TARGET_ROLE"
+          }
+        ]
+      },
+      "resolutionRules": [
+        {
+          "id": "rule-lobby-publish",
+          "priority": 100,
+          "condition": {
+            "path": "actions.journalist.actionId",
+            "operator": "EQ",
+            "value": "action-journalist-publish"
+          },
+          "mutations": [
+            {
+              "operation": "SET",
+              "path": "variables.evidence-published",
+              "value": true,
+              "reason": "记者公开照片"
+            }
+          ],
+          "nextSceneId": "scene-archive"
+        },
+        {
+          "id": "rule-lobby-default",
+          "priority": 1,
+          "condition": {
+            "path": "sceneId",
+            "operator": "EXISTS"
+          },
+          "mutations": [],
+          "nextSceneId": "scene-archive"
+        }
+      ],
+      "stateMutationsOnEnter": [],
+      "nextSceneCandidates": [
+        "scene-archive"
+      ],
+      "timing": {
+        "discussionSeconds": 420,
+        "decisionSeconds": 90
+      },
+      "fallbackBehavior": {
+        "onTimeout": "AI_BOT",
+        "onInvalidResolution": "PAUSE_ROOM"
+      }
+    },
+    {
+      "id": "scene-archive",
+      "videoAssetId": "video-scene-archive",
+      "rolesPresent": [
+        "journalist",
+        "detective",
+        "psychologist",
+        "owner",
+        "actor",
+        "brother"
+      ],
+      "publicInformation": [
+        "账册证明多人共同参与掩盖旧案",
+        "备用电力即将耗尽"
+      ],
+      "privateInformationByRole": {
+        "detective": [
+          "只要取得账册即可申请外部支援"
+        ],
+        "psychologist": [
+          "弟弟正处于失控边缘"
+        ],
+        "brother": [
+          "录音笔中的原始文件仍可恢复"
+        ]
+      },
+      "availableActionsByRole": {
+        "journalist": [
+          {
+            "id": "action-journalist-broadcast",
+            "label": "向外界直播证据",
+            "intentType": "broadcast",
+            "inputMode": "NONE"
+          }
+        ],
+        "detective": [
+          {
+            "id": "action-detective-arrest",
+            "label": "控制主要嫌疑人",
+            "intentType": "arrest",
+            "inputMode": "TARGET_ROLE"
+          }
+        ],
+        "psychologist": [
+          {
+            "id": "action-psychologist-deescalate",
+            "label": "阻止复仇",
+            "intentType": "deescalate",
+            "inputMode": "TARGET_ROLE"
+          }
+        ],
+        "owner": [
+          {
+            "id": "action-owner-burn",
+            "label": "销毁账册",
+            "intentType": "destroy_evidence",
+            "inputMode": "TARGET_EVIDENCE"
+          }
+        ],
+        "actor": [
+          {
+            "id": "action-actor-confess",
+            "label": "公开真实身份",
+            "intentType": "confess",
+            "inputMode": "NONE"
+          }
+        ],
+        "brother": [
+          {
+            "id": "action-brother-revenge",
+            "label": "执行复仇",
+            "intentType": "revenge",
+            "inputMode": "TARGET_ROLE"
+          }
+        ]
+      },
+      "resolutionRules": [
+        {
+          "id": "rule-ending-truth",
+          "priority": 600,
+          "condition": {
+            "path": "actions.journalist.actionId",
+            "operator": "EQ",
+            "value": "action-journalist-broadcast"
+          },
+          "mutations": [
+            {
+              "operation": "SET",
+              "path": "variables.old-case-exposed",
+              "value": true
+            }
+          ],
+          "endingId": "ending-truth"
+        },
+        {
+          "id": "rule-ending-justice",
+          "priority": 500,
+          "condition": {
+            "path": "actions.detective.actionId",
+            "operator": "EQ",
+            "value": "action-detective-arrest"
+          },
+          "mutations": [
+            {
+              "operation": "SET",
+              "path": "variables.killer-contained",
+              "value": true
+            }
+          ],
+          "endingId": "ending-justice"
+        },
+        {
+          "id": "rule-ending-mercy",
+          "priority": 400,
+          "condition": {
+            "path": "actions.psychologist.actionId",
+            "operator": "EQ",
+            "value": "action-psychologist-deescalate"
+          },
+          "mutations": [],
+          "endingId": "ending-mercy"
+        },
+        {
+          "id": "rule-ending-ashes",
+          "priority": 300,
+          "condition": {
+            "path": "actions.owner.actionId",
+            "operator": "EQ",
+            "value": "action-owner-burn"
+          },
+          "mutations": [],
+          "endingId": "ending-ashes"
+        },
+        {
+          "id": "rule-ending-identity",
+          "priority": 200,
+          "condition": {
+            "path": "actions.actor.actionId",
+            "operator": "EQ",
+            "value": "action-actor-confess"
+          },
+          "mutations": [],
+          "endingId": "ending-identity"
+        },
+        {
+          "id": "rule-ending-revenge",
+          "priority": 100,
+          "condition": {
+            "path": "actions.brother.actionId",
+            "operator": "EQ",
+            "value": "action-brother-revenge"
+          },
+          "mutations": [
+            {
+              "operation": "SET",
+              "path": "variables.second-death",
+              "value": true
+            }
+          ],
+          "endingId": "ending-revenge"
+        }
+      ],
+      "stateMutationsOnEnter": [],
+      "nextSceneCandidates": [],
+      "timing": {
+        "discussionSeconds": 360,
+        "decisionSeconds": 60
+      },
+      "fallbackBehavior": {
+        "onTimeout": "AI_BOT",
+        "onInvalidResolution": "PAUSE_ROOM"
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "ending-truth",
+      "videoAssetId": "video-ending-truth",
+      "condition": {
+        "path": "variables.old-case-exposed",
+        "operator": "EQ",
+        "value": true
+      },
+      "priority": 600,
+      "resultsByRole": {
+        "journalist": "完成报道，也必须面对自己的造假责任。"
+      }
+    },
+    {
+      "id": "ending-justice",
+      "videoAssetId": "video-ending-justice",
+      "condition": {
+        "path": "variables.killer-contained",
+        "operator": "EQ",
+        "value": true
+      },
+      "priority": 500,
+      "resultsByRole": {
+        "detective": "完成职责，但旧日泄密被内部调查。"
+      }
+    },
+    {
+      "id": "ending-mercy",
+      "videoAssetId": "video-ending-mercy",
+      "condition": {
+        "path": "variables.second-death",
+        "operator": "EQ",
+        "value": false
+      },
+      "priority": 400,
+      "resultsByRole": {
+        "psychologist": "守住生命，却无法继续隐瞒违规行为。"
+      }
+    },
+    {
+      "id": "ending-ashes",
+      "videoAssetId": "video-ending-ashes",
+      "condition": {
+        "path": "variables.evidence-published",
+        "operator": "EQ",
+        "value": false
+      },
+      "priority": 300,
+      "resultsByRole": {
+        "owner": "暂时保住酒店，却永远失去其他人的信任。"
+      }
+    },
+    {
+      "id": "ending-identity",
+      "videoAssetId": "video-ending-identity",
+      "condition": {
+        "path": "revealedSecrets",
+        "operator": "CONTAINS",
+        "value": "actor-secret"
+      },
+      "priority": 200,
+      "resultsByRole": {
+        "actor": "失去公众形象，却取回自己的名字。"
+      }
+    },
+    {
+      "id": "ending-revenge",
+      "videoAssetId": "video-ending-revenge",
+      "condition": {
+        "path": "variables.second-death",
+        "operator": "EQ",
+        "value": true
+      },
+      "priority": 100,
+      "resultsByRole": {
+        "brother": "完成复仇，也成为下一宗案件的凶手。"
+      }
+    }
+  ],
+  "assetManifestUri": "asset-manifest.json"
+}

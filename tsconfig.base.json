@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@filmgame/shared-types": ["packages/shared-types/src/index.ts"],
+      "@filmgame/story-engine": ["packages/story-engine/src/index.ts"],
+      "@filmgame/resolution-engine": ["packages/resolution-engine/src/index.ts"],
+      "@filmgame/provider-sdk": ["packages/provider-sdk/src/index.ts"],
+      "@filmgame/job-engine": ["packages/job-engine/src/index.ts"],
+      "@filmgame/release-engine": ["packages/release-engine/src/index.ts"],
+      "@filmgame/runtime-packager": ["packages/runtime-packager/src/index.ts"],
+      "@filmgame/playtest-engine": ["packages/playtest-engine/src/index.ts"],
+      "@filmgame/orchestrator": ["apps/orchestrator/src/index.ts"],
+      "@filmgame/openai-compatible-adapter": ["services/openai-compatible-adapter/src/index.ts"],
+      "@filmgame/storage-service": ["services/storage-service/src/index.ts"],
+      "@filmgame/media-pipeline": ["services/media-pipeline/src/index.ts"],
+      "@filmgame/comfyui-adapter": ["services/comfyui-adapter/src/index.ts"],
+      "@filmgame/cosyvoice-adapter": ["services/cosyvoice-adapter/src/index.ts"],
+      "@filmgame/remote-video-adapter": ["services/remote-video-adapter/src/index.ts"],
+      "@filmgame/remote-audio-adapter": ["services/remote-audio-adapter/src/index.ts"],
+      "@filmgame/remote-storage-adapter": ["services/remote-storage-adapter/src/index.ts"],
+      "@filmgame/livekit-adapter": ["services/livekit-adapter/src/index.ts"],
+      "@filmgame/codex-cli-adapter": ["services/codex-cli-adapter/src/index.ts"],
+      "@filmgame/video-gateway": ["services/video-gateway/src/index.ts"],
+      "@filmgame/audio-gateway": ["services/audio-gateway/src/index.ts"],
+      "@filmgame/storage-gateway": ["services/storage-gateway/src/index.ts"]
+    },
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "skipLibCheck": true
+  }
+}

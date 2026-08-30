@@ -1,0 +1,45 @@
+{
+  "name": "filmgame-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.6.4",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "npm run build:core && npm --prefix apps/multiplayer-server run build && npm --prefix apps/creator-console run build && npm --prefix apps/companion-web run build",
+    "build:core": "tsc -p packages/shared-types && tsc -p packages/story-engine && tsc -p packages/resolution-engine && tsc -p packages/provider-sdk && tsc -p packages/job-engine && tsc -p packages/release-engine && tsc -p packages/runtime-packager && tsc -p packages/playtest-engine && tsc -p apps/orchestrator && tsc -p services/codex-cli-adapter && tsc -p services/comfyui-adapter && tsc -p services/cosyvoice-adapter && tsc -p services/livekit-adapter && tsc -p services/media-pipeline && tsc -p services/openai-compatible-adapter && tsc -p services/remote-audio-adapter && tsc -p services/remote-video-adapter && tsc -p services/remote-storage-adapter && tsc -p services/storage-service && tsc -p services/video-gateway && tsc -p services/audio-gateway && tsc -p services/storage-gateway",
+    "test": "tsx --test packages/story-engine/test/*.test.ts packages/resolution-engine/test/*.test.ts packages/job-engine/test/*.test.ts packages/release-engine/test/*.test.ts packages/runtime-packager/test/*.test.ts packages/playtest-engine/test/*.test.ts apps/orchestrator/test/*.test.ts apps/multiplayer-server/test/*.test.ts services/codex-cli-adapter/test/*.test.ts services/comfyui-adapter/test/*.test.ts services/cosyvoice-adapter/test/*.test.ts services/livekit-adapter/test/*.test.ts services/openai-compatible-adapter/test/*.test.ts services/remote-audio-adapter/test/*.test.ts services/remote-video-adapter/test/*.test.ts services/remote-storage-adapter/test/*.test.ts services/storage-service/test/*.test.ts services/video-gateway/test/*.test.ts services/audio-gateway/test/*.test.ts services/storage-gateway/test/*.test.ts",
+    "test:integration": "npm --prefix apps/multiplayer-server run smoke && npm --prefix apps/multiplayer-server run smoke:gateway",
+    "typecheck": "tsc --noEmit -p packages/shared-types && tsc --noEmit -p packages/story-engine && tsc --noEmit -p packages/resolution-engine && tsc --noEmit -p packages/provider-sdk && tsc --noEmit -p packages/job-engine && tsc --noEmit -p packages/release-engine && tsc --noEmit -p packages/runtime-packager && tsc --noEmit -p packages/playtest-engine && tsc --noEmit -p apps/orchestrator && tsc --noEmit -p services/codex-cli-adapter && tsc --noEmit -p services/comfyui-adapter && tsc --noEmit -p services/cosyvoice-adapter && tsc --noEmit -p services/livekit-adapter && tsc --noEmit -p services/media-pipeline && tsc --noEmit -p services/openai-compatible-adapter && tsc --noEmit -p services/remote-audio-adapter && tsc --noEmit -p services/remote-video-adapter && tsc --noEmit -p services/remote-storage-adapter && tsc --noEmit -p services/storage-service && tsc --noEmit -p services/video-gateway && tsc --noEmit -p services/audio-gateway && tsc --noEmit -p services/storage-gateway && npm --prefix apps/multiplayer-server run typecheck",
+    "lint": "npm --prefix apps/creator-console run lint && npm --prefix apps/companion-web run lint",
+    "start:orchestrator": "tsx apps/orchestrator/src/server.ts",
+    "start:video-gateway": "tsx services/video-gateway/src/server.ts",
+    "start:audio-gateway": "tsx services/audio-gateway/src/server.ts",
+    "start:storage-gateway": "tsx services/storage-gateway/src/server.ts",
+    "smoke:media": "tsx scripts/smoke-media-pipeline.ts",
+    "smoke:unreal-package": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-unreal-package.ps1",
+    "smoke:cosyvoice": "tsx scripts/run-cosyvoice-smoke.ts",
+    "smoke:codex-cli": "tsx scripts/smoke-codex-cli.ts",
+    "smoke:cosyvoice-adapter": "tsx scripts/smoke-cosyvoice-adapter.ts",
+    "smoke:comfyui-adapter": "tsx scripts/smoke-comfyui-adapter.ts",
+    "smoke:comfyui-flux": "tsx scripts/smoke-comfyui-flux.ts",
+    "smoke:comfyui-wan": "tsx scripts/smoke-comfyui-wan.ts",
+    "smoke:production-providers": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-production-providers.ps1",
+    "model:download": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/download-model.ps1",
+    "stack:start": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local-stack.ps1",
+    "stack:status": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/status-local-stack.ps1",
+    "stack:stop": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/stop-local-stack.ps1",
+    "validate:schemas": "tsx scripts/validate-schemas.ts",
+    "generate:fixtures": "tsx scripts/build-runtime-fixture.ts && tsx scripts/build-production-fixture.ts",
+    "check": "npm run generate:fixtures && npm run validate:schemas && npm run typecheck && npm run lint && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3"
+  }
+}

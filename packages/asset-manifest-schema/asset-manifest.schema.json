@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/asset-manifest.schema.json",
+  "title": "FilmGame Asset Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "manifestVersion", "projectId", "storyVersion", "productionVersion", "generatedAt", "assets", "runtimePackages"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "manifestVersion": { "type": "integer", "minimum": 1 },
+    "projectId": { "$ref": "#/$defs/id" },
+    "storyVersion": { "type": "integer", "minimum": 1 },
+    "productionVersion": { "type": "integer", "minimum": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
+    "runtimePackages": { "type": "array", "items": { "$ref": "#/$defs/runtimePackage" } },
+    "metadata": { "type": "object", "additionalProperties": true }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$", "minLength": 2, "maxLength": 96 },
+    "hash": { "type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$" },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "uri", "mimeType", "sizeBytes", "sha256", "status", "dependencies", "source", "providerMetadata"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["CHARACTER_REFERENCE", "LOCATION_REFERENCE", "STORYBOARD", "IMAGE", "VIDEO", "VOICE", "SUBTITLE", "MUSIC", "SFX", "THUMBNAIL", "PROXY", "FINAL_SCENE", "RUNTIME_DATA", "UNREAL_CONTENT", "BUILD_ARTIFACT"] },
+        "uri": { "type": "string", "minLength": 1 },
+        "mimeType": { "type": "string", "minLength": 1 },
+        "sizeBytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "status": { "enum": ["DRAFT", "GENERATED", "QA", "APPROVED", "LOCKED", "REJECTED", "MISSING"] },
+        "dependencies": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "source": { "enum": ["GENERATED", "UPLOADED", "DERIVED", "BUILT"] },
+        "entityType": { "type": "string" },
+        "entityId": { "$ref": "#/$defs/id" },
+        "durationSeconds": { "type": "number", "minimum": 0 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "language": { "type": "string" },
+        "providerMetadata": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["provider"],
+          "properties": {
+            "provider": { "type": "string" },
+            "model": { "type": "string" },
+            "workflowVersion": { "type": "string" },
+            "requestId": { "type": "string" },
+            "seed": { "type": ["integer", "string", "null"] }
+          }
+        },
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commercialUseApproved"],
+          "properties": {
+            "commercialUseApproved": { "type": "boolean" },
+            "licenseId": { "type": "string" },
+            "attribution": { "type": "string" },
+            "sourceUri": { "type": "string" }
+          }
+        }
+      }
+    },
+    "runtimePackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target", "version", "entryAssetId", "assetIds", "sha256", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "target": { "enum": ["COLYSEUS", "COMPANION_WEB", "UNREAL_WINDOWS", "PLAYTEST"] },
+        "version": { "type": "string", "minLength": 1 },
+        "entryAssetId": { "$ref": "#/$defs/id" },
+        "assetIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "status": { "enum": ["BUILDING", "READY", "FAILED", "PUBLISHED"] }
+      }
+    }
+  }
+}

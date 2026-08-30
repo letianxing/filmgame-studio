@@ -1,0 +1,206 @@
+{
+  "schemaVersion": "1.0.0",
+  "manifestVersion": 1,
+  "projectId": "snowbound-hotel",
+  "storyVersion": 1,
+  "productionVersion": 1,
+  "generatedAt": "2026-08-30T11:39:50.686Z",
+  "assets": [
+    {
+      "id": "runtime-data",
+      "type": "RUNTIME_DATA",
+      "uri": "runtime-package.json",
+      "mimeType": "application/json",
+      "sizeBytes": 13443,
+      "sha256": "sha256:c995818c7c59ee0220c1a15a3786dc5cb12e22ba657f8fba6d632600ff4ee1e9",
+      "status": "GENERATED",
+      "dependencies": [],
+      "source": "BUILT",
+      "providerMetadata": {
+        "provider": "filmgame-runtime-packager"
+      },
+      "license": {
+        "commercialUseApproved": true,
+        "licenseId": "FIRST_PARTY"
+      }
+    },
+    {
+      "id": "video-scene-lobby",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-scene-lobby.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "SCENE",
+      "entityId": "scene-lobby",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-scene-archive",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-scene-archive.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "SCENE",
+      "entityId": "scene-archive",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-truth",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-truth.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-truth",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-justice",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-justice.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-justice",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-mercy",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-mercy.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-mercy",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-ashes",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-ashes.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-ashes",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-identity",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-identity.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-identity",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    },
+    {
+      "id": "video-ending-revenge",
+      "type": "FINAL_SCENE",
+      "uri": "missing://video-ending-revenge.mp4",
+      "mimeType": "video/mp4",
+      "sizeBytes": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MISSING",
+      "dependencies": [],
+      "source": "GENERATED",
+      "entityType": "ENDING",
+      "entityId": "ending-revenge",
+      "providerMetadata": {
+        "provider": "unconfigured"
+      },
+      "license": {
+        "commercialUseApproved": false
+      }
+    }
+  ],
+  "runtimePackages": [
+    {
+      "id": "runtime-package-dev",
+      "target": "UNREAL_WINDOWS",
+      "version": "0.1.0-dev",
+      "entryAssetId": "runtime-data",
+      "assetIds": [
+        "runtime-data",
+        "video-scene-lobby",
+        "video-scene-archive",
+        "video-ending-truth",
+        "video-ending-justice",
+        "video-ending-mercy",
+        "video-ending-ashes",
+        "video-ending-identity",
+        "video-ending-revenge"
+      ],
+      "sha256": "sha256:c995818c7c59ee0220c1a15a3786dc5cb12e22ba657f8fba6d632600ff4ee1e9",
+      "status": "BUILDING"
+    }
+  ],
+  "metadata": {
+    "fixture": true,
+    "publishable": false,
+    "reason": "Media providers are not configured; scene video assets are explicitly MISSING."
+  }
+}

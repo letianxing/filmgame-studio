@@ -1,0 +1,9 @@
+{
+  "name": "@filmgame/production-schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./production.schema.json" },
+  "files": ["production.schema.json"]
+}
+

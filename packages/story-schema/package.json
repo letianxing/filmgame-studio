@@ -1,0 +1,11 @@
+{
+  "name": "@filmgame/story-schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./story.schema.json"
+  },
+  "files": ["story.schema.json"]
+}
+

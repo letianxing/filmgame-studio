@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1788067722097,
+      "tag": "0000_complex_mockingbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1788082264262,
+      "tag": "0001_windy_wallop",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788083784317,
+      "tag": "0002_pink_ghost_rider",
+      "breakpoints": true
+    }
+  ]
+}

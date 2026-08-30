@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/runtime.schema.json",
+  "title": "FilmGame Multiplayer Runtime Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "storyVersion", "runtimeVersion", "playerCount", "initialSceneId", "roles", "initialState", "scenes", "endings"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "projectId": { "$ref": "#/$defs/id" },
+    "storyVersion": { "type": "integer", "minimum": 1 },
+    "runtimeVersion": { "type": "integer", "minimum": 1 },
+    "playerCount": { "type": "integer", "minimum": 4, "maximum": 8 },
+    "initialSceneId": { "$ref": "#/$defs/id" },
+    "roles": { "type": "array", "minItems": 4, "maxItems": 8, "items": { "$ref": "#/$defs/role" } },
+    "initialState": { "$ref": "#/$defs/gameState" },
+    "scenes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/runtimeScene" } },
+    "endings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/runtimeEnding" } },
+    "assetManifestUri": { "type": "string" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$", "minLength": 2, "maxLength": 96 },
+    "role": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "publicProfile", "secretSummaries", "goalSummaries", "victoryConditionSummaries"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string" },
+        "publicProfile": { "type": "string" },
+        "secretSummaries": { "type": "array", "items": { "type": "string" } },
+        "goalSummaries": { "type": "array", "items": { "type": "string" } },
+        "victoryConditionSummaries": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "gameState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sceneId", "phase", "variables", "relationships", "evidenceByRole", "inventoryByRole", "revealedSecrets", "historySequence"],
+      "properties": {
+        "sceneId": { "$ref": "#/$defs/id" },
+        "phase": { "enum": ["LOBBY", "BRIEFING", "PLAYING", "RESOLVING", "ENDING", "PAUSED"] },
+        "variables": { "type": "object", "additionalProperties": true },
+        "relationships": { "type": "object", "additionalProperties": { "type": "integer", "minimum": -100, "maximum": 100 } },
+        "evidenceByRole": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/id" } } },
+        "inventoryByRole": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/id" } } },
+        "revealedSecrets": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "historySequence": { "type": "integer", "minimum": 0 },
+        "endingId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "runtimeScene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "videoAssetId", "rolesPresent", "publicInformation", "privateInformationByRole", "availableActionsByRole", "resolutionRules", "stateMutationsOnEnter", "nextSceneCandidates", "timing", "fallbackBehavior"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "videoAssetId": { "$ref": "#/$defs/id" },
+        "rolesPresent": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "publicInformation": { "type": "array", "items": { "type": "string" } },
+        "privateInformationByRole": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+        "availableActionsByRole": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/runtimeAction" } } },
+        "resolutionRules": { "type": "array", "items": { "$ref": "#/$defs/runtimeRule" } },
+        "stateMutationsOnEnter": { "type": "array", "items": { "$ref": "#/$defs/mutation" } },
+        "nextSceneCandidates": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["discussionSeconds", "decisionSeconds"],
+          "properties": {
+            "discussionSeconds": { "type": "integer", "minimum": 0 },
+            "decisionSeconds": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "fallbackBehavior": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["onTimeout", "onInvalidResolution"],
+          "properties": {
+            "onTimeout": { "enum": ["ABSTAIN", "AI_BOT", "DEFAULT_ACTION"] },
+            "defaultActionId": { "$ref": "#/$defs/id" },
+            "onInvalidResolution": { "enum": ["RETRY", "USE_FALLBACK_SCENE", "PAUSE_ROOM"] },
+            "fallbackSceneId": { "$ref": "#/$defs/id" }
+          }
+        }
+      }
+    },
+    "runtimeAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "intentType", "inputMode"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string" },
+        "intentType": { "type": "string" },
+        "inputMode": { "enum": ["NONE", "TARGET_ROLE", "TARGET_EVIDENCE", "TARGET_ITEM", "FREE_TEXT"] }
+      }
+    },
+    "runtimeRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "priority", "condition", "mutations"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "priority": { "type": "integer", "minimum": 0 },
+        "condition": { "$ref": "#/$defs/condition" },
+        "mutations": { "type": "array", "items": { "$ref": "#/$defs/mutation" } },
+        "nextSceneId": { "$ref": "#/$defs/id" },
+        "endingId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "operator"],
+          "properties": {
+            "path": { "type": "string" },
+            "operator": { "enum": ["EQ", "NE", "GT", "GTE", "LT", "LTE", "IN", "CONTAINS", "EXISTS"] },
+            "value": {}
+          }
+        },
+        { "type": "object", "additionalProperties": false, "required": ["all"], "properties": { "all": { "type": "array", "items": { "$ref": "#/$defs/condition" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["any"], "properties": { "any": { "type": "array", "items": { "$ref": "#/$defs/condition" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["not"], "properties": { "not": { "$ref": "#/$defs/condition" } } }
+      ]
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "path"],
+      "properties": {
+        "operation": { "enum": ["SET", "INCREMENT", "DECREMENT", "ADD_TO_SET", "REMOVE_FROM_SET", "GRANT_ITEM", "REVOKE_ITEM", "REVEAL_EVIDENCE", "SET_RELATIONSHIP"] },
+        "path": { "type": "string" },
+        "value": {},
+        "reason": { "type": "string" }
+      }
+    },
+    "runtimeEnding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "videoAssetId", "condition", "priority", "resultsByRole"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "videoAssetId": { "$ref": "#/$defs/id" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "priority": { "type": "integer", "minimum": 0 },
+        "resultsByRole": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    }
+  }
+}
+

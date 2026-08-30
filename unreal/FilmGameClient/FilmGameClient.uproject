@@ -1,0 +1,17 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.7",
+  "Category": "Games",
+  "Description": "FilmGame Studio multiplayer interactive film runtime client.",
+  "Modules": [
+    {
+      "Name": "FilmGameClient",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    { "Name": "MediaPlayerEditor", "Enabled": true, "TargetAllowList": ["Editor"] }
+  ]
+}
+

@@ -1,0 +1,2087 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "snowbound-hotel",
+  "storyVersion": 1,
+  "productionVersion": 1,
+  "status": "PLANNING",
+  "directorTreatment": {
+    "visualLanguage": "写实电影摄影，低饱和冬季质感",
+    "cameraGrammar": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角",
+    "performanceDirection": "克制表演，以停顿、视线和微动作传达角色隐瞒的信息。",
+    "editingRhythm": "前段长镜头积压不信任，证据出现后缩短镜头并增加反应切换。",
+    "soundDirection": "暴雪低频、建筑管道声与近距离呼吸构成主要声场。",
+    "continuityRules": [
+      "角色面部、发型与冬季服装必须继承 LOCKED reference",
+      "地点朝向与关键道具位置固定"
+    ]
+  },
+  "characters": [
+    {
+      "characterId": "journalist",
+      "appearancePrompt": "三十岁上下、清瘦、神情警觉，深灰羽绒服与旧皮质相机带",
+      "negativeConstraints": [
+        "左眉尾小疤保持一致"
+      ],
+      "costumeVariants": [
+        "深灰羽绒服与旧皮质相机带"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "快速、直接",
+        "emotion": "克制焦虑",
+        "speed": 1.05
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "characterId": "detective",
+      "appearancePrompt": "四十岁、短发、疲惫但锐利，深色羊毛大衣与便装枪套",
+      "negativeConstraints": [
+        "右手旧伤动作受限"
+      ],
+      "costumeVariants": [
+        "深色羊毛大衣与便装枪套"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "低沉、审讯式停顿",
+        "emotion": "冷静",
+        "speed": 0.9
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "characterId": "psychologist",
+      "appearancePrompt": "三十五岁、神态沉静、观察力强，米白高领毛衣与墨绿色冬季长外套",
+      "negativeConstraints": [
+        "始终佩戴银色细框眼镜"
+      ],
+      "costumeVariants": [
+        "米白高领毛衣与墨绿色冬季长外套"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "轻声、善用反问",
+        "emotion": "安抚中带警觉",
+        "speed": 0.92
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "characterId": "owner",
+      "appearancePrompt": "五十岁、仪表精致、眼神疲惫，剪裁考究的深蓝西装与冬季羊绒外套",
+      "negativeConstraints": [
+        "金色袖扣必须一致"
+      ],
+      "costumeVariants": [
+        "剪裁考究的深蓝西装与冬季羊绒外套"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "礼貌、迂回、控制谈话",
+        "emotion": "压抑愤怒",
+        "speed": 0.95
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "characterId": "actor",
+      "appearancePrompt": "二十八岁、镜头感强、神情易变，黑色冬季礼服外搭银灰羽绒披肩",
+      "negativeConstraints": [
+        "耳后星形纹身只在特定角度可见"
+      ],
+      "costumeVariants": [
+        "黑色冬季礼服外搭银灰羽绒披肩"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "精确、表演性强",
+        "emotion": "从容伪装",
+        "speed": 1
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "characterId": "brother",
+      "appearancePrompt": "二十六岁、面色苍白、压抑怒意，磨损的军绿色冬季夹克",
+      "negativeConstraints": [
+        "左手腕烧伤痕迹"
+      ],
+      "costumeVariants": [
+        "磨损的军绿色冬季夹克"
+      ],
+      "voiceProfile": {
+        "voiceId": null,
+        "referenceAssetId": null,
+        "language": "zh-CN",
+        "style": "少言、突然爆发",
+        "emotion": "压抑仇恨",
+        "speed": 0.88
+      },
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    }
+  ],
+  "locations": [
+    {
+      "locationId": "location-lobby",
+      "visualPrompt": "深色木饰面、旧铜灯、被雪光切开的宽阔空间",
+      "negativeConstraints": [
+        "壁炉位于北墙",
+        "前台后方有旧机械钥匙墙"
+      ],
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "locationId": "location-archive",
+      "visualPrompt": "低矮水泥空间、锈蚀管线、绿色应急灯与成排铁柜",
+      "negativeConstraints": [
+        "唯一出口在东侧",
+        "第七号档案柜损坏"
+      ],
+      "assetLock": {
+        "status": "DRAFT",
+        "revision": 1,
+        "canonicalReferenceAssetIds": []
+      },
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "sceneId": "scene-lobby",
+      "title": "停电后的第一轮指控",
+      "locationId": "location-lobby",
+      "script": "大堂应急灯亮起。每个人的脸都被壁炉火光切成明暗两半。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-scene-lobby-wide",
+          "sceneId": "scene-lobby",
+          "characters": [
+            "journalist",
+            "detective",
+            "psychologist",
+            "owner",
+            "actor",
+            "brother"
+          ],
+          "location": "location-lobby",
+          "description": "停电后的第一轮指控的空间建立镜头",
+          "dialogue": [],
+          "camera": "35mm wide, locked frame, slow push-in",
+          "shotSize": "LS",
+          "cameraMovement": "slow push-in",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，停电后的第一轮指控，空间建立镜头",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，缓慢推进，保持角色与地点一致",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        },
+        {
+          "id": "shot-scene-lobby-dialogue",
+          "sceneId": "scene-lobby",
+          "characters": [
+            "journalist",
+            "detective"
+          ],
+          "location": "location-lobby",
+          "description": "停电后的第一轮指控的关键对白与反应镜头",
+          "dialogue": [
+            {
+              "characterId": "journalist",
+              "text": "大堂应急灯亮起。每个人的脸都被壁炉火光切成明暗两半。"
+            }
+          ],
+          "camera": "50mm medium close-up with reverse reaction",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，停电后的第一轮指控，克制表演，中近景",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，自然微表情，轻微手持",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "scene-archive",
+      "title": "第七号档案柜",
+      "locationId": "location-archive",
+      "script": "第七号铁柜被拉开，发霉的账册和一部仍亮着微光的手机同时出现。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-scene-archive-wide",
+          "sceneId": "scene-archive",
+          "characters": [
+            "journalist",
+            "detective",
+            "psychologist",
+            "owner",
+            "actor",
+            "brother"
+          ],
+          "location": "location-archive",
+          "description": "第七号档案柜的空间建立镜头",
+          "dialogue": [],
+          "camera": "35mm wide, locked frame, slow push-in",
+          "shotSize": "LS",
+          "cameraMovement": "slow push-in",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，第七号档案柜，空间建立镜头",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，缓慢推进，保持角色与地点一致",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        },
+        {
+          "id": "shot-scene-archive-dialogue",
+          "sceneId": "scene-archive",
+          "characters": [
+            "journalist",
+            "detective"
+          ],
+          "location": "location-archive",
+          "description": "第七号档案柜的关键对白与反应镜头",
+          "dialogue": [
+            {
+              "characterId": "journalist",
+              "text": "第七号铁柜被拉开，发霉的账册和一部仍亮着微光的手机同时出现。"
+            }
+          ],
+          "camera": "50mm medium close-up with reverse reaction",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，第七号档案柜，克制表演，中近景",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，自然微表情，轻微手持",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-truth",
+      "title": "暴雪中的直播",
+      "locationId": "location-lobby",
+      "script": "证据在通讯恢复前被上传，所有人的秘密同时暴露。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-truth-resolution",
+          "sceneId": "ending-truth",
+          "characters": [
+            "journalist"
+          ],
+          "location": "location-lobby",
+          "description": "暴雪中的直播：证据在通讯恢复前被上传，所有人的秘密同时暴露。",
+          "dialogue": [
+            {
+              "characterId": "journalist",
+              "text": "证据在通讯恢复前被上传，所有人的秘密同时暴露。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：暴雪中的直播，证据在通讯恢复前被上传，所有人的秘密同时暴露。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-justice",
+      "title": "迟到的逮捕",
+      "locationId": "location-lobby",
+      "script": "真凶被控制，旧案进入司法程序。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-justice-resolution",
+          "sceneId": "ending-justice",
+          "characters": [
+            "detective"
+          ],
+          "location": "location-lobby",
+          "description": "迟到的逮捕：真凶被控制，旧案进入司法程序。",
+          "dialogue": [
+            {
+              "characterId": "detective",
+              "text": "真凶被控制，旧案进入司法程序。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：迟到的逮捕，真凶被控制，旧案进入司法程序。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-mercy",
+      "title": "无人再死",
+      "locationId": "location-lobby",
+      "script": "复仇被阻止，真相以不完整但可继续追查的方式保存。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-mercy-resolution",
+          "sceneId": "ending-mercy",
+          "characters": [
+            "psychologist"
+          ],
+          "location": "location-lobby",
+          "description": "无人再死：复仇被阻止，真相以不完整但可继续追查的方式保存。",
+          "dialogue": [
+            {
+              "characterId": "psychologist",
+              "text": "复仇被阻止，真相以不完整但可继续追查的方式保存。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：无人再死，复仇被阻止，真相以不完整但可继续追查的方式保存。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-ashes",
+      "title": "灰烬之下",
+      "locationId": "location-lobby",
+      "script": "账册被烧毁，幸存者只能依靠彼此矛盾的证词。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-ashes-resolution",
+          "sceneId": "ending-ashes",
+          "characters": [
+            "owner"
+          ],
+          "location": "location-lobby",
+          "description": "灰烬之下：账册被烧毁，幸存者只能依靠彼此矛盾的证词。",
+          "dialogue": [
+            {
+              "characterId": "owner",
+              "text": "账册被烧毁，幸存者只能依靠彼此矛盾的证词。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：灰烬之下，账册被烧毁，幸存者只能依靠彼此矛盾的证词。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-identity",
+      "title": "名字归还",
+      "locationId": "location-lobby",
+      "script": "演员公开真实身份，迫使旧案当事人重新面对受害者。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-identity-resolution",
+          "sceneId": "ending-identity",
+          "characters": [
+            "actor"
+          ],
+          "location": "location-lobby",
+          "description": "名字归还：演员公开真实身份，迫使旧案当事人重新面对受害者。",
+          "dialogue": [
+            {
+              "characterId": "actor",
+              "text": "演员公开真实身份，迫使旧案当事人重新面对受害者。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：名字归还，演员公开真实身份，迫使旧案当事人重新面对受害者。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    },
+    {
+      "sceneId": "ending-revenge",
+      "title": "第二具尸体",
+      "locationId": "location-lobby",
+      "script": "复仇完成，暴雪停下时酒店里留下另一具尸体。",
+      "status": "BLOCKED",
+      "shots": [
+        {
+          "id": "shot-ending-revenge-resolution",
+          "sceneId": "ending-revenge",
+          "characters": [
+            "brother"
+          ],
+          "location": "location-lobby",
+          "description": "第二具尸体：复仇完成，暴雪停下时酒店里留下另一具尸体。",
+          "dialogue": [
+            {
+              "characterId": "brother",
+              "text": "复仇完成，暴雪停下时酒店里留下另一具尸体。"
+            }
+          ],
+          "camera": "50mm cinematic resolution tableau, controlled slow pull-back",
+          "shotSize": "MCU",
+          "cameraMovement": "subtle handheld",
+          "duration": 8,
+          "imagePrompt": "写实电影摄影，低饱和冬季质感，结局：第二具尸体，复仇完成，暴雪停下时酒店里留下另一具尸体。",
+          "videoPrompt": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角，结局收束，缓慢拉远",
+          "referenceImages": [],
+          "voiceAssets": [],
+          "subtitle": [],
+          "sfx": [
+            "暴雪",
+            "建筑低频"
+          ],
+          "bgm": [
+            "低频氛围铺底"
+          ],
+          "status": "BLOCKED",
+          "retryCount": 0,
+          "providerMetadata": {
+            "provider": "unconfigured"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "id": "director-breakdown",
+      "type": "DIRECTOR_BREAKDOWN",
+      "status": "READY",
+      "dependencies": [],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-journalist",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-detective",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-psychologist",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-owner",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-actor",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "character-reference-brother",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "location-reference-location-lobby",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "location-reference-location-archive",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-scene-lobby",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-scene-lobby-wide",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-journalist",
+        "character-reference-detective",
+        "character-reference-psychologist",
+        "character-reference-owner",
+        "character-reference-actor",
+        "character-reference-brother"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-scene-lobby-wide",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-scene-lobby-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-scene-lobby-wide",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-scene-lobby-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-scene-lobby-wide",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-scene-lobby-wide",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-scene-lobby-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-scene-lobby-wide",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-scene-lobby-wide",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-scene-lobby-wide",
+        "tts-shot-scene-lobby-wide",
+        "subtitle-shot-scene-lobby-wide",
+        "music-scene-lobby",
+        "sfx-shot-scene-lobby-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-scene-lobby-dialogue",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-journalist",
+        "character-reference-detective"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-scene-lobby-dialogue",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-scene-lobby-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-scene-lobby-dialogue",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-scene-lobby-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-scene-lobby-dialogue",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-scene-lobby-dialogue",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-scene-lobby-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-scene-lobby-dialogue",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-scene-lobby-dialogue",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-scene-lobby-dialogue",
+        "tts-shot-scene-lobby-dialogue",
+        "subtitle-shot-scene-lobby-dialogue",
+        "music-scene-lobby",
+        "sfx-shot-scene-lobby-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-scene-lobby",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-scene-lobby-wide",
+        "render-shot-scene-lobby-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-scene-lobby",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-scene-lobby"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-scene-archive",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-scene-archive-wide",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-archive",
+        "character-reference-journalist",
+        "character-reference-detective",
+        "character-reference-psychologist",
+        "character-reference-owner",
+        "character-reference-actor",
+        "character-reference-brother"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-scene-archive-wide",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-scene-archive-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-scene-archive-wide",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-scene-archive-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-scene-archive-wide",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-scene-archive-wide",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-scene-archive-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-scene-archive-wide",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-scene-archive-wide",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-scene-archive-wide",
+        "tts-shot-scene-archive-wide",
+        "subtitle-shot-scene-archive-wide",
+        "music-scene-archive",
+        "sfx-shot-scene-archive-wide"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-scene-archive-dialogue",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-archive",
+        "character-reference-journalist",
+        "character-reference-detective"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-scene-archive-dialogue",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-scene-archive-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-scene-archive-dialogue",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-scene-archive-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-scene-archive-dialogue",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-scene-archive-dialogue",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-scene-archive-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-scene-archive-dialogue",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-scene-archive-dialogue",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-scene-archive-dialogue",
+        "tts-shot-scene-archive-dialogue",
+        "subtitle-shot-scene-archive-dialogue",
+        "music-scene-archive",
+        "sfx-shot-scene-archive-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-scene-archive",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-scene-archive-wide",
+        "render-shot-scene-archive-dialogue"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-scene-archive",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-scene-archive"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-truth",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-truth-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-journalist"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-truth-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-truth-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-truth-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-truth-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-truth-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-truth-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-truth-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-truth-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-truth-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-truth-resolution",
+        "tts-shot-ending-truth-resolution",
+        "subtitle-shot-ending-truth-resolution",
+        "music-ending-truth",
+        "sfx-shot-ending-truth-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-truth",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-truth-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-truth",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-truth"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-justice",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-justice-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-detective"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-justice-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-justice-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-justice-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-justice-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-justice-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-justice-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-justice-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-justice-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-justice-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-justice-resolution",
+        "tts-shot-ending-justice-resolution",
+        "subtitle-shot-ending-justice-resolution",
+        "music-ending-justice",
+        "sfx-shot-ending-justice-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-justice",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-justice-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-justice",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-justice"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-mercy",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-mercy-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-psychologist"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-mercy-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-mercy-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-mercy-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-mercy-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-mercy-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-mercy-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-mercy-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-mercy-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-mercy-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-mercy-resolution",
+        "tts-shot-ending-mercy-resolution",
+        "subtitle-shot-ending-mercy-resolution",
+        "music-ending-mercy",
+        "sfx-shot-ending-mercy-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-mercy",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-mercy-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-mercy",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-mercy"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-ashes",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-ashes-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-owner"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-ashes-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-ashes-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-ashes-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-ashes-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-ashes-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-ashes-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-ashes-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-ashes-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-ashes-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-ashes-resolution",
+        "tts-shot-ending-ashes-resolution",
+        "subtitle-shot-ending-ashes-resolution",
+        "music-ending-ashes",
+        "sfx-shot-ending-ashes-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-ashes",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-ashes-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-ashes",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-ashes"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-identity",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-identity-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-actor"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-identity-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-identity-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-identity-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-identity-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-identity-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-identity-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-identity-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-identity-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-identity-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-identity-resolution",
+        "tts-shot-ending-identity-resolution",
+        "subtitle-shot-ending-identity-resolution",
+        "music-ending-identity",
+        "sfx-shot-ending-identity-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-identity",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-identity-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-identity",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-identity"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "music-ending-revenge",
+      "type": "MUSIC",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "storyboard-shot-ending-revenge-resolution",
+      "type": "STORYBOARD",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown",
+        "location-reference-location-lobby",
+        "character-reference-brother"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "image-shot-ending-revenge-resolution",
+      "type": "IMAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "storyboard-shot-ending-revenge-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "video-shot-ending-revenge-resolution",
+      "type": "VIDEO",
+      "status": "PENDING",
+      "dependencies": [
+        "image-shot-ending-revenge-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 3,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "tts-shot-ending-revenge-resolution",
+      "type": "TTS",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "subtitle-shot-ending-revenge-resolution",
+      "type": "SUBTITLE",
+      "status": "PENDING",
+      "dependencies": [
+        "tts-shot-ending-revenge-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "sfx-shot-ending-revenge-resolution",
+      "type": "SFX",
+      "status": "PENDING",
+      "dependencies": [
+        "director-breakdown"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "render-shot-ending-revenge-resolution",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "video-shot-ending-revenge-resolution",
+        "tts-shot-ending-revenge-resolution",
+        "subtitle-shot-ending-revenge-resolution",
+        "music-ending-revenge",
+        "sfx-shot-ending-revenge-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "scene-render-ending-revenge",
+      "type": "MEDIA_RENDER",
+      "status": "PENDING",
+      "dependencies": [
+        "render-shot-ending-revenge-resolution"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "qa-ending-revenge",
+      "type": "QA",
+      "status": "PENDING",
+      "dependencies": [
+        "scene-render-ending-revenge"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    },
+    {
+      "id": "runtime-package",
+      "type": "PACKAGE",
+      "status": "PENDING",
+      "dependencies": [
+        "qa-scene-lobby",
+        "qa-scene-archive",
+        "qa-ending-truth",
+        "qa-ending-justice",
+        "qa-ending-mercy",
+        "qa-ending-ashes",
+        "qa-ending-identity",
+        "qa-ending-revenge"
+      ],
+      "attempt": 0,
+      "maxAttempts": 2,
+      "providerMetadata": {
+        "provider": "unconfigured"
+      }
+    }
+  ],
+  "estimatedCost": {
+    "currency": "USD",
+    "amount": 0
+  },
+  "actualCost": {
+    "currency": "USD",
+    "amount": 0
+  }
+}

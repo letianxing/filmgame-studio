@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/production.schema.json",
+  "title": "FilmGame Production Model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "storyVersion", "productionVersion", "status", "directorTreatment", "characters", "locations", "scenes", "jobs"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "projectId": { "$ref": "#/$defs/id" },
+    "storyVersion": { "type": "integer", "minimum": 1 },
+    "productionVersion": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["PLANNING", "GENERATING", "QA", "READY", "FAILED", "ARCHIVED"] },
+    "directorTreatment": { "$ref": "#/$defs/directorTreatment" },
+    "characters": { "type": "array", "items": { "$ref": "#/$defs/productionCharacter" } },
+    "locations": { "type": "array", "items": { "$ref": "#/$defs/productionLocation" } },
+    "scenes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/productionScene" } },
+    "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } },
+    "estimatedCost": { "$ref": "#/$defs/money" },
+    "actualCost": { "$ref": "#/$defs/money" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$", "minLength": 2, "maxLength": 96 },
+    "assetId": { "$ref": "#/$defs/id" },
+    "assetLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "revision", "canonicalReferenceAssetIds"],
+      "properties": {
+        "status": { "enum": ["DRAFT", "APPROVED", "LOCKED"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "canonicalReferenceAssetIds": { "type": "array", "items": { "$ref": "#/$defs/assetId" } },
+        "lockedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "directorTreatment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visualLanguage", "cameraGrammar", "performanceDirection", "editingRhythm", "soundDirection"],
+      "properties": {
+        "visualLanguage": { "type": "string", "minLength": 1 },
+        "cameraGrammar": { "type": "string", "minLength": 1 },
+        "performanceDirection": { "type": "string", "minLength": 1 },
+        "editingRhythm": { "type": "string", "minLength": 1 },
+        "soundDirection": { "type": "string", "minLength": 1 },
+        "continuityRules": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "productionCharacter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["characterId", "appearancePrompt", "negativeConstraints", "voiceProfile", "assetLock"],
+      "properties": {
+        "characterId": { "$ref": "#/$defs/id" },
+        "appearancePrompt": { "type": "string", "minLength": 1 },
+        "negativeConstraints": { "type": "array", "items": { "type": "string" } },
+        "costumeVariants": { "type": "array", "items": { "type": "string" } },
+        "voiceProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["language", "style", "emotion", "speed"],
+          "properties": {
+            "voiceId": { "type": ["string", "null"] },
+            "referenceAssetId": { "type": ["string", "null"] },
+            "language": { "type": "string" },
+            "style": { "type": "string" },
+            "emotion": { "type": "string" },
+            "speed": { "type": "number", "minimum": 0.5, "maximum": 2 }
+          }
+        },
+        "assetLock": { "$ref": "#/$defs/assetLock" },
+        "providerMetadata": { "$ref": "#/$defs/providerMetadata" }
+      }
+    },
+    "productionLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locationId", "visualPrompt", "negativeConstraints", "assetLock"],
+      "properties": {
+        "locationId": { "$ref": "#/$defs/id" },
+        "visualPrompt": { "type": "string", "minLength": 1 },
+        "negativeConstraints": { "type": "array", "items": { "type": "string" } },
+        "assetLock": { "$ref": "#/$defs/assetLock" },
+        "providerMetadata": { "$ref": "#/$defs/providerMetadata" }
+      }
+    },
+    "productionScene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sceneId", "title", "locationId", "script", "shots", "status"],
+      "properties": {
+        "sceneId": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "locationId": { "$ref": "#/$defs/id" },
+        "script": { "type": "string", "minLength": 1 },
+        "shots": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/shot" } },
+        "finalVideoAssetId": { "$ref": "#/$defs/assetId" },
+        "status": { "enum": ["PLANNED", "BLOCKED", "GENERATING", "QA", "READY", "FAILED"] }
+      }
+    },
+    "shot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sceneId", "characters", "location", "description", "dialogue", "camera", "shotSize", "cameraMovement", "duration", "imagePrompt", "videoPrompt", "referenceImages", "voiceAssets", "subtitle", "sfx", "bgm", "status", "retryCount", "providerMetadata"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sceneId": { "$ref": "#/$defs/id" },
+        "characters": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "location": { "$ref": "#/$defs/id" },
+        "description": { "type": "string", "minLength": 1 },
+        "dialogue": { "type": "array", "items": { "$ref": "#/$defs/dialogueLine" } },
+        "camera": { "type": "string", "minLength": 1 },
+        "shotSize": { "enum": ["ECU", "CU", "MCU", "MS", "MLS", "LS", "ELS", "POV", "OTS", "INSERT"] },
+        "cameraMovement": { "type": "string", "minLength": 1 },
+        "duration": { "type": "number", "exclusiveMinimum": 0, "maximum": 300 },
+        "imagePrompt": { "type": "string", "minLength": 1 },
+        "videoPrompt": { "type": "string", "minLength": 1 },
+        "referenceImages": { "type": "array", "items": { "$ref": "#/$defs/assetId" } },
+        "firstFrame": { "$ref": "#/$defs/assetId" },
+        "lastFrame": { "$ref": "#/$defs/assetId" },
+        "voiceAssets": { "type": "array", "items": { "$ref": "#/$defs/assetId" } },
+        "subtitle": { "type": "array", "items": { "$ref": "#/$defs/subtitleCue" } },
+        "sfx": { "type": "array", "items": { "type": "string" } },
+        "bgm": { "type": "array", "items": { "type": "string" } },
+        "storyboardAssetId": { "$ref": "#/$defs/assetId" },
+        "generatedVideo": { "$ref": "#/$defs/assetId" },
+        "status": { "enum": ["PLANNED", "BLOCKED", "QUEUED", "GENERATING", "QA", "APPROVED", "FAILED"] },
+        "retryCount": { "type": "integer", "minimum": 0 },
+        "providerMetadata": { "$ref": "#/$defs/providerMetadata" }
+      }
+    },
+    "dialogueLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["characterId", "text"],
+      "properties": {
+        "characterId": { "$ref": "#/$defs/id" },
+        "text": { "type": "string", "minLength": 1 },
+        "performance": { "type": "string" }
+      }
+    },
+    "subtitleCue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startMs", "endMs", "text"],
+      "properties": {
+        "startMs": { "type": "integer", "minimum": 0 },
+        "endMs": { "type": "integer", "minimum": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "speakerId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "providerMetadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "provider": { "type": "string" },
+        "model": { "type": "string" },
+        "workflowVersion": { "type": "string" },
+        "seed": { "type": ["integer", "string", "null"] },
+        "requestId": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "status", "dependencies", "attempt", "maxAttempts"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["DIRECTOR_BREAKDOWN", "STORYBOARD", "IMAGE", "VIDEO", "TTS", "SUBTITLE", "MUSIC", "SFX", "MEDIA_RENDER", "QA", "PACKAGE"] },
+        "entityId": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["PENDING", "READY", "RUNNING", "SUCCEEDED", "FAILED", "CANCELLED", "BLOCKED"] },
+        "dependencies": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "attempt": { "type": "integer", "minimum": 0 },
+        "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "error": { "type": "string" },
+        "providerMetadata": { "$ref": "#/$defs/providerMetadata" },
+        "cost": { "$ref": "#/$defs/money" }
+      }
+    },
+    "money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "amount"],
+      "properties": {
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "amount": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
+

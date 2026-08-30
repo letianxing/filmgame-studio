@@ -1,0 +1,230 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "snowbound-hotel",
+  "storyVersion": 1,
+  "status": "DRAFT",
+  "createdAt": "2026-08-30T05:00:00.000Z",
+  "updatedAt": "2026-08-30T05:00:00.000Z",
+  "brief": {
+    "title": "雪封山庄",
+    "logline": "暴风雪切断山顶酒店与外界的联系，六名各怀秘密的人必须在凶手再次行动前揭开死者留下的真相。",
+    "genre": ["悬疑", "犯罪", "心理惊悚"],
+    "playerCount": 6,
+    "targetDurationMinutes": 90,
+    "interactionStyle": ["讨论", "欺骗", "合作", "背叛", "角色专属行动"],
+    "endingTarget": 6,
+    "budgetTier": "INDIE",
+    "specialRequirements": ["禁止简单多数投票", "不同角色拥有不同信息与行动"]
+  },
+  "world": {
+    "premise": "一场异常暴风雪封锁了孤立的山顶酒店，通讯与道路同时中断。",
+    "timePeriod": "当代，冬季午夜",
+    "setting": "建在废弃疗养院旧址上的高端山顶酒店",
+    "history": ["二十年前疗养院曾发生未公开的病人死亡事件", "酒店改建档案有关键页缺失"],
+    "rules": ["暴风雪结束前无人能够离开", "酒店备用电力只能维持关键区域", "私人信息只发送给对应角色"],
+    "factions": ["追查真相者", "维护秘密者", "伺机复仇者"]
+  },
+  "narrativeTone": {
+    "keywords": ["写实", "冷峻", "压抑", "克制", "电影感"],
+    "pacing": "前半段缓慢积压不信任，后半段连续揭露与角色行动交叉升级",
+    "contentRating": "16+",
+    "avoid": ["喜剧化打断", "全知视角泄密", "依赖单次多数投票"],
+    "dialogueGuidance": "对白短促、带有回避与潜台词；角色在压力下暴露各自语言习惯。"
+  },
+  "visualBible": {
+    "style": "写实电影摄影，低饱和冬季质感",
+    "palette": ["冰蓝", "石墨黑", "钨丝暖黄", "暗红"],
+    "cinematography": "稳定的封闭构图逐步过渡到手持近景，强调门框、镜面与监控视角",
+    "lighting": "室内局部暖光与窗外冷色暴雪形成强烈分割",
+    "aspectRatio": "2.39:1",
+    "negativeConstraints": ["避免过度磨皮", "避免卡通化", "避免角色面部漂移"]
+  },
+  "characters": [
+    {
+      "id": "journalist",
+      "name": "林遥",
+      "publicProfile": { "role": "记者", "summary": "调查酒店改建黑幕的独立记者", "traits": ["敏锐", "强硬"] },
+      "secrets": [{ "id": "journalist-secret", "summary": "曾用伪造材料逼迫死者接受采访", "severity": "HIGH" }],
+      "goals": [{ "id": "journalist-goal", "description": "获得足以公开的完整证据链", "priority": 90, "private": true }],
+      "victoryConditions": [{ "id": "journalist-win", "description": "关键证据被公开且本人未被定罪", "condition": { "path": "variables.evidence-published", "operator": "EQ", "value": true }, "score": 100 }],
+      "startingEvidenceIds": ["evidence-photo"],
+      "visual": { "appearance": "三十岁上下、清瘦、神情警觉", "costume": "深灰羽绒服与旧皮质相机带", "constraints": ["左眉尾小疤保持一致"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "快速、直接", "emotion": "克制焦虑", "speed": 1.05 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["左眉尾小疤"] }
+    },
+    {
+      "id": "detective",
+      "name": "周衡",
+      "publicProfile": { "role": "刑警", "summary": "因私人行程滞留酒店的刑警", "traits": ["冷静", "怀疑"] },
+      "secrets": [{ "id": "detective-secret", "summary": "死者曾是其未结案件的秘密线人", "severity": "CRITICAL" }],
+      "goals": [{ "id": "detective-goal", "description": "保护旧案证人身份并锁定真凶", "priority": 100 }],
+      "victoryConditions": [{ "id": "detective-win", "description": "真凶被控制且证据链有效", "condition": { "path": "variables.killer-contained", "operator": "EQ", "value": true }, "score": 100 }],
+      "visual": { "appearance": "四十岁、短发、疲惫但锐利", "costume": "深色羊毛大衣与便装枪套", "constraints": ["右手旧伤动作受限"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "低沉、审讯式停顿", "emotion": "冷静", "speed": 0.9 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["右手旧伤"] }
+    },
+    {
+      "id": "psychologist",
+      "name": "沈知夏",
+      "publicProfile": { "role": "心理学家", "summary": "受邀参与酒店员工危机干预", "traits": ["温和", "洞察"] },
+      "secrets": [{ "id": "psychologist-secret", "summary": "曾违规向死者透露一名病人的诊疗内容", "severity": "HIGH" }],
+      "goals": [{ "id": "psychologist-goal", "description": "保护病人身份并阻止新的暴力", "priority": 85 }],
+      "victoryConditions": [{ "id": "psychologist-win", "description": "无人再次死亡且病人秘密未公开", "condition": { "path": "variables.second-death", "operator": "EQ", "value": false }, "score": 100 }],
+      "visual": { "appearance": "三十五岁、神态沉静、观察力强", "costume": "米白高领毛衣与墨绿色冬季长外套", "constraints": ["始终佩戴银色细框眼镜"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "轻声、善用反问", "emotion": "安抚中带警觉", "speed": 0.92 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["银色细框眼镜"] }
+    },
+    {
+      "id": "owner",
+      "name": "顾承川",
+      "publicProfile": { "role": "酒店老板", "summary": "山顶酒店的实际经营者", "traits": ["体面", "控制欲"] },
+      "secrets": [{ "id": "owner-secret", "summary": "亲手销毁过疗养院死亡事件的部分档案", "severity": "CRITICAL" }],
+      "goals": [{ "id": "owner-goal", "description": "阻止酒店黑幕公开并保住经营权", "priority": 95 }],
+      "victoryConditions": [{ "id": "owner-win", "description": "核心档案未公开且酒店未被查封", "condition": { "path": "variables.evidence-published", "operator": "EQ", "value": false }, "score": 100 }],
+      "startingInventoryIds": ["item-master-key"],
+      "visual": { "appearance": "五十岁、仪表精致、眼神疲惫", "costume": "剪裁考究的深蓝西装与冬季羊绒外套", "constraints": ["金色袖扣必须一致"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "礼貌、迂回、控制谈话", "emotion": "压抑愤怒", "speed": 0.95 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["金色袖扣"] }
+    },
+    {
+      "id": "actor",
+      "name": "许棠",
+      "publicProfile": { "role": "演员", "summary": "为新片采风而入住酒店的知名演员", "traits": ["魅力", "防御"] },
+      "secrets": [{ "id": "actor-secret", "summary": "使用假身份入住，真实身份与疗养院旧案有关", "severity": "CRITICAL" }],
+      "goals": [{ "id": "actor-goal", "description": "隐藏真实身份并取得死者手机", "priority": 88 }],
+      "victoryConditions": [{ "id": "actor-win", "description": "真实身份未公开且拿到死者手机", "condition": { "path": "inventoryByRole.actor", "operator": "CONTAINS", "value": "item-phone" }, "score": 100 }],
+      "visual": { "appearance": "二十八岁、镜头感强、神情易变", "costume": "黑色冬季礼服外搭银灰羽绒披肩", "constraints": ["耳后星形纹身只在特定角度可见"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "精确、表演性强", "emotion": "从容伪装", "speed": 1 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["耳后星形纹身"] }
+    },
+    {
+      "id": "brother",
+      "name": "陈默",
+      "publicProfile": { "role": "死者弟弟", "summary": "赶来处理兄长遗物的年轻男子", "traits": ["沉默", "冲动"] },
+      "secrets": [{ "id": "brother-secret", "summary": "他并非死者亲弟弟，而是旧案受害者家属", "severity": "CRITICAL" }],
+      "goals": [{ "id": "brother-goal", "description": "逼迫旧案责任人公开承认罪行", "priority": 100 }],
+      "victoryConditions": [{ "id": "brother-win", "description": "旧案真相公开且责任人受到惩罚", "condition": { "path": "variables.old-case-exposed", "operator": "EQ", "value": true }, "score": 100 }],
+      "startingInventoryIds": ["item-recorder"],
+      "visual": { "appearance": "二十六岁、面色苍白、压抑怒意", "costume": "磨损的军绿色冬季夹克", "constraints": ["左手腕烧伤痕迹"] },
+      "voice": { "language": "zh-CN", "speakingStyle": "少言、突然爆发", "emotion": "压抑仇恨", "speed": 0.88 },
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["左手腕烧伤"] }
+    }
+  ],
+  "relationships": [
+    { "id": "relationship-journalist-detective", "fromCharacterId": "journalist", "toCharacterId": "detective", "publicLabel": "采访对象", "privateTruth": "两人曾因泄密事件决裂", "initialTrust": -25, "tags": ["旧识", "互相利用"] },
+    { "id": "relationship-owner-actor", "fromCharacterId": "owner", "toCharacterId": "actor", "publicLabel": "酒店与客人", "privateTruth": "老板知道演员的真实身份", "initialTrust": -40, "tags": ["勒索"] }
+  ],
+  "locations": [
+    {
+      "id": "location-lobby",
+      "name": "酒店大堂",
+      "description": "停电后的大堂只剩壁炉与应急灯，落地窗外暴雪遮蔽一切。",
+      "visual": "深色木饰面、旧铜灯、被雪光切开的宽阔空间",
+      "constraints": ["壁炉位于北墙", "前台后方有旧机械钥匙墙"],
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["空间朝向保持一致"] }
+    },
+    {
+      "id": "location-archive",
+      "name": "地下档案室",
+      "description": "由旧疗养院锅炉房改成的封闭档案室。",
+      "visual": "低矮水泥空间、锈蚀管线、绿色应急灯与成排铁柜",
+      "constraints": ["唯一出口在东侧", "第七号档案柜损坏"],
+      "assetLock": { "status": "DRAFT", "revision": 1, "referenceAssetIds": [], "constraints": ["第七号柜位置固定"] }
+    }
+  ],
+  "variables": [
+    { "id": "evidence-published", "type": "BOOLEAN", "initialValue": false, "visibility": "PUBLIC" },
+    { "id": "killer-contained", "type": "BOOLEAN", "initialValue": false, "visibility": "PUBLIC" },
+    { "id": "second-death", "type": "BOOLEAN", "initialValue": false, "visibility": "SERVER_ONLY" },
+    { "id": "old-case-exposed", "type": "BOOLEAN", "initialValue": false, "visibility": "PUBLIC" }
+  ],
+  "inventory": [
+    { "id": "item-master-key", "name": "总钥匙", "description": "可打开除保险室外的大部分门", "transferable": true },
+    { "id": "item-recorder", "name": "旧录音笔", "description": "保存着一段被剪辑过的自白", "transferable": true },
+    { "id": "item-phone", "name": "死者手机", "description": "需要密码或专业手段解锁", "transferable": true }
+  ],
+  "evidence": [
+    { "id": "evidence-photo", "name": "雪夜照片", "description": "照片显示案发前有人从档案室返回", "authenticity": "AUTHENTIC", "sourceSceneId": "scene-lobby" },
+    { "id": "evidence-ledger", "name": "疗养院账册", "description": "隐藏着旧案赔偿与封口费记录", "authenticity": "AUTHENTIC", "sourceSceneId": "scene-archive" }
+  ],
+  "chapters": [
+    { "id": "chapter-one", "title": "雪封", "order": 1, "targetDurationMinutes": 35, "sceneIds": ["scene-lobby"] },
+    { "id": "chapter-two", "title": "旧档", "order": 2, "targetDurationMinutes": 55, "sceneIds": ["scene-archive"] }
+  ],
+  "scenes": [
+    {
+      "id": "scene-lobby",
+      "chapterId": "chapter-one",
+      "title": "停电后的第一轮指控",
+      "summary": "六人第一次交换不完整证词，并决定由谁带领搜索。",
+      "locationId": "location-lobby",
+      "rolesPresent": ["journalist", "detective", "psychologist", "owner", "actor", "brother"],
+      "publicInformation": ["死者在停电前十分钟仍然活着", "档案室门被人打开过"],
+      "privateInformationByRole": {
+        "journalist": ["照片拍摄时间与老板证词矛盾"],
+        "owner": ["总钥匙昨晚短暂丢失"],
+        "actor": ["死者手机藏在大堂附近"]
+      },
+      "availableActionsByRole": {
+        "journalist": [{ "id": "action-journalist-publish", "label": "公开照片", "intentType": "publish_evidence", "inputMode": "TARGET_EVIDENCE" }],
+        "detective": [{ "id": "action-detective-search", "label": "组织搜查", "intentType": "search", "inputMode": "NONE" }],
+        "psychologist": [{ "id": "action-psychologist-observe", "label": "观察应激反应", "intentType": "observe", "inputMode": "TARGET_ROLE" }],
+        "owner": [{ "id": "action-owner-lock", "label": "封锁档案室", "intentType": "lock_location", "inputMode": "NONE" }],
+        "actor": [{ "id": "action-actor-steal", "label": "寻找死者手机", "intentType": "steal", "inputMode": "TARGET_ITEM" }],
+        "brother": [{ "id": "action-brother-accuse", "label": "公开指控老板", "intentType": "accuse", "inputMode": "TARGET_ROLE" }]
+      },
+      "resolutionRules": [
+        { "id": "rule-lobby-publish", "priority": 100, "when": { "path": "actions.journalist.actionId", "operator": "EQ", "value": "action-journalist-publish" }, "mutations": [{ "operation": "SET", "path": "variables.evidence-published", "value": true, "reason": "记者公开照片" }], "nextSceneId": "scene-archive" },
+        { "id": "rule-lobby-default", "priority": 1, "when": { "path": "sceneId", "operator": "EXISTS" }, "mutations": [], "nextSceneId": "scene-archive" }
+      ],
+      "stateMutationsOnEnter": [],
+      "nextSceneCandidates": ["scene-archive"],
+      "timing": { "decisionSeconds": 90, "discussionSeconds": 420, "videoDurationSeconds": 210 },
+      "fallbackBehavior": { "onTimeout": "AI_BOT", "onInvalidResolution": "PAUSE_ROOM" },
+      "script": "大堂应急灯亮起。每个人的脸都被壁炉火光切成明暗两半。"
+    },
+    {
+      "id": "scene-archive",
+      "chapterId": "chapter-two",
+      "title": "第七号档案柜",
+      "summary": "玩家根据此前行动争夺账册、手机和录音，并触发不同结局。",
+      "locationId": "location-archive",
+      "rolesPresent": ["journalist", "detective", "psychologist", "owner", "actor", "brother"],
+      "publicInformation": ["账册证明多人共同参与掩盖旧案", "备用电力即将耗尽"],
+      "privateInformationByRole": {
+        "detective": ["只要取得账册即可申请外部支援"],
+        "psychologist": ["弟弟正处于失控边缘"],
+        "brother": ["录音笔中的原始文件仍可恢复"]
+      },
+      "availableActionsByRole": {
+        "journalist": [{ "id": "action-journalist-broadcast", "label": "向外界直播证据", "intentType": "broadcast", "inputMode": "NONE" }],
+        "detective": [{ "id": "action-detective-arrest", "label": "控制主要嫌疑人", "intentType": "arrest", "inputMode": "TARGET_ROLE" }],
+        "psychologist": [{ "id": "action-psychologist-deescalate", "label": "阻止复仇", "intentType": "deescalate", "inputMode": "TARGET_ROLE" }],
+        "owner": [{ "id": "action-owner-burn", "label": "销毁账册", "intentType": "destroy_evidence", "inputMode": "TARGET_EVIDENCE" }],
+        "actor": [{ "id": "action-actor-confess", "label": "公开真实身份", "intentType": "confess", "inputMode": "NONE" }],
+        "brother": [{ "id": "action-brother-revenge", "label": "执行复仇", "intentType": "revenge", "inputMode": "TARGET_ROLE" }]
+      },
+      "resolutionRules": [
+        { "id": "rule-ending-truth", "priority": 600, "when": { "path": "actions.journalist.actionId", "operator": "EQ", "value": "action-journalist-broadcast" }, "mutations": [{ "operation": "SET", "path": "variables.old-case-exposed", "value": true }], "endingId": "ending-truth" },
+        { "id": "rule-ending-justice", "priority": 500, "when": { "path": "actions.detective.actionId", "operator": "EQ", "value": "action-detective-arrest" }, "mutations": [{ "operation": "SET", "path": "variables.killer-contained", "value": true }], "endingId": "ending-justice" },
+        { "id": "rule-ending-mercy", "priority": 400, "when": { "path": "actions.psychologist.actionId", "operator": "EQ", "value": "action-psychologist-deescalate" }, "mutations": [], "endingId": "ending-mercy" },
+        { "id": "rule-ending-ashes", "priority": 300, "when": { "path": "actions.owner.actionId", "operator": "EQ", "value": "action-owner-burn" }, "mutations": [], "endingId": "ending-ashes" },
+        { "id": "rule-ending-identity", "priority": 200, "when": { "path": "actions.actor.actionId", "operator": "EQ", "value": "action-actor-confess" }, "mutations": [], "endingId": "ending-identity" },
+        { "id": "rule-ending-revenge", "priority": 100, "when": { "path": "actions.brother.actionId", "operator": "EQ", "value": "action-brother-revenge" }, "mutations": [{ "operation": "SET", "path": "variables.second-death", "value": true }], "endingId": "ending-revenge" }
+      ],
+      "stateMutationsOnEnter": [],
+      "nextSceneCandidates": [],
+      "timing": { "decisionSeconds": 60, "discussionSeconds": 360, "videoDurationSeconds": 240 },
+      "fallbackBehavior": { "onTimeout": "AI_BOT", "onInvalidResolution": "PAUSE_ROOM" },
+      "script": "第七号铁柜被拉开，发霉的账册和一部仍亮着微光的手机同时出现。"
+    }
+  ],
+  "endings": [
+    { "id": "ending-truth", "title": "暴雪中的直播", "summary": "证据在通讯恢复前被上传，所有人的秘密同时暴露。", "condition": { "path": "variables.old-case-exposed", "operator": "EQ", "value": true }, "priority": 600, "characterResults": { "journalist": "完成报道，也必须面对自己的造假责任。" } },
+    { "id": "ending-justice", "title": "迟到的逮捕", "summary": "真凶被控制，旧案进入司法程序。", "condition": { "path": "variables.killer-contained", "operator": "EQ", "value": true }, "priority": 500, "characterResults": { "detective": "完成职责，但旧日泄密被内部调查。" } },
+    { "id": "ending-mercy", "title": "无人再死", "summary": "复仇被阻止，真相以不完整但可继续追查的方式保存。", "condition": { "path": "variables.second-death", "operator": "EQ", "value": false }, "priority": 400, "characterResults": { "psychologist": "守住生命，却无法继续隐瞒违规行为。" } },
+    { "id": "ending-ashes", "title": "灰烬之下", "summary": "账册被烧毁，幸存者只能依靠彼此矛盾的证词。", "condition": { "path": "variables.evidence-published", "operator": "EQ", "value": false }, "priority": 300, "hidden": true, "characterResults": { "owner": "暂时保住酒店，却永远失去其他人的信任。" } },
+    { "id": "ending-identity", "title": "名字归还", "summary": "演员公开真实身份，迫使旧案当事人重新面对受害者。", "condition": { "path": "revealedSecrets", "operator": "CONTAINS", "value": "actor-secret" }, "priority": 200, "characterResults": { "actor": "失去公众形象，却取回自己的名字。" } },
+    { "id": "ending-revenge", "title": "第二具尸体", "summary": "复仇完成，暴雪停下时酒店里留下另一具尸体。", "condition": { "path": "variables.second-death", "operator": "EQ", "value": true }, "priority": 100, "hidden": true, "characterResults": { "brother": "完成复仇，也成为下一宗案件的凶手。" } }
+  ]
+}
