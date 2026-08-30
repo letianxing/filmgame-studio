@@ -7,6 +7,8 @@
     "paths": {
       "@filmgame/shared-types": ["packages/shared-types/src/index.ts"],
       "@filmgame/story-engine": ["packages/story-engine/src/index.ts"],
+      "@filmgame/consistency-engine": ["packages/consistency-engine/src/index.ts"],
+      "@filmgame/dependency-graph": ["packages/dependency-graph/src/index.ts"],
       "@filmgame/resolution-engine": ["packages/resolution-engine/src/index.ts"],
       "@filmgame/provider-sdk": ["packages/provider-sdk/src/index.ts"],
       "@filmgame/job-engine": ["packages/job-engine/src/index.ts"],

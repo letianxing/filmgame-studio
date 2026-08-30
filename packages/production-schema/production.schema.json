@@ -27,7 +27,7 @@
       "additionalProperties": false,
       "required": ["status", "revision", "canonicalReferenceAssetIds"],
       "properties": {
-        "status": { "enum": ["DRAFT", "APPROVED", "LOCKED"] },
+        "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "LOCKED", "DEPRECATED"] },
         "revision": { "type": "integer", "minimum": 1 },
         "canonicalReferenceAssetIds": { "type": "array", "items": { "$ref": "#/$defs/assetId" } },
         "lockedAt": { "type": "string", "format": "date-time" }
@@ -169,12 +169,25 @@
       "required": ["id", "type", "status", "dependencies", "attempt", "maxAttempts"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
+        "projectId": { "$ref": "#/$defs/id" },
         "type": { "enum": ["DIRECTOR_BREAKDOWN", "STORYBOARD", "IMAGE", "VIDEO", "TTS", "SUBTITLE", "MUSIC", "SFX", "MEDIA_RENDER", "QA", "PACKAGE"] },
         "entityId": { "$ref": "#/$defs/id" },
-        "status": { "enum": ["PENDING", "READY", "RUNNING", "SUCCEEDED", "FAILED", "CANCELLED", "BLOCKED"] },
+        "status": { "enum": ["PENDING", "READY", "WAITING", "RUNNING", "RETRYING", "SUCCEEDED", "FAILED", "CANCELLED", "STALE", "PAUSED", "BLOCKED"] },
         "dependencies": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "inputHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "dependencyHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
         "attempt": { "type": "integer", "minimum": 0 },
         "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "progress": { "type": "number", "minimum": 0, "maximum": 1 },
+        "provider": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "workflowVersion": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "lastHeartbeat": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "input": { "type": "object", "additionalProperties": true },
+        "output": { "type": "object", "additionalProperties": true },
+        "outputAssets": { "type": "array", "items": { "$ref": "#/$defs/assetId" } },
         "error": { "type": "string" },
         "providerMetadata": { "$ref": "#/$defs/providerMetadata" },
         "cost": { "$ref": "#/$defs/money" }
@@ -191,4 +204,3 @@
     }
   }
 }
-

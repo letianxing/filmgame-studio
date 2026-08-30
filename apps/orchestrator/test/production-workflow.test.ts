@@ -85,5 +85,9 @@ test('director workflow creates shot-level storyboard, media, voice and package 
   assert.equal(result.plan.summary.MEDIA_RENDER, unitCount * 2);
   assert.equal(result.plan.summary.QA, unitCount);
   assert.equal(result.plan.summary.PACKAGE, 1);
+  const storyboard = result.plan.graph.list().find((job) => job.type === 'STORYBOARD');
+  assert.equal(typeof storyboard?.input?.bibleVersion, 'number');
+  assert.ok(Array.isArray(storyboard?.input?.canonicalCharacterRecordIds));
+  assert.equal(typeof storyboard?.input?.canonicalLocationRecordId, 'string');
   assert.deepEqual(result.plan.graph.ready().map((job) => job.id), ['director-breakdown']);
 });

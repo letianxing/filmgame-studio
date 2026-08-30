@@ -11,6 +11,11 @@
     "projectId": { "$ref": "#/$defs/id" },
     "storyVersion": { "type": "integer", "minimum": 1 },
     "productionVersion": { "type": "integer", "minimum": 1 },
+    "bibleVersion": { "type": "integer", "minimum": 1 },
+    "promptVersion": { "type": "string", "minLength": 1 },
+    "workflowVersion": { "type": "string", "minLength": 1 },
+    "runtimeVersion": { "type": "integer", "minimum": 1 },
+    "buildVersion": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
     "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
     "runtimePackages": { "type": "array", "items": { "$ref": "#/$defs/runtimePackage" } },
@@ -30,9 +35,9 @@
         "mimeType": { "type": "string", "minLength": 1 },
         "sizeBytes": { "type": "integer", "minimum": 0 },
         "sha256": { "$ref": "#/$defs/hash" },
-        "status": { "enum": ["DRAFT", "GENERATED", "QA", "APPROVED", "LOCKED", "REJECTED", "MISSING"] },
+        "status": { "enum": ["DRAFT", "GENERATED", "REVIEW", "QA", "APPROVED", "LOCKED", "DEPRECATED", "REJECTED", "MISSING"] },
         "dependencies": { "type": "array", "items": { "$ref": "#/$defs/id" } },
-        "source": { "enum": ["GENERATED", "UPLOADED", "DERIVED", "BUILT"] },
+        "source": { "enum": ["GENERATED", "HUMAN", "LICENSED", "UPLOADED", "DERIVED", "BUILT"] },
         "entityType": { "type": "string" },
         "entityId": { "$ref": "#/$defs/id" },
         "durationSeconds": { "type": "number", "minimum": 0 },
@@ -51,13 +56,33 @@
             "seed": { "type": ["integer", "string", "null"] }
           }
         },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "referenceAssetIds", "referenceLicenseIds", "createdAt", "approval", "commercialUseStatus"],
+          "properties": {
+            "source": { "enum": ["GENERATED", "HUMAN", "LICENSED", "UPLOADED", "DERIVED", "BUILT"] },
+            "provider": { "type": "string" },
+            "model": { "type": "string" },
+            "modelLicense": { "type": "string" },
+            "referenceAssetIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+            "referenceLicenseIds": { "type": "array", "items": { "type": "string" } },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "modifiedAt": { "type": "string", "format": "date-time" },
+            "approval": { "enum": ["UNREVIEWED", "SYSTEM_VALIDATED", "HUMAN_APPROVED", "REJECTED"] },
+            "commercialUseStatus": { "enum": ["UNKNOWN", "REVIEW_REQUIRED", "APPROVED", "NON_COMMERCIAL", "RESTRICTED", "EXPIRED"] },
+            "sourceUri": { "type": "string" }
+          }
+        },
         "license": {
           "type": "object",
           "additionalProperties": false,
           "required": ["commercialUseApproved"],
           "properties": {
             "commercialUseApproved": { "type": "boolean" },
+            "commercialUseStatus": { "enum": ["UNKNOWN", "REVIEW_REQUIRED", "APPROVED", "NON_COMMERCIAL", "RESTRICTED", "EXPIRED"] },
             "licenseId": { "type": "string" },
+            "referenceLicenseIds": { "type": "array", "items": { "type": "string" } },
             "attribution": { "type": "string" },
             "sourceUri": { "type": "string" }
           }

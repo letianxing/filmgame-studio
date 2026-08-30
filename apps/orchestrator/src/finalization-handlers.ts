@@ -181,6 +181,41 @@ export class FinalSceneRenderJobHandler implements JobHandler {
     finalVideo: string,
     signal: AbortSignal,
   ): Promise<Record<string, JsonValue>> {
+      const media = this.services.media as MediaPipeline & {
+        validateTechnical?: MediaPipeline['validateTechnical'];
+        analyzeSignals?: MediaPipeline['analyzeSignals'];
+      };
+      const aspectRatio = parseAspectRatio(this.services.story?.visualBible.aspectRatio);
+      const technicalValidation = media.validateTechnical
+        ? await media.validateTechnical(
+            finalVideo,
+            {
+              requireVideo: true,
+              requireAudio: true,
+              minimumWidth: 320,
+              minimumHeight: 180,
+              allowedVideoCodecs: ['h264', 'hevc', 'vp9', 'av1'],
+              ...(aspectRatio ? { expectedAspectRatio: aspectRatio } : {}),
+              ...(typeof job.input?.durationSeconds === 'number'
+                ? {
+                    expectedDurationSeconds: job.input.durationSeconds,
+                    durationToleranceSeconds: 1.5,
+                  }
+                : {}),
+            },
+            signal,
+          )
+        : { valid: true, issues: [] };
+      if (!technicalValidation.valid) {
+        throw new Error(
+          `Media technical validation failed for ${job.id}: ${technicalValidation.issues
+            .map((issue) => issue.code)
+            .join(', ')}`,
+        );
+      }
+      const signalAnalysis = media.analyzeSignals
+        ? await media.analyzeSignals(finalVideo, signal)
+        : { blackSegments: 0, silentSegments: 0, issues: [] };
       const context = providerContext(this.plan, job, signal);
       const key = [
         'projects',
@@ -200,8 +235,18 @@ export class FinalSceneRenderJobHandler implements JobHandler {
         sizeBytes: stored.data.sizeBytes,
         sourceProvider: 'ffmpeg-media-pipeline',
         storageProvider: stored.provider,
+        technicalValidation: technicalValidation as unknown as JsonValue,
+        signalAnalysis: signalAnalysis as unknown as JsonValue,
+        qualityReviewRequired: signalAnalysis.issues.length > 0,
       };
   }
+}
+
+function parseAspectRatio(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const [width, height] = value.split(':').map(Number);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || !height) return undefined;
+  return width! / height!;
 }
 
 export class AssetQaJobHandler implements JobHandler {
@@ -304,6 +349,7 @@ export class RuntimePackageJobHandler implements JobHandler {
     );
     const approved = this.services.productionAssetsCommerciallyApproved ?? false;
     const qaApproved = this.services.autoApproveQaAssets ?? false;
+    const generatedAt = new Date().toISOString();
     const missingEndings = this.story.endings.filter(
       (ending) => !videoAssetIdByEntityId[ending.id],
     );
@@ -314,11 +360,25 @@ export class RuntimePackageJobHandler implements JobHandler {
       mimeType: 'application/json',
       sizeBytes: runtimeStored.data.sizeBytes,
       sha256: `sha256:${runtimeStored.data.sha256}`,
-      status: 'GENERATED',
+      status: 'APPROVED',
       dependencies: sceneAssets.map((asset) => asset.assetId),
       source: 'BUILT',
       providerMetadata: { provider: 'filmgame-runtime-packager' },
-      license: { commercialUseApproved: true, licenseId: 'FIRST_PARTY' },
+      provenance: {
+        source: 'BUILT',
+        provider: 'filmgame-runtime-packager',
+        modelLicense: 'FIRST_PARTY',
+        referenceAssetIds: sceneAssets.map((asset) => asset.assetId),
+        referenceLicenseIds: sceneAssets.map(() => 'INHERITED'),
+        createdAt: generatedAt,
+        approval: 'SYSTEM_VALIDATED',
+        commercialUseStatus: 'APPROVED',
+      },
+      license: {
+        commercialUseApproved: true,
+        commercialUseStatus: 'APPROVED',
+        licenseId: 'FIRST_PARTY',
+      },
     };
     const finalSceneAssets = sceneAssets.map((asset) => ({
       id: asset.assetId,
@@ -333,7 +393,20 @@ export class RuntimePackageJobHandler implements JobHandler {
       entityType: asset.entityType,
       entityId: asset.sceneId,
       providerMetadata: { provider: 'filmgame-media-pipeline' },
-      license: { commercialUseApproved: approved },
+      provenance: {
+        source: 'DERIVED',
+        provider: 'filmgame-media-pipeline',
+        modelLicense: 'FIRST_PARTY_PIPELINE',
+        referenceAssetIds: [],
+        referenceLicenseIds: [],
+        createdAt: generatedAt,
+        approval: qaApproved ? 'SYSTEM_VALIDATED' : 'UNREVIEWED',
+        commercialUseStatus: approved ? 'APPROVED' : 'REVIEW_REQUIRED',
+      },
+      license: {
+        commercialUseApproved: approved,
+        commercialUseStatus: approved ? 'APPROVED' : 'REVIEW_REQUIRED',
+      },
     }));
     const missingEndingAssets = missingEndings.map((ending) => ({
       id: `video-${ending.id}`,
@@ -348,7 +421,16 @@ export class RuntimePackageJobHandler implements JobHandler {
       entityType: 'ENDING',
       entityId: ending.id,
       providerMetadata: { provider: 'unconfigured' },
-      license: { commercialUseApproved: false },
+      provenance: {
+        source: 'GENERATED',
+        provider: 'unconfigured',
+        referenceAssetIds: [],
+        referenceLicenseIds: [],
+        createdAt: generatedAt,
+        approval: 'UNREVIEWED',
+        commercialUseStatus: 'UNKNOWN',
+      },
+      license: { commercialUseApproved: false, commercialUseStatus: 'UNKNOWN' },
     }));
     const assetIds = [
       runtimeAsset.id,
@@ -363,7 +445,12 @@ export class RuntimePackageJobHandler implements JobHandler {
       projectId: this.plan.projectId,
       storyVersion: this.plan.storyVersion,
       productionVersion: this.plan.productionVersion,
-      generatedAt: new Date().toISOString(),
+      bibleVersion: this.story.canonicalBible?.bibleVersion ?? this.story.storyVersion,
+      promptVersion: 'v1',
+      workflowVersion: 'production-dag-v1',
+      runtimeVersion: this.plan.productionVersion,
+      buildVersion: `${this.plan.storyVersion}.${this.plan.productionVersion}.0`,
+      generatedAt,
       assets: [runtimeAsset, ...finalSceneAssets, ...missingEndingAssets],
       runtimePackages: targets.map((target) => ({
         id: `runtime-${target.toLowerCase().replace(/_/g, '-')}`,

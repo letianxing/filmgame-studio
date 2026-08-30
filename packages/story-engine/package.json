@@ -5,7 +5,8 @@
   "type": "module",
   "exports": { ".": "./src/index.ts" },
   "dependencies": {
-    "@filmgame/shared-types": "*"
+    "@filmgame/shared-types": "*",
+    "@filmgame/consistency-engine": "*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -13,4 +14,3 @@
     "test": "tsx --test test/**/*.test.ts"
   }
 }
-

@@ -1,13 +1,33 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 
-import type { ProductionJob, StoryModel } from '@filmgame/shared-types';
+import type {
+  AssetProvenance,
+  CommercialUseStatus,
+  ProductionJob,
+  StoryModel,
+} from '@filmgame/shared-types';
 
 export interface ReleaseAsset {
   id: string;
-  status: 'DRAFT' | 'GENERATED' | 'QA' | 'APPROVED' | 'LOCKED' | 'REJECTED' | 'MISSING';
+  status:
+    | 'DRAFT'
+    | 'GENERATED'
+    | 'REVIEW'
+    | 'QA'
+    | 'APPROVED'
+    | 'LOCKED'
+    | 'DEPRECATED'
+    | 'REJECTED'
+    | 'MISSING';
   sha256: string;
-  license?: { commercialUseApproved: boolean; licenseId?: string };
+  provenance?: AssetProvenance;
+  license?: {
+    commercialUseApproved: boolean;
+    commercialUseStatus?: CommercialUseStatus;
+    licenseId?: string;
+    referenceLicenseIds?: string[];
+  };
 }
 
 export interface ReleaseRuntimePackage {
@@ -66,11 +86,54 @@ export function evaluateReleaseGates(input: {
     if (!/^sha256:[a-f0-9]{64}$/iu.test(asset.sha256)) {
       issues.push(blocker('ASSET_HASH_INVALID', `Asset ${asset.id} has no valid SHA-256.`, asset.id));
     }
-    if (!asset.license?.commercialUseApproved) {
+    if (!asset.provenance) {
+      issues.push(blocker('MISSING_PROVENANCE', `Asset ${asset.id} has no provenance record.`, asset.id));
+    }
+    const commercialStatus =
+      asset.provenance?.commercialUseStatus ??
+      asset.license?.commercialUseStatus ??
+      (asset.license?.commercialUseApproved ? 'APPROVED' : 'UNKNOWN');
+    if (commercialStatus !== 'APPROVED' || !asset.license?.commercialUseApproved) {
       issues.push(
         blocker(
-          'ASSET_LICENSE_NOT_APPROVED',
-          `Asset ${asset.id} is not approved for commercial use.`,
+          commercialBlockerCode(commercialStatus),
+          `Asset ${asset.id} commercial status is ${commercialStatus}.`,
+          asset.id,
+        ),
+      );
+    }
+    if (
+      asset.provenance?.source === 'GENERATED' &&
+      (!asset.provenance.provider || !asset.provenance.modelLicense)
+    ) {
+      issues.push(
+        blocker(
+          'MISSING_MODEL_LICENSE',
+          `Generated asset ${asset.id} lacks provider/model license evidence.`,
+          asset.id,
+        ),
+      );
+    }
+    if (
+      asset.provenance?.referenceAssetIds.length &&
+      asset.provenance.referenceLicenseIds.length < asset.provenance.referenceAssetIds.length
+    ) {
+      issues.push(
+        blocker(
+          'MISSING_REFERENCE_LICENSE',
+          `Asset ${asset.id} has references without matching license evidence.`,
+          asset.id,
+        ),
+      );
+    }
+    if (
+      asset.provenance?.provider === 'filmgame-reference' ||
+      asset.provenance?.sourceUri?.replace(/\\/gu, '/').includes('/filmgame/')
+    ) {
+      issues.push(
+        blocker(
+          'REFERENCE_ONLY_SOURCE',
+          `Asset ${asset.id} traces to the non-commercial filmgame reference repository.`,
           asset.id,
         ),
       );
@@ -97,6 +160,17 @@ export function evaluateReleaseGates(input: {
     );
   }
   return { ready: !issues.some((issue) => issue.severity === 'BLOCKER'), issues };
+}
+
+function commercialBlockerCode(status: CommercialUseStatus): string {
+  return {
+    UNKNOWN: 'UNKNOWN_LICENSE',
+    REVIEW_REQUIRED: 'LICENSE_REVIEW_REQUIRED',
+    APPROVED: 'ASSET_LICENSE_NOT_APPROVED',
+    NON_COMMERCIAL: 'NON_COMMERCIAL_LICENSE',
+    RESTRICTED: 'RESTRICTED_LICENSE',
+    EXPIRED: 'EXPIRED_LICENSE',
+  }[status];
 }
 
 export interface UnrealBuildConfig {

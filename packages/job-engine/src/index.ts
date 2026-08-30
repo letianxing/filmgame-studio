@@ -1,4 +1,6 @@
-import type { EntityId, JobStatus, ProductionJob } from '@filmgame/shared-types';
+import { createHash } from 'node:crypto';
+
+import type { EntityId, JobStatus, JsonValue, ProductionJob } from '@filmgame/shared-types';
 
 export interface JobTransition {
   jobId: EntityId;
@@ -12,13 +14,14 @@ export class JobGraph {
   readonly #jobs = new Map<EntityId, ProductionJob>();
   readonly #transitions: JobTransition[] = [];
 
-  constructor(jobs: ProductionJob[]) {
+  constructor(jobs: ProductionJob[], options: { recoverRunning?: boolean; now?: string } = {}) {
     for (const job of jobs) {
       if (this.#jobs.has(job.id)) throw new Error(`Duplicate job id ${job.id}`);
       this.#jobs.set(job.id, structuredClone(job));
     }
     this.#assertDependenciesExist();
     this.#assertAcyclic();
+    if (options.recoverRunning) this.recoverInterrupted(options.now ?? new Date().toISOString());
     this.refreshReadiness();
   }
 
@@ -32,7 +35,7 @@ export class JobGraph {
 
   ready(): ProductionJob[] {
     this.refreshReadiness();
-    return this.list().filter((job) => job.status === 'READY');
+    return this.list().filter((job) => job.status === 'READY' || job.status === 'RETRYING');
   }
 
   get(jobId: EntityId): ProductionJob {
@@ -44,8 +47,15 @@ export class JobGraph {
   start(jobId: EntityId): ProductionJob {
     this.refreshReadiness();
     const job = this.#required(jobId);
-    if (job.status !== 'READY') throw new Error(`Job ${jobId} is ${job.status}, not READY`);
+    if (job.status !== 'READY' && job.status !== 'RETRYING') {
+      throw new Error(`Job ${jobId} is ${job.status}, not READY/RETRYING`);
+    }
     job.attempt += 1;
+    const now = new Date().toISOString();
+    job.startedAt = now;
+    job.lastHeartbeat = now;
+    job.progress = 0;
+    delete job.completedAt;
     this.#transition(job, 'RUNNING');
     return structuredClone(job);
   }
@@ -55,6 +65,8 @@ export class JobGraph {
     if (job.status !== 'RUNNING') throw new Error(`Job ${jobId} is ${job.status}, not RUNNING`);
     job.output = structuredClone(output);
     delete job.error;
+    job.progress = 1;
+    job.completedAt = new Date().toISOString();
     this.#transition(job, 'SUCCEEDED');
     this.refreshReadiness();
     return structuredClone(job);
@@ -64,7 +76,8 @@ export class JobGraph {
     const job = this.#required(jobId);
     if (job.status !== 'RUNNING') throw new Error(`Job ${jobId} is ${job.status}, not RUNNING`);
     job.error = error;
-    this.#transition(job, job.attempt < job.maxAttempts ? 'READY' : 'FAILED', error);
+    if (job.attempt >= job.maxAttempts) job.completedAt = new Date().toISOString();
+    this.#transition(job, job.attempt < job.maxAttempts ? 'RETRYING' : 'FAILED', error);
     this.refreshReadiness();
     return structuredClone(job);
   }
@@ -75,19 +88,67 @@ export class JobGraph {
       throw new Error(`Terminal job ${jobId} cannot be cancelled`);
     }
     this.#transition(job, 'CANCELLED', reason);
+    job.completedAt = new Date().toISOString();
     this.refreshReadiness();
+  }
+
+  heartbeat(jobId: EntityId, progress?: number, at = new Date().toISOString()): ProductionJob {
+    const job = this.#required(jobId);
+    if (job.status !== 'RUNNING') throw new Error(`Job ${jobId} is ${job.status}, not RUNNING`);
+    if (progress !== undefined && (!Number.isFinite(progress) || progress < 0 || progress > 1)) {
+      throw new Error('Job progress must be within 0-1');
+    }
+    job.lastHeartbeat = at;
+    if (progress !== undefined) job.progress = progress;
+    return structuredClone(job);
+  }
+
+  pause(jobId: EntityId, reason = 'Paused'): void {
+    const job = this.#required(jobId);
+    if (['SUCCEEDED', 'FAILED', 'CANCELLED'].includes(job.status)) {
+      throw new Error(`Terminal job ${jobId} cannot be paused`);
+    }
+    this.#transition(job, 'PAUSED', reason);
+  }
+
+  resume(jobId: EntityId): void {
+    const job = this.#required(jobId);
+    if (job.status !== 'PAUSED') throw new Error(`Job ${jobId} is ${job.status}, not PAUSED`);
+    this.#transition(job, 'PENDING', 'Resumed');
+    this.refreshReadiness();
+  }
+
+  markStale(jobId: EntityId, reason = 'Inputs changed'): void {
+    const job = this.#required(jobId);
+    if (job.status === 'RUNNING') throw new Error(`Running job ${jobId} cannot be marked stale`);
+    delete job.output;
+    delete job.completedAt;
+    job.progress = 0;
+    this.#transition(job, 'STALE', reason);
+  }
+
+  recoverInterrupted(at = new Date().toISOString()): number {
+    let recovered = 0;
+    for (const job of this.#jobs.values()) {
+      if (job.status !== 'RUNNING' && job.status !== 'WAITING') continue;
+      job.error = 'Worker interrupted; safe retry scheduled from durable snapshot';
+      job.lastHeartbeat = at;
+      this.#transition(job, 'RETRYING', job.error);
+      recovered += 1;
+    }
+    return recovered;
   }
 
   refreshReadiness(): void {
     for (const job of this.#jobs.values()) {
-      if (!['PENDING', 'READY', 'BLOCKED'].includes(job.status)) continue;
+      if (!['PENDING', 'READY', 'BLOCKED', 'STALE', 'RETRYING'].includes(job.status)) continue;
       const dependencies = job.dependencies.map((id) => this.#required(id));
       if (dependencies.some((dependency) => ['FAILED', 'CANCELLED', 'BLOCKED'].includes(dependency.status))) {
         this.#setIfChanged(job, 'BLOCKED', 'A dependency cannot succeed');
       } else if (dependencies.every((dependency) => dependency.status === 'SUCCEEDED')) {
-        this.#setIfChanged(job, 'READY');
+        if (job.status !== 'RETRYING') this.#setIfChanged(job, 'READY');
       } else {
-        this.#setIfChanged(job, 'PENDING');
+        if (job.status !== 'RETRYING') this.#setIfChanged(job, 'PENDING');
       }
     }
   }
@@ -147,3 +208,17 @@ export class JobGraph {
   }
 }
 
+export function hashJobInput(input: Record<string, JsonValue> | undefined): string {
+  return createHash('sha256').update(canonicalJson(input ?? {})).digest('hex');
+}
+
+function canonicalJson(value: JsonValue): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, child]) => `${JSON.stringify(key)}:${canonicalJson(child)}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}

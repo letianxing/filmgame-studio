@@ -1,11 +1,13 @@
 import { defineRoom, defineServer } from 'colyseus';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   DeterministicBotService,
   DevelopmentAuthService,
   DirectoryRuntimeLoader,
   FileRuntimeLoader,
-  InMemoryRuntimeEventStore,
+  FileRuntimeEventStore,
 } from './runtime.js';
 import { StoryRoom } from './story-room.js';
 import { startUnrealGateway } from './unreal-gateway.js';
@@ -13,12 +15,16 @@ import { startUnrealGateway } from './unreal-gateway.js';
 const sampleStory = new URL('../../../examples/snowbound-hotel/story.json', import.meta.url);
 
 const runtimeDefinitionRoot = process.env.RUNTIME_DEFINITION_ROOT;
+const runtimeEventRoot = path.resolve(
+  process.env.RUNTIME_EVENT_ROOT ??
+    fileURLToPath(new URL('../../../.local/runtime-events', import.meta.url)),
+);
 
 StoryRoom.configure({
   runtimeLoader: runtimeDefinitionRoot
     ? new DirectoryRuntimeLoader(runtimeDefinitionRoot)
     : new FileRuntimeLoader(sampleStory),
-  eventStore: new InMemoryRuntimeEventStore(),
+  eventStore: new FileRuntimeEventStore(runtimeEventRoot),
   authService: new DevelopmentAuthService(),
   botService: new DeterministicBotService(),
 });

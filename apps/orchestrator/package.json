@@ -10,6 +10,8 @@
   "dependencies": {
     "@filmgame/codex-cli-adapter": "*",
     "@filmgame/job-engine": "*",
+    "@filmgame/dependency-graph": "*",
+    "@filmgame/consistency-engine": "*",
     "@filmgame/provider-sdk": "*",
     "@filmgame/shared-types": "*",
     "@filmgame/runtime-packager": "*",

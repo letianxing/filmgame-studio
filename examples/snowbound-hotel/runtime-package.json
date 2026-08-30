@@ -3,6 +3,10 @@
   "projectId": "snowbound-hotel",
   "storyVersion": 1,
   "runtimeVersion": 1,
+  "bibleVersion": 1,
+  "promptVersion": "v1",
+  "workflowVersion": "production-dag-v1",
+  "buildVersion": "1.1.0-dev",
   "playerCount": 6,
   "initialSceneId": "scene-lobby",
   "roles": [

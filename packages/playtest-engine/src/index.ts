@@ -31,7 +31,34 @@ export interface BotPlaytestReport {
   sceneVisits: Record<EntityId, number>;
   actionsByRole: Record<EntityId, number>;
   errors: Array<{ sceneId: EntityId; message: string }>;
+  balance: MultiplayerBalanceReport;
   truncated: boolean;
+}
+
+export interface RoleBalanceMetrics {
+  actionCount: number;
+  privateInformationCount: number;
+  importantDecisionCount: number;
+  scenePresence: number;
+  influenceScore: number;
+  winOpportunity: number;
+  maximumIdleScenes: number;
+}
+
+export interface MultiplayerBalanceWarning {
+  code: 'UNDERUTILIZED_ROLE' | 'OVERPOWERED_ROLE' | 'PASSIVE_ROLE' | 'INFORMATION_STARVATION';
+  roleId: EntityId;
+  message: string;
+}
+
+export interface MultiplayerBalanceReport {
+  metricsByRole: Record<EntityId, RoleBalanceMetrics>;
+  participationHeatmap: Record<EntityId, Record<EntityId, {
+    present: boolean;
+    actionCount: number;
+    privateInformationCount: number;
+  }>>;
+  warnings: MultiplayerBalanceWarning[];
 }
 
 interface FrontierNode {
@@ -130,8 +157,81 @@ export function runDeterministicBotPlaytest(
     sceneVisits,
     actionsByRole,
     errors,
+    balance: analyzeMultiplayerBalance(story),
     truncated: frontier.length > 0,
   };
+}
+
+export function analyzeMultiplayerBalance(story: StoryModel): MultiplayerBalanceReport {
+  const metricsByRole: Record<EntityId, RoleBalanceMetrics> = {};
+  const participationHeatmap: MultiplayerBalanceReport['participationHeatmap'] = {};
+  for (const character of story.characters) {
+    let actionCount = 0;
+    let privateInformationCount = 0;
+    let importantDecisionCount = 0;
+    let scenePresence = 0;
+    let maximumIdleScenes = 0;
+    let currentIdle = 0;
+    for (const scene of story.scenes) {
+      const present = scene.rolesPresent.includes(character.id);
+      const actions = scene.availableActionsByRole[character.id] ?? [];
+      const privateInfo = scene.privateInformationByRole[character.id] ?? [];
+      participationHeatmap[scene.id] ??= {};
+      participationHeatmap[scene.id]![character.id] = {
+        present,
+        actionCount: actions.length,
+        privateInformationCount: privateInfo.length,
+      };
+      if (present) scenePresence += 1;
+      actionCount += actions.length;
+      privateInformationCount += privateInfo.length;
+      importantDecisionCount += actions.filter((action) =>
+        scene.resolutionRules.some((rule) => conditionMentions(rule.when, action.id)),
+      ).length;
+      if (!present || actions.length === 0) {
+        currentIdle += 1;
+        maximumIdleScenes = Math.max(maximumIdleScenes, currentIdle);
+      } else {
+        currentIdle = 0;
+      }
+    }
+    const influenceScore =
+      actionCount + importantDecisionCount * 2 + privateInformationCount + scenePresence * 0.5;
+    metricsByRole[character.id] = {
+      actionCount,
+      privateInformationCount,
+      importantDecisionCount,
+      scenePresence,
+      influenceScore,
+      winOpportunity: character.victoryConditions.length,
+      maximumIdleScenes,
+    };
+  }
+  const scores = Object.values(metricsByRole).map((metric) => metric.influenceScore);
+  const average = scores.length ? scores.reduce((sum, value) => sum + value, 0) / scores.length : 0;
+  const warnings: MultiplayerBalanceWarning[] = [];
+  for (const [roleId, metric] of Object.entries(metricsByRole)) {
+    if (average > 0 && metric.influenceScore < average * 0.6) {
+      warnings.push({ code: 'UNDERUTILIZED_ROLE', roleId, message: `${roleId} influence is below 60% of average.` });
+    }
+    if (average > 0 && metric.influenceScore > average * 1.6) {
+      warnings.push({ code: 'OVERPOWERED_ROLE', roleId, message: `${roleId} influence exceeds 160% of average.` });
+    }
+    if (metric.importantDecisionCount === 0 || metric.maximumIdleScenes >= 3) {
+      warnings.push({ code: 'PASSIVE_ROLE', roleId, message: `${roleId} has no important decision or is idle for ${metric.maximumIdleScenes} scenes.` });
+    }
+    if (metric.privateInformationCount === 0) {
+      warnings.push({ code: 'INFORMATION_STARVATION', roleId, message: `${roleId} receives no private scene information.` });
+    }
+  }
+  return { metricsByRole, participationHeatmap, warnings };
+}
+
+function conditionMentions(condition: import('@filmgame/shared-types').Condition, value: string): boolean {
+  if ('all' in condition) return condition.all.some((child) => conditionMentions(child, value));
+  if ('any' in condition) return condition.any.some((child) => conditionMentions(child, value));
+  if ('not' in condition) return conditionMentions(condition.not, value);
+  return condition.value === value || condition.path.includes(value);
 }
 
 function actionVariants(scene: StoryScene): SubmittedAction[][] {

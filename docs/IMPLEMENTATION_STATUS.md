@@ -2,6 +2,18 @@
 
 Updated: 2026-08-30
 
+## Production hardening update - 2026-08-31
+
+- Added Canonical Bible projection, five-state Asset Lock lifecycle and multi-domain Continuity validation.
+- Added per-job input/dependency hashes, selective dependency invalidation preview and stable retry idempotency.
+- Added durable Production Run snapshots with interrupted-worker recovery and durable Runtime event/snapshot files with hash-verified replay.
+- Restricted Bot inputs to role knowledge and made bot-fill host-authorized.
+- Added Provider capability selection, retry/timeout/circuit breaker and contract-preserving Video fallback.
+- Added preflight workload/cost estimates, retry reserve and max-budget pause before provider calls.
+- Added complete generation provenance records and fail-closed commercial license/provenance gates.
+- Added FFmpeg technical validation, black/silence review signals, participation heatmaps and creator-actionable failures.
+- Added a 4-player Golden Project and expanded the automated suite from 42 to 67 tests before final acceptance runs.
+
 Legend: **Implemented** means source plus proportionate automated verification exists. **Contract** means the
 formal model/boundary exists but a real external provider or final production implementation is not yet verified.
 

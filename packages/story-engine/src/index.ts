@@ -5,6 +5,7 @@ import type {
   ValidationIssue,
   ValidationSummary,
 } from '@filmgame/shared-types';
+import { validateContinuity } from '@filmgame/consistency-engine';
 
 export type PatchOperation =
   | { op: 'add' | 'replace'; path: string; value: JsonValue }
@@ -92,6 +93,10 @@ export interface StoryVersionRecord {
 }
 
 const BLOCKED_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+const AUTHORABLE_ROOTS = new Set([
+  'brief', 'world', 'narrativeTone', 'visualBible', 'canonicalBible', 'characters',
+  'relationships', 'locations', 'variables', 'inventory', 'evidence', 'chapters', 'scenes', 'endings',
+]);
 
 export function applyPatch(story: StoryModel, operations: PatchOperation[]): StoryModel {
   const next = structuredClone(story) as unknown as Record<string, unknown>;
@@ -100,6 +105,10 @@ export function applyPatch(story: StoryModel, operations: PatchOperation[]): Sto
     const segments = parsePointer(operation.path);
     if (segments.length === 0) {
       throw new Error('Replacing the story root is not allowed');
+    }
+    assertSafeKey(segments[0]!);
+    if (!AUTHORABLE_ROOTS.has(segments[0]!)) {
+      throw new Error(`Patch root ${segments[0]} is controlled by the server and cannot be authored`);
     }
 
     let parent: unknown = next;
@@ -241,6 +250,31 @@ export class VersionConflictError extends Error {
 export class BuiltInIntentInterpreter implements IntentInterpreter {
   async interpret(command: AuthoringCommand, story: StoryModel): Promise<InterpretedIntent> {
     const text = command.text.trim();
+    const costumeChange = text.match(/^把(.+?)(?:的)?外套改成(.+?)[。.]?$/u);
+    if (costumeChange) {
+      const label = costumeChange[1]!.trim();
+      const requested = costumeChange[2]!.trim();
+      const index = story.characters.findIndex(
+        (character) => character.name === label || character.publicProfile.role === label,
+      );
+      if (index >= 0) {
+        const character = story.characters[index]!;
+        return {
+          type: 'GENERAL_STORY_CHANGE',
+          confidence: 0.99,
+          targetEntityIds: [character.id],
+          requestedChange: text,
+          patch: [
+            {
+              op: 'replace',
+              path: `/characters/${index}/visual/costume`,
+              value: requested.endsWith('外套') ? requested : `${requested}外套`,
+            },
+          ],
+          unresolvedQuestions: [],
+        };
+      }
+    }
     const rename = text.match(/^把(.+?)改成(.+?)[。.]?$/u);
     if (rename) {
       const from = rename[1]!.trim();
@@ -549,6 +583,8 @@ export function validateStory(story: StoryModel): ValidationSummary {
       });
     }
   }
+
+  issues.push(...validateContinuity(story).issues);
 
   return {
     validatedAt: new Date().toISOString(),

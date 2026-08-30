@@ -85,3 +85,34 @@ test('patcher blocks prototype-pollution paths', () => {
   );
   assert.equal(({} as { polluted?: boolean }).polluted, undefined);
 });
+
+test('creator commands cannot patch server-controlled metadata or versions', () => {
+  const story = loadStory();
+  assert.throws(
+    () => applyPatch(story, [{ op: 'replace', path: '/storyVersion', value: 999 }]),
+    /controlled by the server/i,
+  );
+  assert.throws(
+    () => applyPatch(story, [{ op: 'add', path: '/metadata/providerConfig', value: { apiKey: 'attacker' } }]),
+    /controlled by the server/i,
+  );
+});
+
+test('black coat command targets one character and previews selective regeneration', async () => {
+  const story = loadStory();
+  story.characters[0]!.name = '女主';
+  const proposal = await proposeChange(
+    story,
+    {
+      commandId: 'command-black-coat',
+      projectId: story.projectId,
+      baseStoryVersion: story.storyVersion,
+      text: '把女主外套改成黑色。',
+    },
+    new BuiltInIntentInterpreter(),
+  );
+  assert.equal(proposal.status, 'READY');
+  assert.deepEqual(proposal.dependencyImpact.affectedEntityIds, [story.characters[0]!.id]);
+  assert.equal(proposal.preview?.characters[0]?.visual.costume, '黑色外套');
+  assert.ok(proposal.dependencyImpact.stages.includes('CHARACTER_REFERENCE'));
+});

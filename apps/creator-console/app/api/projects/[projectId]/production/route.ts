@@ -29,7 +29,7 @@ export async function GET(
 }
 
 export async function POST(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ projectId: string }> },
 ) {
   const user = await getChatGPTUser();
@@ -48,9 +48,26 @@ export async function POST(
     return NextResponse.json({ run: existing, reused: true }, { status: 200 });
   }
   const productionVersion = await getNextProductionVersion(projectId, user.userId);
+  const requested = (await request.json().catch(() => ({}))) as { maxBudget?: unknown; budgetCurrency?: unknown };
+  const configuredBudget = process.env.FILMGAME_DEFAULT_MAX_BUDGET
+    ? Number(process.env.FILMGAME_DEFAULT_MAX_BUDGET)
+    : undefined;
+  const maxBudget =
+    typeof requested.maxBudget === 'number' ? requested.maxBudget : configuredBudget;
+  if (maxBudget !== undefined && (!Number.isFinite(maxBudget) || maxBudget <= 0)) {
+    return NextResponse.json({ error: 'INVALID_MAX_BUDGET' }, { status: 400 });
+  }
+  const budgetCurrency =
+    typeof requested.budgetCurrency === 'string'
+      ? requested.budgetCurrency
+      : process.env.PRODUCTION_COST_CURRENCY ?? 'CNY';
   const response = await orchestratorFetch('/v1/production/plans', {
     method: 'POST',
-    body: JSON.stringify({ story: storyVersion.story, productionVersion }),
+    body: JSON.stringify({
+      story: storyVersion.story,
+      productionVersion,
+      ...(maxBudget !== undefined ? { maxBudget, budgetCurrency } : {}),
+    }),
   });
   if (!response.ok) {
     const detail = await response.text();
@@ -111,6 +128,8 @@ export async function PUT(
         ? 'COMPLETED'
         : job.executionStatus === 'FAILED'
           ? 'FAILED'
+          : job.executionStatus === 'PAUSED_BUDGET'
+            ? 'PAUSED'
           : 'RUNNING';
     await syncProductionExecution({
       projectId,

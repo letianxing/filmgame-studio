@@ -35,6 +35,7 @@
     "world": { "$ref": "#/$defs/world" },
     "narrativeTone": { "$ref": "#/$defs/narrativeTone" },
     "visualBible": { "$ref": "#/$defs/visualBible" },
+    "canonicalBible": { "$ref": "#/$defs/canonicalBible" },
     "characters": {
       "type": "array",
       "minItems": 4,
@@ -123,11 +124,34 @@
       "additionalProperties": false,
       "required": ["status", "revision", "referenceAssetIds", "constraints"],
       "properties": {
-        "status": { "enum": ["DRAFT", "APPROVED", "LOCKED"] },
+        "status": { "enum": ["DRAFT", "REVIEW", "APPROVED", "LOCKED", "DEPRECATED"] },
         "revision": { "type": "integer", "minimum": 1 },
         "referenceAssetIds": { "type": "array", "items": { "$ref": "#/$defs/entityId" } },
         "constraints": { "type": "array", "items": { "type": "string" } },
-        "lockedAt": { "type": "string", "format": "date-time" }
+        "canonicalHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "lockedAt": { "type": "string", "format": "date-time" },
+        "deprecatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "canonicalBible": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schemaVersion", "bibleVersion", "storyVersion", "projectCanon", "worldCanon", "visualCanon", "storyCanon", "characters", "costumes", "voices", "locations", "props", "contentHash"],
+      "properties": {
+        "schemaVersion": { "const": "1.0.0" },
+        "bibleVersion": { "type": "integer", "minimum": 1 },
+        "storyVersion": { "type": "integer", "minimum": 1 },
+        "projectCanon": { "type": "object" },
+        "worldCanon": { "type": "object" },
+        "visualCanon": { "type": "object" },
+        "storyCanon": { "type": "object" },
+        "characters": { "type": "array" },
+        "costumes": { "type": "array" },
+        "voices": { "type": "array" },
+        "locations": { "type": "array" },
+        "props": { "type": "array" },
+        "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
       }
     },
     "character": {
@@ -462,4 +486,3 @@
     }
   }
 }
-

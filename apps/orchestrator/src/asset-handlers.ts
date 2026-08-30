@@ -16,6 +16,7 @@ export interface MediaAssetProviders {
   image: ImageProvider;
   video: VideoProvider;
   storage: StorageProvider;
+  referenceUriByAssetId?: Record<string, string>;
 }
 
 export interface VoiceAssetProviders {
@@ -34,7 +35,12 @@ export function createMediaAssetHandlers(
   plan: ProductionPlan,
   providers: MediaAssetProviders,
 ): HandlerRegistry {
-  const image = new PersistingImageJobHandler(plan, providers.image, providers.storage);
+  const image = new PersistingImageJobHandler(
+    plan,
+    providers.image,
+    providers.storage,
+    providers.referenceUriByAssetId,
+  );
   return {
     STORYBOARD: image,
     IMAGE: image,
@@ -68,6 +74,7 @@ export class PersistingImageJobHandler implements JobHandler {
     readonly plan: ProductionPlan,
     readonly provider: ImageProvider,
     readonly storage: StorageProvider,
+    readonly referenceUriByAssetId: Record<string, string> = {},
   ) {}
 
   async run(job: ProductionJob, signal: AbortSignal): Promise<Record<string, JsonValue>> {
@@ -75,6 +82,19 @@ export class PersistingImageJobHandler implements JobHandler {
     const prompt = stringInput(input, 'imagePrompt');
     const negativePrompt = optionalString(input, 'negativePrompt');
     const seed = optionalNumber(input, 'seed');
+    const canonicalReferenceIds = stringArray(input.canonicalReferenceAssetIds);
+    const unresolvedReferenceIds = canonicalReferenceIds.filter(
+      (assetId) => !this.referenceUriByAssetId[assetId],
+    );
+    if (unresolvedReferenceIds.length) {
+      throw new Error(
+        `Canonical reference URI missing for ${unresolvedReferenceIds.join(', ')}; locked references cannot be silently dropped`,
+      );
+    }
+    const referenceAssetUris = [
+      ...stringArray(input.referenceAssetUris),
+      ...canonicalReferenceIds.map((assetId) => this.referenceUriByAssetId[assetId]!),
+    ];
     const context = providerContext(this.plan, job, signal);
     const result = await this.provider.generateImage(
       {
@@ -82,14 +102,31 @@ export class PersistingImageJobHandler implements JobHandler {
         ...(negativePrompt ? { negativePrompt } : {}),
         width: optionalNumber(input, 'width') ?? (job.type === 'STORYBOARD' ? 768 : 1024),
         height: optionalNumber(input, 'height') ?? (job.type === 'STORYBOARD' ? 432 : 576),
-        referenceAssetUris: stringArray(input.referenceAssetUris),
+        referenceAssetUris,
         workflowId: optionalString(input, 'workflowId') ?? 'flux-schnell-fp8-v1',
         ...(seed !== undefined ? { seed } : {}),
       },
       context,
     );
     return {
-      ...(await persistGeneratedAsset(this.plan, job, result.data, result.provider, this.storage, context)),
+      ...(await withGenerationRecord(
+        this.plan,
+        job,
+        result,
+        this.storage,
+        context,
+        {
+          resolvedPrompt: prompt,
+          negativePrompt: negativePrompt ?? '',
+          referenceAssets: referenceAssetUris,
+          parameters: {
+            width: optionalNumber(input, 'width') ?? (job.type === 'STORYBOARD' ? 768 : 1024),
+            height: optionalNumber(input, 'height') ?? (job.type === 'STORYBOARD' ? 432 : 576),
+          },
+          seed: seed ?? null,
+          workflowVersion: optionalString(input, 'workflowId') ?? 'flux-schnell-fp8-v1',
+        },
+      )),
       providerRequestId: result.requestId,
       providerModel: result.model ?? null,
       providerUsage: (result.usage ?? []) as unknown as JsonValue,
@@ -123,7 +160,21 @@ export class PersistingVideoJobHandler implements JobHandler {
       context,
     );
     return {
-      ...(await persistGeneratedAsset(this.plan, job, result.data, result.provider, this.storage, context)),
+      ...(await withGenerationRecord(
+        this.plan,
+        job,
+        result,
+        this.storage,
+        context,
+        {
+          resolvedPrompt: stringInput(input, 'videoPrompt'),
+          negativePrompt: negativePrompt ?? '',
+          referenceAssets: [firstFrameUri].filter((value): value is string => Boolean(value)),
+          parameters: { durationSeconds: numberInput(input, 'durationSeconds') },
+          seed: seed ?? null,
+          workflowVersion: optionalString(input, 'workflowId') ?? 'wan2-2-ti2v-5b-v1',
+        },
+      )),
       providerRequestId: result.requestId,
       providerModel: result.model ?? null,
       providerUsage: (result.usage ?? []) as unknown as JsonValue,
@@ -185,6 +236,25 @@ export class PersistingTtsJobHandler implements JobHandler {
         providerRequestId: result.requestId,
         providerModel: result.model ?? null,
         providerUsage: (result.usage ?? []) as unknown as JsonValue,
+        generationRecord: generationRecord(
+          lineJob,
+          result,
+          stored,
+          {
+            resolvedPrompt: line.text,
+            negativePrompt: '',
+            referenceAssets: [referenceAudioUri].filter((value): value is string => Boolean(value)),
+            parameters: {
+              characterId: line.characterId,
+              language: character.voice.language,
+              style: character.voice.speakingStyle,
+              emotion: character.voice.emotion,
+              speed: character.voice.speed,
+            },
+            seed: null,
+            workflowVersion: 'cosyvoice-tts-v1',
+          },
+        ),
       });
     }
     return { voiceAssets };
@@ -247,7 +317,11 @@ export class PersistingMusicJobHandler implements JobHandler {
       context,
     );
     return {
-      ...(await persistGeneratedAsset(this.plan, job, result.data, result.provider, this.storage, context)),
+      ...(await withGenerationRecord(this.plan, job, result, this.storage, context, {
+        resolvedPrompt: stringInput(input, 'prompt'), negativePrompt: '', referenceAssets: [],
+        parameters: { durationSeconds: numberInput(input, 'durationSeconds'), seamlessLoop: false },
+        seed: null, workflowVersion: 'music-generation-v1',
+      })),
       providerRequestId: result.requestId,
       providerModel: result.model ?? null,
       providerUsage: (result.usage ?? []) as unknown as JsonValue,
@@ -273,12 +347,71 @@ export class PersistingSfxJobHandler implements JobHandler {
       context,
     );
     return {
-      ...(await persistGeneratedAsset(this.plan, job, result.data, result.provider, this.storage, context)),
+      ...(await withGenerationRecord(this.plan, job, result, this.storage, context, {
+        resolvedPrompt: stringInput(input, 'prompt'), negativePrompt: '', referenceAssets: [],
+        parameters: { durationSeconds: numberInput(input, 'durationSeconds') },
+        seed: null, workflowVersion: 'sfx-generation-v1',
+      })),
       providerRequestId: result.requestId,
       providerModel: result.model ?? null,
       providerUsage: (result.usage ?? []) as unknown as JsonValue,
     };
   }
+}
+
+interface GenerationRecordInput {
+  resolvedPrompt: string;
+  negativePrompt: string;
+  referenceAssets: string[];
+  parameters: Record<string, JsonValue>;
+  seed: number | null;
+  workflowVersion: string;
+}
+
+async function withGenerationRecord(
+  plan: ProductionPlan,
+  job: ProductionJob,
+  result: import('@filmgame/provider-sdk').ProviderResult<GeneratedAsset>,
+  storage: StorageProvider,
+  context: ProviderContext,
+  details: GenerationRecordInput,
+): Promise<Record<string, JsonValue>> {
+  const stored = await persistGeneratedAsset(plan, job, result.data, result.provider, storage, context);
+  return { ...stored, generationRecord: generationRecord(job, result, stored, details) };
+}
+
+function generationRecord(
+  job: ProductionJob,
+  result: import('@filmgame/provider-sdk').ProviderResult<GeneratedAsset>,
+  stored: Record<string, JsonValue>,
+  details: GenerationRecordInput,
+): JsonValue {
+  const cost = (result.usage ?? []).reduce(
+    (total, usage) => total + (usage.estimatedCost ?? 0),
+    0,
+  );
+  return {
+    provider: result.provider,
+    model: result.model ?? 'unknown',
+    modelVersion: String(result.metadata.modelVersion ?? result.model ?? 'unknown'),
+    workflowVersion: details.workflowVersion,
+    promptVersion: String(job.input?.promptVersion ?? 'v1'),
+    resolvedPrompt: details.resolvedPrompt,
+    negativePrompt: details.negativePrompt,
+    seed: details.seed,
+    referenceAssets: details.referenceAssets,
+    inputHash: job.inputHash ?? 'legacy-input',
+    parameters: details.parameters,
+    outputAsset: {
+      assetId: stored.assetId ?? job.id,
+      assetUri: stored.assetUri ?? '',
+      sha256: stored.sha256 ?? '',
+    },
+    cost,
+    durationMs: Math.max(0, Date.parse(result.completedAt) - Date.parse(result.startedAt)),
+    attempt: job.attempt,
+    createdAt: result.completedAt,
+  };
 }
 
 async function persistGeneratedAsset(
@@ -324,7 +457,7 @@ function providerContext(
     projectId: plan.projectId,
     storyVersion: plan.storyVersion,
     productionVersion: plan.productionVersion,
-    idempotencyKey: `${plan.projectId}:production-${plan.productionVersion}:${job.id}:attempt-${job.attempt}`,
+    idempotencyKey: `${plan.projectId}:production-${plan.productionVersion}:${job.id}:${job.inputHash ?? 'legacy-input'}`,
     signal,
     metadata: { jobId: job.id, jobType: job.type },
   };

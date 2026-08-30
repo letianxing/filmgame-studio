@@ -101,6 +101,36 @@ test('media handlers persist an image then pass its immutable URI into video gen
     assert.equal(plan.graph.get('video-shot-1').status, 'SUCCEEDED');
     assert.match(videoProvider.firstFrameUri ?? '', /^file:/u);
     assert.match(String(plan.graph.get('video-shot-1').output?.sha256), /^[a-f0-9]{64}$/u);
+    const generation = plan.graph.get('video-shot-1').output?.generationRecord as Record<string, unknown>;
+    assert.equal(generation.provider, 'fixture-video');
+    assert.equal(generation.resolvedPrompt, 'slow camera push');
+    assert.equal(generation.attempt, 1);
+    assert.ok(Array.isArray(generation.referenceAssets));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test('locked canonical references cannot be silently dropped by an image provider', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'filmgame-locked-reference-'));
+  const job: ProductionJob = {
+    id: 'character-reference', type: 'IMAGE', status: 'READY', dependencies: [],
+    attempt: 0, maxAttempts: 1,
+    input: { imagePrompt: 'locked character', canonicalReferenceAssetIds: ['locked-reference'] },
+  };
+  const plan: ProductionPlan = {
+    projectId: 'project-test', storyVersion: 1, productionVersion: 1,
+    graph: new JobGraph([job]),
+    summary: Object.fromEntries(productionTypes.map((type) => [type, 0])) as Record<ProductionJobType, number>,
+  };
+  try {
+    const handlers = createMediaAssetHandlers(plan, {
+      image: new FixtureImageProvider(), video: new FixtureVideoProvider(),
+      storage: new LocalStorageProvider({ rootDirectory: root }),
+    });
+    await new ProductionOrchestrator(plan, handlers).runUntilSettled(1);
+    assert.equal(plan.graph.get(job.id).status, 'FAILED');
+    assert.match(plan.graph.get(job.id).error ?? '', /cannot be silently dropped/i);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

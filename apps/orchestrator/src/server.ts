@@ -13,14 +13,22 @@ import { CodexCliLLMProvider } from '@filmgame/codex-cli-adapter';
 import { MediaPipeline } from '@filmgame/media-pipeline';
 import { runDeterministicBotPlaytest } from '@filmgame/playtest-engine';
 import { OpenAICompatibleLLMProvider } from '@filmgame/openai-compatible-adapter';
-import type { LLMProvider, ProviderHealth } from '@filmgame/provider-sdk';
-import type { StorageProvider, VideoProvider } from '@filmgame/provider-sdk';
+import {
+  defineCapabilities,
+  FallbackVideoProvider,
+  type LLMProvider,
+  type ProviderHealth,
+  type StorageProvider,
+  type VideoProvider,
+} from '@filmgame/provider-sdk';
 import { RemoteVideoProvider } from '@filmgame/remote-video-adapter';
 import { RemoteMusicProvider, RemoteSfxProvider } from '@filmgame/remote-audio-adapter';
 import { RemoteStorageProvider } from '@filmgame/remote-storage-adapter';
 import type { StoryModel } from '@filmgame/shared-types';
 import { proposeChange, validateStory } from '@filmgame/story-engine';
 import { LocalStorageProvider } from '@filmgame/storage-service';
+import { JobGraph } from '@filmgame/job-engine';
+import { previewProductionInvalidation } from '@filmgame/dependency-graph';
 
 import {
   StoryGenerationWorkflow,
@@ -37,9 +45,18 @@ import {
   createVoiceAssetHandlers,
   JsonLinesProductionAuditSink,
   ProductionOrchestrator,
+  FileProductionRunStore,
+  createProductionPlan,
+  estimateJobCost,
+  estimateProductionCost,
+  type ProductionCostEstimate,
+  type ProductionCostRates,
+  toCreatorFailure,
+  type CreatorFailure,
 } from './index.js';
 
 type GenerationStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
+type ExecutionStatus = GenerationStatus | 'PAUSED_BUDGET' | 'CANCELLED';
 
 interface GenerationJob {
   id: string;
@@ -61,15 +78,19 @@ interface ProductionPlanningJob {
   story: StoryModel;
   result?: ProductionPlanningResult;
   error?: string;
-  executionStatus?: GenerationStatus;
+  executionStatus?: ExecutionStatus;
   executionSummary?: {
     completed: number;
     failed: number;
     blocked: number;
     cancelled: number;
+    paused: number;
     total: number;
   };
   executionError?: string;
+  executionFailure?: CreatorFailure;
+  costEstimate?: ProductionCostEstimate;
+  maxBudget?: { currency: string; amount: number };
 }
 
 const port = parsePort(process.env.ORCHESTRATOR_PORT ?? '4100');
@@ -78,6 +99,13 @@ const workflow = provider ? new StoryGenerationWorkflow(provider) : null;
 const productionWorkflow = provider ? new ProductionPlanningWorkflow(provider) : null;
 const jobs = new Map<string, GenerationJob>();
 const productionJobs = new Map<string, ProductionPlanningJob>();
+const productionRunStore = new FileProductionRunStore(
+  path.resolve(
+    process.env.PRODUCTION_JOB_STATE_ROOT ?? path.join(process.cwd(), '.local', 'production-runs'),
+  ),
+);
+const recoveredProductionRunIds = await recoverPersistedProductionJobs();
+const productionCostRates = costRatesFromEnvironment();
 
 const server = createServer(async (request, response) => {
   try {
@@ -131,7 +159,8 @@ const server = createServer(async (request, response) => {
         return send(response, 422, { error: 'STORY_INVALID', validation });
       }
       const productionVersion = integerField(body, 'productionVersion', 1, 1_000_000);
-      const job = createProductionJob(story, productionVersion);
+      const budget = optionalBudget(body);
+      const job = createProductionJob(story, productionVersion, budget);
       productionJobs.set(job.id, job);
       void runProductionPlanning(job, story);
       return send(response, 202, { job: publicProductionJob(job) });
@@ -188,6 +217,20 @@ const server = createServer(async (request, response) => {
     const productionRunMatch = url.pathname.match(
       /^\/v1\/production\/plans\/([^/]+)\/run$/u,
     );
+    const invalidationPreviewMatch = url.pathname.match(
+      /^\/v1\/production\/plans\/([^/]+)\/invalidation-preview$/u,
+    );
+    if (request.method === 'POST' && invalidationPreviewMatch) {
+      const job = productionJobs.get(decodeURIComponent(invalidationPreviewMatch[1]!));
+      if (!job?.result) return send(response, 404, { error: 'PRODUCTION_PLAN_NOT_FOUND' });
+      const body = await readJson(request);
+      const value = body.changedEntityIds;
+      if (!Array.isArray(value) || !value.length || !value.every((entry) => typeof entry === 'string')) {
+        return send(response, 400, { error: 'changedEntityIds must be a non-empty string array' });
+      }
+      const preview = previewProductionInvalidation(job.result.plan.graph.list(), value);
+      return send(response, 200, { preview });
+    }
     if (request.method === 'POST' && productionRunMatch) {
       const job = productionJobs.get(decodeURIComponent(productionRunMatch[1]!));
       if (!job) return send(response, 404, { error: 'PRODUCTION_PLAN_NOT_FOUND' });
@@ -199,6 +242,18 @@ const server = createServer(async (request, response) => {
       }
       if (job.executionStatus === 'RUNNING' || job.executionStatus === 'QUEUED') {
         return send(response, 409, { error: 'PRODUCTION_ALREADY_RUNNING' });
+      }
+      if (
+        job.maxBudget &&
+        job.costEstimate &&
+        (job.maxBudget.currency !== job.costEstimate.currency ||
+          job.costEstimate.maximumAmount > job.maxBudget.amount)
+      ) {
+        return send(response, 409, {
+          error: 'BUDGET_LIMIT_EXCEEDED',
+          budget: job.maxBudget,
+          estimate: job.costEstimate,
+        });
       }
       const blockers = productionExecutionBlockers(job.story);
       if (blockers.length) {
@@ -219,6 +274,10 @@ const server = createServer(async (request, response) => {
 
 server.listen(port, '127.0.0.1', () => {
   console.log(`FilmGame orchestrator listening on http://127.0.0.1:${port}`);
+  for (const runId of recoveredProductionRunIds) {
+    const recovered = productionJobs.get(runId);
+    if (recovered) void runProductionExecution(recovered);
+  }
 });
 
 function createProvider(): LLMProvider | null {
@@ -328,6 +387,7 @@ function createJob(projectId: string): GenerationJob {
 function createProductionJob(
   story: StoryModel,
   productionVersion: number,
+  maxBudget?: { currency: string; amount: number },
 ): ProductionPlanningJob {
   const now = new Date().toISOString();
   return {
@@ -338,6 +398,7 @@ function createProductionJob(
     createdAt: now,
     updatedAt: now,
     story: structuredClone(story),
+    ...(maxBudget ? { maxBudget } : {}),
   };
 }
 
@@ -357,6 +418,9 @@ function publicProductionJob(job: ProductionPlanningJob): Record<string, unknown
     ...(job.executionStatus ? { executionStatus: job.executionStatus } : {}),
     ...(job.executionSummary ? { executionSummary: job.executionSummary } : {}),
     ...(job.executionError ? { executionError: job.executionError } : {}),
+    ...(job.executionFailure ? { executionFailure: job.executionFailure } : {}),
+    ...(job.costEstimate ? { costEstimate: job.costEstimate } : {}),
+    ...(job.maxBudget ? { maxBudget: job.maxBudget } : {}),
     ...(job.result
       ? {
           result: {
@@ -382,6 +446,7 @@ async function runProductionPlanning(job: ProductionPlanningJob, story: StoryMod
       productionVersion: job.productionVersion,
       context: { requestId: job.id },
     });
+    job.costEstimate = estimateProductionCost(job.result.plan, productionCostRates);
     job.status = 'SUCCEEDED';
   } catch (cause) {
     job.status = 'FAILED';
@@ -455,7 +520,7 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
       new FilmGameComfyWorkflowRegistry(),
     );
     const image = new ComfyUIImageProvider(comfyClient);
-    const video: VideoProvider =
+    const remoteVideo: VideoProvider | null =
       process.env.REMOTE_VIDEO_BASE_URL && process.env.REMOTE_VIDEO_MODEL
         ? new RemoteVideoProvider({
             baseUrl: process.env.REMOTE_VIDEO_BASE_URL,
@@ -464,7 +529,72 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
               ? { token: process.env.REMOTE_VIDEO_API_TOKEN }
               : {}),
           })
-        : new ComfyUIVideoProvider(comfyClient);
+        : null;
+    const localVideo: VideoProvider | null =
+      process.env.COMFYUI_LOCAL_VIDEO_ENABLED === 'true'
+        ? new ComfyUIVideoProvider(comfyClient)
+        : null;
+    const videoCandidates = [
+      ...(remoteVideo
+        ? [
+            {
+              provider: remoteVideo,
+              capabilities: defineCapabilities({
+                supportsTextToVideo: true,
+                supportsImageToVideo: true,
+                supportsReferenceImage: true,
+                supportsSeed: true,
+                supportsNegativePrompt: true,
+                supportsResolution: true,
+                supportsDuration: true,
+                supportsAsyncJob: true,
+                supportsCancellation: true,
+                supportsCostEstimate: true,
+              }),
+              priority: 100,
+            },
+          ]
+        : []),
+      ...(localVideo
+        ? [
+            {
+              provider: localVideo,
+              capabilities: defineCapabilities({
+                supportsImageToVideo: true,
+                supportsReferenceImage: true,
+                supportsSeed: true,
+                supportsNegativePrompt: true,
+                supportsResolution: true,
+                supportsDuration: true,
+                supportsCancellation: true,
+              }),
+              priority: 10,
+            },
+          ]
+        : []),
+    ];
+    const video: VideoProvider = new FallbackVideoProvider(
+      videoCandidates,
+      ['supportsImageToVideo', 'supportsReferenceImage', 'supportsDuration'],
+      {
+        attemptsPerProvider: parsePositiveInteger(
+          process.env.VIDEO_PROVIDER_ATTEMPTS ?? '2',
+          'VIDEO_PROVIDER_ATTEMPTS',
+        ),
+        timeoutMs: parsePositiveInteger(
+          process.env.VIDEO_PROVIDER_TIMEOUT_MS ?? String(30 * 60_000),
+          'VIDEO_PROVIDER_TIMEOUT_MS',
+        ),
+        circuitFailureThreshold: parsePositiveInteger(
+          process.env.VIDEO_PROVIDER_CIRCUIT_FAILURES ?? '3',
+          'VIDEO_PROVIDER_CIRCUIT_FAILURES',
+        ),
+        circuitCooldownMs: parsePositiveInteger(
+          process.env.VIDEO_PROVIDER_CIRCUIT_COOLDOWN_MS ?? '60000',
+          'VIDEO_PROVIDER_CIRCUIT_COOLDOWN_MS',
+        ),
+      },
+    );
     const tts = new CosyVoiceTTSProvider({
       baseUrl: requiredEnvironment('COSYVOICE_BASE_URL'),
       sampleRateHz: 24_000,
@@ -506,7 +636,12 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
     }
     const plan = job.result.plan;
     const handlers = {
-      ...createMediaAssetHandlers(plan, { image, video, storage }),
+      ...createMediaAssetHandlers(plan, {
+        image,
+        video,
+        storage,
+        referenceUriByAssetId: referenceAssetUriMap(),
+      }),
       ...createVoiceAssetHandlers(plan, job.story, { tts, storage }),
       ...createAudioAssetHandlers(plan, { music, sfx, storage }),
       ...createFinalizationHandlers(plan, {
@@ -524,6 +659,15 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
     );
     const orchestrator = new ProductionOrchestrator(plan, handlers, {
       auditSink: new JsonLinesProductionAuditSink(auditPath),
+      runStore: productionRunStore,
+      runId: job.id,
+      snapshotContext: { story: job.story, breakdowns: job.result.breakdowns },
+      ...(job.maxBudget
+        ? {
+            budget: { currency: job.maxBudget.currency, maxAmount: job.maxBudget.amount },
+            estimateCost: (candidate) => estimateJobCost(candidate, productionCostRates),
+          }
+        : {}),
     });
     job.executionSummary = await orchestrator.runUntilSettled(2);
     if (job.executionSummary.failed || job.executionSummary.blocked) {
@@ -535,8 +679,96 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
   } catch (cause) {
     job.executionStatus = 'FAILED';
     job.executionError = cause instanceof Error ? cause.message : 'Production execution failed';
+    job.executionFailure = toCreatorFailure(cause, `Production run ${job.id}`);
   }
   job.updatedAt = new Date().toISOString();
+}
+
+async function recoverPersistedProductionJobs(): Promise<string[]> {
+  const resumed: string[] = [];
+  for (const snapshot of await productionRunStore.list()) {
+    if (!['QUEUED', 'RUNNING'].includes(snapshot.executionStatus)) continue;
+    const plan = createProductionPlan(
+      snapshot.story,
+      snapshot.productionVersion,
+      snapshot.breakdowns,
+    );
+    plan.graph = new JobGraph(snapshot.jobs, { recoverRunning: true });
+    const job: ProductionPlanningJob = {
+      id: snapshot.runId,
+      projectId: snapshot.projectId,
+      productionVersion: snapshot.productionVersion,
+      status: 'SUCCEEDED',
+      createdAt: snapshot.updatedAt,
+      updatedAt: snapshot.updatedAt,
+      story: structuredClone(snapshot.story),
+      result: {
+        breakdowns: structuredClone(snapshot.breakdowns),
+        trace: [],
+        plan,
+      },
+      executionStatus: 'QUEUED',
+      ...(snapshot.budget
+        ? {
+            maxBudget: {
+              currency: snapshot.budget.currency,
+              amount: snapshot.budget.maxAmount,
+            },
+          }
+        : {}),
+    };
+    productionJobs.set(job.id, job);
+    resumed.push(job.id);
+  }
+  return resumed;
+}
+
+function optionalBudget(record: Record<string, unknown>): { currency: string; amount: number } | undefined {
+  if (record.maxBudget === undefined) return undefined;
+  const amount = record.maxBudget;
+  const currency = record.budgetCurrency ?? productionCostRates.currency;
+  if (typeof amount !== 'number' || !Number.isFinite(amount) || amount <= 0) {
+    throw new Error('maxBudget must be a positive number');
+  }
+  if (typeof currency !== 'string' || !/^[A-Z]{3}$/u.test(currency)) {
+    throw new Error('budgetCurrency must be an ISO-4217 code');
+  }
+  return { currency, amount };
+}
+
+function costRatesFromEnvironment(): ProductionCostRates {
+  return {
+    currency: process.env.PRODUCTION_COST_CURRENCY ?? 'CNY',
+    imageGeneration: nonnegativeEnvironment('PRODUCTION_COST_IMAGE', 0),
+    videoSecond: nonnegativeEnvironment('PRODUCTION_COST_VIDEO_SECOND', 0),
+    ttsCharacter: nonnegativeEnvironment('PRODUCTION_COST_TTS_CHARACTER', 0),
+    musicSecond: nonnegativeEnvironment('PRODUCTION_COST_MUSIC_SECOND', 0),
+    sfxSecond: nonnegativeEnvironment('PRODUCTION_COST_SFX_SECOND', 0),
+    mediaJob: nonnegativeEnvironment('PRODUCTION_COST_MEDIA_JOB', 0),
+  };
+}
+
+function nonnegativeEnvironment(name: string, fallback: number): number {
+  const value = process.env[name];
+  if (value === undefined || value === '') return fallback;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`${name} must be non-negative`);
+  return parsed;
+}
+
+function referenceAssetUriMap(): Record<string, string> {
+  const configured = process.env.CANONICAL_ASSET_URI_MAP_JSON;
+  if (!configured) return {};
+  const parsed = JSON.parse(configured) as unknown;
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    Array.isArray(parsed) ||
+    !Object.values(parsed).every((value) => typeof value === 'string' && /^(?:https:|file:)/u.test(value))
+  ) {
+    throw new Error('CANONICAL_ASSET_URI_MAP_JSON must map asset IDs to HTTPS/file URIs');
+  }
+  return parsed as Record<string, string>;
 }
 
 function requiredEnvironment(name: string): string {

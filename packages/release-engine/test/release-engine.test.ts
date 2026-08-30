@@ -54,7 +54,12 @@ test('all release gates must pass together', () => {
           id: 'approved-asset',
           status: 'APPROVED',
           sha256: hash,
-          license: { commercialUseApproved: true, licenseId: 'FIRST_PARTY' },
+          provenance: {
+            source: 'BUILT', referenceAssetIds: [], referenceLicenseIds: [],
+            createdAt: '2026-08-31T00:00:00.000Z', approval: 'HUMAN_APPROVED',
+            commercialUseStatus: 'APPROVED',
+          },
+          license: { commercialUseApproved: true, commercialUseStatus: 'APPROVED', licenseId: 'FIRST_PARTY' },
         },
       ],
       runtimePackages: targets.map((target) => ({
@@ -69,3 +74,24 @@ test('all release gates must pass together', () => {
   assert.deepEqual(result, { ready: true, issues: [] });
 });
 
+test('unknown, non-commercial and missing provenance assets block release', () => {
+  const hash = `sha256:${'b'.repeat(64)}`;
+  const result = evaluateReleaseGates({
+    story,
+    productionJobs: [],
+    manifest: {
+      projectId: story.projectId, storyVersion: story.storyVersion, productionVersion: 1,
+      assets: [
+        { id: 'unknown-asset', status: 'APPROVED', sha256: hash, license: { commercialUseApproved: false, commercialUseStatus: 'UNKNOWN' } },
+        { id: 'non-commercial', status: 'APPROVED', sha256: hash, provenance: { source: 'LICENSED', referenceAssetIds: [], referenceLicenseIds: [], createdAt: '2026-08-31T00:00:00.000Z', approval: 'HUMAN_APPROVED', commercialUseStatus: 'NON_COMMERCIAL' }, license: { commercialUseApproved: false, commercialUseStatus: 'NON_COMMERCIAL' } },
+      ],
+      runtimePackages: [],
+    },
+    unrealToolchainReady: true,
+    requiredTargets: [],
+  });
+  assert.equal(result.ready, false);
+  assert.ok(result.issues.some((issue) => issue.code === 'MISSING_PROVENANCE'));
+  assert.ok(result.issues.some((issue) => issue.code === 'UNKNOWN_LICENSE'));
+  assert.ok(result.issues.some((issue) => issue.code === 'NON_COMMERCIAL_LICENSE'));
+});

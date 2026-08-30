@@ -10,6 +10,10 @@
     "projectId": { "$ref": "#/$defs/id" },
     "storyVersion": { "type": "integer", "minimum": 1 },
     "runtimeVersion": { "type": "integer", "minimum": 1 },
+    "bibleVersion": { "type": "integer", "minimum": 1 },
+    "promptVersion": { "type": "string", "minLength": 1 },
+    "workflowVersion": { "type": "string", "minLength": 1 },
+    "buildVersion": { "type": "string", "minLength": 1 },
     "playerCount": { "type": "integer", "minimum": 4, "maximum": 8 },
     "initialSceneId": { "$ref": "#/$defs/id" },
     "roles": { "type": "array", "minItems": 4, "maxItems": 8, "items": { "$ref": "#/$defs/role" } },
@@ -151,4 +155,3 @@
     }
   }
 }
-

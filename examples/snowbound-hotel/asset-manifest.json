@@ -4,23 +4,39 @@
   "projectId": "snowbound-hotel",
   "storyVersion": 1,
   "productionVersion": 1,
-  "generatedAt": "2026-08-30T11:39:50.686Z",
+  "bibleVersion": 1,
+  "promptVersion": "v1",
+  "workflowVersion": "production-dag-v1",
+  "runtimeVersion": 1,
+  "buildVersion": "1.1.0-dev",
+  "generatedAt": "2026-08-30T05:00:00.000Z",
   "assets": [
     {
       "id": "runtime-data",
       "type": "RUNTIME_DATA",
       "uri": "runtime-package.json",
       "mimeType": "application/json",
-      "sizeBytes": 13443,
-      "sha256": "sha256:c995818c7c59ee0220c1a15a3786dc5cb12e22ba657f8fba6d632600ff4ee1e9",
+      "sizeBytes": 13562,
+      "sha256": "sha256:83c690216a8c33ad7e8e41df0d31b990688228780a50d582033d94b0d9d0936f",
       "status": "GENERATED",
       "dependencies": [],
       "source": "BUILT",
       "providerMetadata": {
         "provider": "filmgame-runtime-packager"
       },
+      "provenance": {
+        "source": "BUILT",
+        "provider": "filmgame-runtime-packager",
+        "modelLicense": "FIRST_PARTY",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "SYSTEM_VALIDATED",
+        "commercialUseStatus": "APPROVED"
+      },
       "license": {
         "commercialUseApproved": true,
+        "commercialUseStatus": "APPROVED",
         "licenseId": "FIRST_PARTY"
       }
     },
@@ -39,8 +55,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -58,8 +84,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -77,8 +113,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -96,8 +142,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -115,8 +171,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -134,8 +200,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -153,8 +229,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     },
     {
@@ -172,8 +258,18 @@
       "providerMetadata": {
         "provider": "unconfigured"
       },
+      "provenance": {
+        "source": "GENERATED",
+        "provider": "unconfigured",
+        "referenceAssetIds": [],
+        "referenceLicenseIds": [],
+        "createdAt": "2026-08-30T05:00:00.000Z",
+        "approval": "UNREVIEWED",
+        "commercialUseStatus": "UNKNOWN"
+      },
       "license": {
-        "commercialUseApproved": false
+        "commercialUseApproved": false,
+        "commercialUseStatus": "UNKNOWN"
       }
     }
   ],
@@ -194,7 +290,7 @@
         "video-ending-identity",
         "video-ending-revenge"
       ],
-      "sha256": "sha256:c995818c7c59ee0220c1a15a3786dc5cb12e22ba657f8fba6d632600ff4ee1e9",
+      "sha256": "sha256:83c690216a8c33ad7e8e41df0d31b990688228780a50d582033d94b0d9d0936f",
       "status": "BUILDING"
     }
   ],

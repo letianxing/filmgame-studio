@@ -52,6 +52,182 @@ export interface Provider {
   health(): Promise<ProviderHealth>;
 }
 
+export interface ProviderCapabilities {
+  supportsTextToImage: boolean;
+  supportsImageToImage: boolean;
+  supportsTextToVideo: boolean;
+  supportsImageToVideo: boolean;
+  supportsFirstLastFrame: boolean;
+  supportsReferenceImage: boolean;
+  supportsCharacterReference: boolean;
+  supportsSeed: boolean;
+  supportsNegativePrompt: boolean;
+  supportsResolution: boolean;
+  supportsDuration: boolean;
+  supportsAsyncJob: boolean;
+  supportsCancellation: boolean;
+  supportsCostEstimate: boolean;
+}
+
+export type ProviderCapability = keyof ProviderCapabilities;
+
+export interface ProviderRegistration<TProvider extends Provider = Provider> {
+  provider: TProvider;
+  capabilities: ProviderCapabilities;
+  priority: number;
+}
+
+export function defineCapabilities(
+  capabilities: Partial<ProviderCapabilities>,
+): ProviderCapabilities {
+  return {
+    supportsTextToImage: false,
+    supportsImageToImage: false,
+    supportsTextToVideo: false,
+    supportsImageToVideo: false,
+    supportsFirstLastFrame: false,
+    supportsReferenceImage: false,
+    supportsCharacterReference: false,
+    supportsSeed: false,
+    supportsNegativePrompt: false,
+    supportsResolution: false,
+    supportsDuration: false,
+    supportsAsyncJob: false,
+    supportsCancellation: false,
+    supportsCostEstimate: false,
+    ...capabilities,
+  };
+}
+
+export class ProviderCapabilityRegistry {
+  readonly #registrations = new Map<string, ProviderRegistration>();
+
+  register<TProvider extends Provider>(registration: ProviderRegistration<TProvider>): void {
+    if (this.#registrations.has(registration.provider.id)) {
+      throw new Error(`Provider capability ${registration.provider.id} is already registered`);
+    }
+    if (!Number.isFinite(registration.priority)) throw new Error('Provider priority must be finite');
+    this.#registrations.set(registration.provider.id, registration);
+  }
+
+  select<TProvider extends Provider>(
+    kind: ProviderKind,
+    required: ProviderCapability[],
+  ): Array<ProviderRegistration<TProvider>> {
+    return [...this.#registrations.values()]
+      .filter(
+        (registration) =>
+          registration.provider.kind === kind &&
+          required.every((capability) => registration.capabilities[capability]),
+      )
+      .sort((left, right) => right.priority - left.priority)
+      .map((registration) => registration as ProviderRegistration<TProvider>);
+  }
+}
+
+export interface ProviderReliabilityPolicy {
+  attemptsPerProvider: number;
+  timeoutMs: number;
+  circuitFailureThreshold: number;
+  circuitCooldownMs: number;
+}
+
+export class FallbackVideoProvider implements VideoProvider {
+  readonly id = 'fallback-video-chain';
+  readonly kind = 'VIDEO' as const;
+  readonly #failures = new Map<string, { count: number; openedAt?: number }>();
+
+  constructor(
+    readonly registrations: Array<ProviderRegistration<VideoProvider>>,
+    readonly requiredCapabilities: ProviderCapability[],
+    readonly policy: ProviderReliabilityPolicy = {
+      attemptsPerProvider: 2,
+      timeoutMs: 30 * 60_000,
+      circuitFailureThreshold: 3,
+      circuitCooldownMs: 60_000,
+    },
+  ) {
+    if (!registrations.length) throw new Error('FallbackVideoProvider requires providers');
+    if (!Number.isInteger(policy.attemptsPerProvider) || policy.attemptsPerProvider < 1) {
+      throw new Error('attemptsPerProvider must be positive');
+    }
+  }
+
+  async health(): Promise<ProviderHealth> {
+    const candidates = this.#candidates();
+    if (!candidates.length) {
+      return { status: 'UNAVAILABLE', checkedAt: new Date().toISOString(), message: 'No capable video provider has a closed circuit' };
+    }
+    const results = await Promise.all(candidates.map(({ provider }) => provider.health()));
+    return {
+      status: results.some((result) => result.status === 'HEALTHY') ? 'HEALTHY' : 'DEGRADED',
+      checkedAt: new Date().toISOString(),
+      details: { candidates: candidates.map(({ provider }) => provider.id) },
+    };
+  }
+
+  async generateVideo(
+    request: VideoGenerationRequest,
+    context: ProviderContext,
+  ): Promise<ProviderResult<GeneratedAsset>> {
+    const errors: string[] = [];
+    for (const registration of this.#candidates()) {
+      for (let attempt = 1; attempt <= this.policy.attemptsPerProvider; attempt += 1) {
+        try {
+          const timeout = AbortSignal.timeout(this.policy.timeoutMs);
+          const signal = context.signal ? AbortSignal.any([context.signal, timeout]) : timeout;
+          const result = await registration.provider.generateVideo(request, { ...context, signal });
+          this.#failures.delete(registration.provider.id);
+          return {
+            ...result,
+            metadata: {
+              ...result.metadata,
+              selectedProvider: registration.provider.id,
+              fallbackAttempt: attempt,
+            },
+          };
+        } catch (cause) {
+          const retryable = cause instanceof ProviderError ? cause.retryable : false;
+          errors.push(`${registration.provider.id}#${attempt}: ${cause instanceof Error ? cause.message : String(cause)}`);
+          this.#recordFailure(registration.provider.id);
+          if (!retryable) break;
+        }
+      }
+    }
+    throw new ProviderError(
+      this.id,
+      'UNAVAILABLE',
+      `All capable video providers failed: ${errors.join(' | ')}`,
+      true,
+    );
+  }
+
+  #candidates(): Array<ProviderRegistration<VideoProvider>> {
+    const now = Date.now();
+    return [...this.registrations]
+      .filter((registration) =>
+        this.requiredCapabilities.every((capability) => registration.capabilities[capability]),
+      )
+      .filter((registration) => {
+        const failure = this.#failures.get(registration.provider.id);
+        if (!failure?.openedAt) return true;
+        if (now - failure.openedAt >= this.policy.circuitCooldownMs) {
+          this.#failures.delete(registration.provider.id);
+          return true;
+        }
+        return false;
+      })
+      .sort((left, right) => right.priority - left.priority);
+  }
+
+  #recordFailure(providerId: string): void {
+    const current = this.#failures.get(providerId) ?? { count: 0 };
+    current.count += 1;
+    if (current.count >= this.policy.circuitFailureThreshold) current.openedAt = Date.now();
+    this.#failures.set(providerId, current);
+  }
+}
+
 export interface LLMStructuredRequest {
   system: string;
   prompt: string;
@@ -225,4 +401,3 @@ export class ProviderError extends Error {
     this.name = 'ProviderError';
   }
 }
-

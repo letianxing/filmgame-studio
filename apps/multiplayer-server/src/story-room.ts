@@ -23,6 +23,7 @@ import type {
 } from '@filmgame/shared-types';
 
 import type { AuthIdentity, StoryRoomDependencies, StoryRuntimeDefinition } from './runtime.js';
+import { createRoleKnowledgeView, hashRuntimeState } from './runtime.js';
 
 export const PlayerPresence = schema({
   sessionId: t.string(),
@@ -67,6 +68,7 @@ interface CreateOptions {
   projectId: EntityId;
   runtimeVersion: number;
   aiBotRoleIds?: EntityId[];
+  resumeRoomId?: string;
 }
 
 interface JoinOptions {
@@ -105,7 +107,14 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
     requestPrivateState: (client: StoryClient) => {
       this.#sendPrivateState(client);
     },
-    startWithBots: (_client: StoryClient) => {
+    startWithBots: (client: StoryClient) => {
+      if (client.sessionId !== this.state.hostSessionId) {
+        client.send('error', {
+          code: 'HOST_PERMISSION_REQUIRED',
+          message: 'Only the current host can fill open roles with bots.',
+        });
+        return;
+      }
       void this.#fillOpenRolesWithBots();
     },
   };
@@ -124,16 +133,24 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
       options.runtimeVersion,
     );
     this.#gameState = structuredClone(this.#runtime.initialState);
+    if (options.resumeRoomId && StoryRoom.dependencies.eventStore.loadSnapshot) {
+      const recovered = await StoryRoom.dependencies.eventStore.loadSnapshot(options.resumeRoomId);
+      if (recovered) this.#gameState = recovered;
+    }
     this.maxClients = this.#runtime.story.characters.length;
     this.state.projectId = options.projectId;
     this.state.runtimeVersion = options.runtimeVersion;
-    this.state.phase = 'LOBBY';
+    this.state.phase = this.#gameState.phase;
     this.state.sceneId = this.#gameState.sceneId;
     this.state.sequence = 0;
     this.state.timerEndsAt = '';
     this.state.endingId = '';
     this.state.hostSessionId = '';
-    await this.setMetadata({ projectId: options.projectId, runtimeVersion: options.runtimeVersion });
+    await this.setMetadata({
+      projectId: options.projectId,
+      runtimeVersion: options.runtimeVersion,
+      ...(options.resumeRoomId ? { resumedFromRoomId: options.resumeRoomId } : {}),
+    });
 
     for (const roleId of options.aiBotRoleIds ?? []) {
       this.#addBot(roleId);
@@ -196,10 +213,26 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
 
   async #startGame(): Promise<void> {
     if (this.state.phase !== 'LOBBY') return;
+    const stateBeforeHash = hashRuntimeState(this.#gameState);
     this.#gameState.phase = 'PLAYING';
-    this.#applySceneEntryMutations();
+    this.#gameState.historySequence += 1;
+    await StoryRoom.dependencies.eventStore.append(this.roomId, [
+      {
+        sequence: this.#gameState.historySequence,
+        eventId: crypto.randomUUID(),
+        roomId: this.roomId,
+        occurredAt: new Date().toISOString(),
+        type: 'PHASE_CHANGED',
+        sceneId: this.#gameState.sceneId,
+        payload: { phase: 'PLAYING' },
+        stateBeforeHash,
+        stateAfterHash: hashRuntimeState(this.#gameState),
+      },
+    ]);
+    await this.#recordSceneEntryMutations();
     this.#syncPublicState();
     await this.#record('GAME_STARTED', undefined, { sceneId: this.#gameState.sceneId });
+    await StoryRoom.dependencies.eventStore.saveSnapshot(this.roomId, this.#gameState);
     this.#sendPrivateStateToAll();
     this.#startSceneTimer();
   }
@@ -243,6 +276,8 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
   async #resolve(): Promise<void> {
     if (this.state.phase !== 'PLAYING') return;
     this.#sceneTimer?.clear();
+    const stateBefore = structuredClone(this.#gameState);
+    const baseSequence = stateBefore.historySequence;
     const result = resolveScene({
       roomId: this.roomId,
       scene: this.#currentScene(),
@@ -250,23 +285,62 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
       actions: [...this.#submittedActions.values()],
       now: new Date().toISOString(),
     });
-    this.#gameState = result.state;
+    let replayState = structuredClone(stateBefore);
     this.#submittedActions.clear();
-    if (this.#gameState.phase === 'PLAYING') this.#applySceneEntryMutations();
+    const events: RuntimeEvent[] = result.events.map((event, index) => {
+      const stateBeforeHash = hashRuntimeState(replayState);
+      replayState = applyResolutionEventForReplay(replayState, event);
+      const stateAfterHash = hashRuntimeState(replayState);
+      return {
+        sequence: baseSequence + index + 1,
+        eventId: crypto.randomUUID(),
+        roomId: this.roomId,
+        occurredAt: new Date().toISOString(),
+        type: event.type,
+        sceneId: stateBefore.sceneId,
+        ...(event.actorRoleId ? { actorRoleId: event.actorRoleId } : {}),
+        ...(event.type === 'ACTION_ACCEPTED' && typeof event.payload.actionId === 'string'
+          ? { action: event.payload.actionId }
+          : {}),
+        payload: event.payload,
+        stateBeforeHash,
+        stateAfterHash,
+        resolutionRuleId: result.matchedRuleId,
+      };
+    });
+    if (hashRuntimeState(replayState) !== hashRuntimeState(result.state)) {
+      throw new Error(`Resolution event replay diverged for scene ${stateBefore.sceneId}`);
+    }
+    if (replayState.phase === 'PLAYING') {
+      for (const mutation of this.#currentSceneForState(replayState).stateMutationsOnEnter ?? []) {
+        const stateBeforeHash = hashRuntimeState(replayState);
+        replayState = applyStateMutation(replayState, mutation);
+        events.push({
+          sequence: baseSequence + events.length + 1,
+          eventId: crypto.randomUUID(),
+          roomId: this.roomId,
+          occurredAt: new Date().toISOString(),
+          type: 'STATE_MUTATED',
+          sceneId: replayState.sceneId,
+          payload: {
+            operation: mutation.operation,
+            path: mutation.path,
+            ...(mutation.value === undefined ? {} : { value: mutation.value }),
+            source: 'SCENE_ENTRY',
+          },
+          stateBeforeHash,
+          stateAfterHash: hashRuntimeState(replayState),
+          resolutionRuleId: result.matchedRuleId,
+        });
+      }
+    }
+    replayState.historySequence = baseSequence + events.length;
+    replayState.submittedActions = {};
+    this.#gameState = replayState;
     this.#syncPublicState();
-
-    const events = result.events.map((event, index): RuntimeEvent => ({
-      sequence: this.#gameState.historySequence + index,
-      eventId: crypto.randomUUID(),
-      roomId: this.roomId,
-      occurredAt: new Date().toISOString(),
-      type: event.type,
-      ...(event.actorRoleId ? { actorRoleId: event.actorRoleId } : {}),
-      payload: event.payload,
-    }));
     await StoryRoom.dependencies.eventStore.append(this.roomId, events);
     await StoryRoom.dependencies.eventStore.saveSnapshot(this.roomId, this.#gameState);
-    this.broadcast('runtimeEvents', events);
+    this.broadcast('runtimeEvents', events.map(publicRuntimeEvent));
     this.#sendPrivateStateToAll();
     if (this.#gameState.phase === 'PLAYING') this.#startSceneTimer();
   }
@@ -296,7 +370,7 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
       sceneId: scene.id,
       roleId,
       availableActionIds,
-      state: structuredClone(this.#gameState),
+      knowledge: createRoleKnowledgeView(this.#runtime.story, this.#gameState, roleId),
     });
     this.#submittedActions.set(roleId, action);
     await this.#record('BOT_ACTION_SUBMITTED', roleId, { actionId: action.actionId });
@@ -354,10 +428,30 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
     return this.#currentScene().rolesPresent.every((roleId) => this.#submittedActions.has(roleId));
   }
 
-  #applySceneEntryMutations(): void {
+  async #recordSceneEntryMutations(): Promise<void> {
+    const events: RuntimeEvent[] = [];
     for (const mutation of this.#currentScene().stateMutationsOnEnter ?? []) {
+      const stateBeforeHash = hashRuntimeState(this.#gameState);
       this.#gameState = applyStateMutation(this.#gameState, mutation);
+      this.#gameState.historySequence += 1;
+      events.push({
+        sequence: this.#gameState.historySequence,
+        eventId: crypto.randomUUID(),
+        roomId: this.roomId,
+        occurredAt: new Date().toISOString(),
+        type: 'STATE_MUTATED',
+        sceneId: this.#gameState.sceneId,
+        payload: {
+          operation: mutation.operation,
+          path: mutation.path,
+          ...(mutation.value === undefined ? {} : { value: mutation.value }),
+          source: 'SCENE_ENTRY',
+        },
+        stateBeforeHash,
+        stateAfterHash: hashRuntimeState(this.#gameState),
+      });
     }
+    if (events.length) await StoryRoom.dependencies.eventStore.append(this.roomId, events);
   }
 
   #syncPublicState(): void {
@@ -396,6 +490,12 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
     return scene;
   }
 
+  #currentSceneForState(state: RuntimeGameState): StoryScene {
+    const scene = this.#runtime.story.scenes.find((candidate) => candidate.id === state.sceneId);
+    if (!scene) throw new Error(`Runtime scene ${state.sceneId} does not exist`);
+    return scene;
+  }
+
   #character(roleId: EntityId) {
     const character = this.#characterOrNull(roleId);
     if (!character) throw new Error(`Role ${roleId} does not exist`);
@@ -419,6 +519,7 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
     actorRoleId: EntityId | undefined,
     payload: Record<string, JsonValue>,
   ): Promise<void> {
+    const stateHash = hashRuntimeState(this.#gameState);
     this.#gameState.historySequence += 1;
     this.state.sequence = this.#gameState.historySequence;
     await StoryRoom.dependencies.eventStore.append(this.roomId, [
@@ -428,8 +529,11 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
         roomId: this.roomId,
         occurredAt: new Date().toISOString(),
         type,
+        sceneId: this.#gameState.sceneId,
         ...(actorRoleId ? { actorRoleId } : {}),
         payload,
+        stateBeforeHash: stateHash,
+        stateAfterHash: stateHash,
       },
     ]);
   }
@@ -438,4 +542,43 @@ export class StoryRoom extends Room<{ state: StoryRoomState; client: StoryClient
     if (!this.#dependencies) throw new Error('StoryRoom dependencies were not configured');
     return this.#dependencies;
   }
+}
+
+function applyResolutionEventForReplay(
+  state: RuntimeGameState,
+  event: { type: string; payload: Record<string, JsonValue> },
+): RuntimeGameState {
+  if (event.type === 'STATE_MUTATED') {
+    const operation = event.payload.operation;
+    const mutationPath = event.payload.path;
+    if (typeof operation !== 'string' || typeof mutationPath !== 'string') {
+      throw new Error('Malformed STATE_MUTATED event');
+    }
+    return applyStateMutation(state, {
+      operation: operation as import('@filmgame/shared-types').MutationOperation,
+      path: mutationPath,
+      ...(event.payload.value === undefined ? {} : { value: event.payload.value }),
+    });
+  }
+  if (event.type === 'SCENE_CHANGED') {
+    const sceneId = event.payload.sceneId;
+    if (typeof sceneId !== 'string') throw new Error('Malformed SCENE_CHANGED event');
+    const next = { ...structuredClone(state), sceneId, phase: 'PLAYING' as const, submittedActions: {} };
+    delete next.endingId;
+    return next;
+  }
+  if (event.type === 'ENDING_REACHED') {
+    const endingId = event.payload.endingId;
+    if (typeof endingId !== 'string') throw new Error('Malformed ENDING_REACHED event');
+    return { ...structuredClone(state), endingId, phase: 'ENDING', submittedActions: {} };
+  }
+  return structuredClone(state);
+}
+
+function publicRuntimeEvent(event: RuntimeEvent): RuntimeEvent {
+  if (event.type !== 'STATE_MUTATED') return structuredClone(event);
+  return {
+    ...structuredClone(event),
+    payload: { operation: event.payload.operation ?? 'UNKNOWN', redacted: true },
+  };
 }

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 import type { StoryModel } from '@filmgame/shared-types';
+import { buildRuntimePackage } from '@filmgame/runtime-packager';
 
 const story = JSON.parse(
   await readFile(new URL('../examples/snowbound-hotel/story.json', import.meta.url), 'utf8'),
@@ -83,7 +84,15 @@ const runtime = {
   assetManifestUri: 'asset-manifest.json',
 };
 
-const runtimeJson = `${JSON.stringify(runtime, null, 2)}\n`;
+const builtRuntime = buildRuntimePackage(story, {
+  runtimeVersion: 1,
+  assetManifestUri: 'asset-manifest.json',
+  bibleVersion: story.canonicalBible?.bibleVersion ?? story.storyVersion,
+  promptVersion: 'v1',
+  workflowVersion: 'production-dag-v1',
+  buildVersion: `${story.storyVersion}.1.0-dev`,
+});
+const runtimeJson = builtRuntime.json;
 const runtimeBytes = new TextEncoder().encode(runtimeJson);
 const runtimeHash = `sha256:${createHash('sha256').update(runtimeBytes).digest('hex')}`;
 const emptyHash = 'sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
@@ -97,7 +106,12 @@ const manifest = {
   projectId: story.projectId,
   storyVersion: story.storyVersion,
   productionVersion: 1,
-  generatedAt: new Date().toISOString(),
+  bibleVersion: story.canonicalBible?.bibleVersion ?? story.storyVersion,
+  promptVersion: 'v1',
+  workflowVersion: 'production-dag-v1',
+  runtimeVersion: 1,
+  buildVersion: `${story.storyVersion}.1.0-dev`,
+  generatedAt: story.updatedAt ?? story.createdAt ?? '2026-08-30T00:00:00.000Z',
   assets: [
     {
       id: 'runtime-data',
@@ -110,7 +124,17 @@ const manifest = {
       dependencies: [],
       source: 'BUILT',
       providerMetadata: { provider: 'filmgame-runtime-packager' },
-      license: { commercialUseApproved: true, licenseId: 'FIRST_PARTY' },
+      provenance: {
+        source: 'BUILT',
+        provider: 'filmgame-runtime-packager',
+        modelLicense: 'FIRST_PARTY',
+        referenceAssetIds: [],
+        referenceLicenseIds: [],
+        createdAt: story.updatedAt ?? story.createdAt ?? '2026-08-30T00:00:00.000Z',
+        approval: 'SYSTEM_VALIDATED',
+        commercialUseStatus: 'APPROVED',
+      },
+      license: { commercialUseApproved: true, commercialUseStatus: 'APPROVED', licenseId: 'FIRST_PARTY' },
     },
     ...videoAssets.map((asset) => ({
       id: asset.id,
@@ -125,7 +149,16 @@ const manifest = {
       entityType: asset.entityType,
       entityId: asset.entityId,
       providerMetadata: { provider: 'unconfigured' },
-      license: { commercialUseApproved: false },
+      provenance: {
+        source: 'GENERATED',
+        provider: 'unconfigured',
+        referenceAssetIds: [],
+        referenceLicenseIds: [],
+        createdAt: story.updatedAt ?? story.createdAt ?? '2026-08-30T00:00:00.000Z',
+        approval: 'UNREVIEWED',
+        commercialUseStatus: 'UNKNOWN',
+      },
+      license: { commercialUseApproved: false, commercialUseStatus: 'UNKNOWN' },
     })),
   ],
   runtimePackages: [

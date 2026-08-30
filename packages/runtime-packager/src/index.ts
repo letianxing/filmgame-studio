@@ -6,6 +6,10 @@ export interface RuntimePackageOptions {
   runtimeVersion: number;
   assetManifestUri: string;
   videoAssetIdByEntityId?: Record<string, string>;
+  bibleVersion?: number;
+  promptVersion?: string;
+  workflowVersion?: string;
+  buildVersion?: string;
 }
 
 export interface BuiltRuntimePackage {
@@ -32,6 +36,10 @@ export function buildRuntimePackage(
     projectId: story.projectId,
     storyVersion: story.storyVersion,
     runtimeVersion: options.runtimeVersion,
+    bibleVersion: options.bibleVersion ?? story.canonicalBible?.bibleVersion ?? story.storyVersion,
+    promptVersion: options.promptVersion ?? 'v1',
+    workflowVersion: options.workflowVersion ?? 'production-dag-v1',
+    buildVersion: options.buildVersion ?? `${story.storyVersion}.${options.runtimeVersion}.0`,
     playerCount: story.brief.playerCount,
     initialSceneId,
     roles: story.characters.map((character) => ({

@@ -31,6 +31,41 @@ export interface MediaProbe {
   streams?: Array<Record<string, unknown>>;
 }
 
+export interface MediaValidationPolicy {
+  requireVideo?: boolean;
+  requireAudio?: boolean;
+  minimumWidth?: number;
+  minimumHeight?: number;
+  expectedAspectRatio?: number;
+  aspectRatioTolerance?: number;
+  minimumFps?: number;
+  maximumFps?: number;
+  minimumAudioSampleRate?: number;
+  allowedVideoCodecs?: string[];
+  expectedDurationSeconds?: number;
+  durationToleranceSeconds?: number;
+}
+
+export interface MediaValidationIssue {
+  code: string;
+  severity: 'ERROR' | 'WARNING';
+  message: string;
+}
+
+export interface MediaTechnicalValidation {
+  valid: boolean;
+  issues: MediaValidationIssue[];
+  video?: { codec: string; width: number; height: number; fps: number; aspectRatio: number };
+  audio?: { codec: string; sampleRate: number; channels: number };
+  durationSeconds?: number;
+}
+
+export interface MediaSignalAnalysis {
+  blackSegments: number;
+  silentSegments: number;
+  issues: MediaValidationIssue[];
+}
+
 export class MediaPipeline {
   constructor(readonly config: MediaPipelineConfig) {
     if (!config.ffmpegPath || !config.ffprobePath) {
@@ -72,6 +107,30 @@ export class MediaPipeline {
       signal,
     );
     return JSON.parse(result.stdout) as MediaProbe;
+  }
+
+  async validateTechnical(
+    inputPath: string,
+    policy: MediaValidationPolicy = {},
+    signal?: AbortSignal,
+  ): Promise<MediaTechnicalValidation> {
+    return validateMediaProbe(await this.probe(inputPath, signal), policy);
+  }
+
+  async analyzeSignals(inputPath: string, signal?: AbortSignal): Promise<MediaSignalAnalysis> {
+    assertAbsolute(inputPath);
+    const result = await this.#run(
+      this.config.ffmpegPath,
+      [
+        '-hide_banner', '-nostdin', '-i', inputPath,
+        '-vf', 'blackdetect=d=1:pix_th=0.10',
+        '-af', 'silencedetect=n=-50dB:d=1',
+        '-f', 'null', '-',
+      ],
+      this.config.defaultTimeoutMs,
+      signal,
+    );
+    return parseMediaSignalLog(result.stderr);
   }
 
   transcode(options: {
@@ -366,6 +425,92 @@ export class MediaPipeline {
       });
     });
   }
+}
+
+export function validateMediaProbe(
+  probe: MediaProbe,
+  policy: MediaValidationPolicy = {},
+): MediaTechnicalValidation {
+  const issues: MediaValidationIssue[] = [];
+  const streams = probe.streams ?? [];
+  const videoStream = streams.find((stream) => stream.codec_type === 'video');
+  const audioStream = streams.find((stream) => stream.codec_type === 'audio');
+  const requireVideo = policy.requireVideo ?? true;
+  const requireAudio = policy.requireAudio ?? true;
+  if (requireVideo && !videoStream) issues.push(mediaIssue('MISSING_VIDEO', 'ERROR', 'No video stream found.'));
+  if (requireAudio && !audioStream) issues.push(mediaIssue('MISSING_AUDIO', 'ERROR', 'No audio stream found.'));
+  let video: MediaTechnicalValidation['video'];
+  if (videoStream) {
+    const codec = String(videoStream.codec_name ?? 'unknown');
+    const width = Number(videoStream.width ?? 0);
+    const height = Number(videoStream.height ?? 0);
+    const fps = parseFrameRate(String(videoStream.avg_frame_rate ?? videoStream.r_frame_rate ?? '0/1'));
+    const aspectRatio = height > 0 ? width / height : 0;
+    if (width < (policy.minimumWidth ?? 320) || height < (policy.minimumHeight ?? 180)) {
+      issues.push(mediaIssue('RESOLUTION_TOO_LOW', 'ERROR', `Resolution ${width}x${height} is below policy.`));
+    }
+    if (fps < (policy.minimumFps ?? 1) || fps > (policy.maximumFps ?? 120)) {
+      issues.push(mediaIssue('FPS_OUT_OF_RANGE', 'ERROR', `FPS ${fps} is outside policy.`));
+    }
+    if (policy.allowedVideoCodecs?.length && !policy.allowedVideoCodecs.includes(codec)) {
+      issues.push(mediaIssue('VIDEO_CODEC_UNSUPPORTED', 'ERROR', `Video codec ${codec} is not allowed.`));
+    }
+    if (
+      policy.expectedAspectRatio &&
+      Math.abs(aspectRatio - policy.expectedAspectRatio) > (policy.aspectRatioTolerance ?? 0.03)
+    ) {
+      issues.push(mediaIssue('ASPECT_RATIO_MISMATCH', 'ERROR', `Aspect ratio ${aspectRatio.toFixed(3)} does not match ${policy.expectedAspectRatio.toFixed(3)}.`));
+    }
+    video = { codec, width, height, fps, aspectRatio };
+  }
+  let audio: MediaTechnicalValidation['audio'];
+  if (audioStream) {
+    const codec = String(audioStream.codec_name ?? 'unknown');
+    const sampleRate = Number(audioStream.sample_rate ?? 0);
+    const channels = Number(audioStream.channels ?? 0);
+    if (sampleRate < (policy.minimumAudioSampleRate ?? 16_000)) {
+      issues.push(mediaIssue('AUDIO_SAMPLE_RATE_TOO_LOW', 'ERROR', `Audio sample rate ${sampleRate} is below policy.`));
+    }
+    if (!Number.isInteger(channels) || channels < 1) {
+      issues.push(mediaIssue('AUDIO_CHANNELS_INVALID', 'ERROR', 'Audio channel count is invalid.'));
+    }
+    audio = { codec, sampleRate, channels };
+  }
+  const durationSeconds = Number(probe.format?.duration ?? 0);
+  if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) {
+    issues.push(mediaIssue('DURATION_INVALID', 'ERROR', 'Media duration is missing or invalid.'));
+  } else if (
+    policy.expectedDurationSeconds !== undefined &&
+    Math.abs(durationSeconds - policy.expectedDurationSeconds) > (policy.durationToleranceSeconds ?? 1)
+  ) {
+    issues.push(mediaIssue('DURATION_MISMATCH', 'ERROR', `Duration ${durationSeconds}s does not match expected ${policy.expectedDurationSeconds}s.`));
+  }
+  return {
+    valid: !issues.some((issue) => issue.severity === 'ERROR'),
+    issues,
+    ...(video ? { video } : {}),
+    ...(audio ? { audio } : {}),
+    ...(durationSeconds > 0 ? { durationSeconds } : {}),
+  };
+}
+
+export function parseMediaSignalLog(stderr: string): MediaSignalAnalysis {
+  const blackSegments = (stderr.match(/black_start:/gu) ?? []).length;
+  const silentSegments = (stderr.match(/silence_start:/gu) ?? []).length;
+  const issues: MediaValidationIssue[] = [];
+  if (blackSegments) issues.push(mediaIssue('BLACK_FRAME_SEGMENT', 'WARNING', `${blackSegments} black segment(s) detected.`));
+  if (silentSegments) issues.push(mediaIssue('SILENT_AUDIO_SEGMENT', 'WARNING', `${silentSegments} silent segment(s) detected.`));
+  return { blackSegments, silentSegments, issues };
+}
+
+function parseFrameRate(value: string): number {
+  const [numerator, denominator] = value.split('/').map(Number);
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return 0;
+  return numerator! / denominator!;
+}
+
+function mediaIssue(code: string, severity: MediaValidationIssue['severity'], message: string): MediaValidationIssue {
+  return { code, severity, message };
 }
 
 export class MediaPipelineError extends Error {
