@@ -27,6 +27,8 @@
     "smoke:comfyui-flux": "tsx scripts/smoke-comfyui-flux.ts",
     "smoke:comfyui-wan": "tsx scripts/smoke-comfyui-wan.ts",
     "smoke:production-providers": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-production-providers.ps1",
+    "secrets:encrypt": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/encrypt-local-secrets.ps1",
+    "secrets:decrypt": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/decrypt-local-secrets.ps1",
     "model:download": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/download-model.ps1",
     "stack:start": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-local-stack.ps1",
     "stack:status": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/status-local-stack.ps1",

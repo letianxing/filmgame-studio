@@ -1,0 +1,2 @@
+*.env.enc text eol=lf
+.sops.yaml text eol=lf
