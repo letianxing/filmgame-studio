@@ -618,7 +618,9 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
     const media = new MediaPipeline({
       ffmpegPath: requiredEnvironment('FFMPEG_PATH'),
       ffprobePath: requiredEnvironment('FFPROBE_PATH'),
-      defaultVideoCodec: 'libopenh264',
+      // libopenh264 ships with LGPL FFmpeg builds; GPL builds (Homebrew) omit it, and macOS
+      // has h264_videotoolbox instead. Both avoid the GPL-only libx264.
+      defaultVideoCodec: process.env.MEDIA_VIDEO_CODEC ?? 'libopenh264',
       defaultAudioCodec: 'aac',
     });
     const health = await Promise.all([
