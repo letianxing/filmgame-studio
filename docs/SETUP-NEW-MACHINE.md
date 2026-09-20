@@ -70,9 +70,27 @@ macOS 上踩到过的四个坑，装之前先知道：
 | **setuptools ≥ 81** | CosyVoice 整个起不来（`pkg_resources` 被移除） | **必须钉 `setuptools<81`**。升级 modelscope 等操作会把它顶上去，之后要钉回来 |
 | FFmpeg 编码器 | `Unknown encoder 'libopenh264'` | Homebrew 是 GPL 构建，没有 libopenh264。设 `MEDIA_VIDEO_CODEC=h264_videotoolbox`（Apple 硬件编码，同样避开 GPL-only 的 libx264） |
 
-另外 `wetext` 文本正则化模型每次加载都要访问 modelscope。**网络抖动时它会静默降级**
-——日志里只有一行 `no frontend is avaliable`，不报错，但数字和日期会被逐字念出来。
-起 CosyVoice 后确认日志是 `use wetext frontend` 再开工。
+### 1.3 关于 CosyVoice 的文本正则化
+
+`wetext` 的 FST 需要**先拉一次**到本地（上面的 `snapshot_download` 已包含）：
+
+```bash
+~/Golands/CosyVoice/.venv/bin/python -c \
+  "from modelscope import snapshot_download as d; print(d('pengzhendong/wetext'))"
+```
+
+原因：`wetext.Normalizer` 每次构造都会访问 modelscope（即使 FST 已在本地），而
+`CosyVoiceFrontEnd` 把它包在裸 `except:` 里——网络抖一下就会**静默降级**，日志里只有一行
+`no frontend is avaliable`，不报错，但数字和日期会被逐字念出来。
+
+adapter 现在有两道防护（`services/cosyvoice-adapter/python/wetext_cache.py`）：
+
+- FST 已完整缓存时直接用本地副本，**不碰网络**；只有缓存缺失才回落到下载。
+- 启动后检查 CosyVoice 实际加载到的 frontend，**没有就拒绝启动**并给出取回 FST 的命令。
+  确实想在没有正则化的情况下出音频，用 `--allow-degraded-text-frontend`
+  （`smoke:cosyvoice` 对应 `COSYVOICE_ALLOW_DEGRADED_TEXT_FRONTEND=1`）。
+
+`/health` 与 `smoke:cosyvoice` 的输出都会带 `textFrontend` 字段，正常应为 `wetext`。
 
 ## 2. 拉代码与装包
 

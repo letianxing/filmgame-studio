@@ -18,6 +18,15 @@ export interface ElevenLabsAudioGatewayConfig {
 
 export interface AudioGatewayDependencies { fetch?: typeof fetch; now?: () => number; }
 
+export interface AudioGatewayServer extends Server {
+  /**
+   * Resolves once every in-flight background generation has finished writing its asset
+   * and its state entry. Generation is deliberately fire-and-forget (submit then poll),
+   * so closing the server does not by itself stop work that is still touching the disk.
+   */
+  whenIdle(): Promise<void>;
+}
+
 interface AudioRequest {
   kind?: 'MUSIC' | 'SFX';
   model?: string;
@@ -41,12 +50,24 @@ interface AudioTask {
 export function createElevenLabsAudioGatewayServer(
   config: ElevenLabsAudioGatewayConfig,
   dependencies: AudioGatewayDependencies = {},
-): Server {
+): AudioGatewayServer {
   validateConfig(config);
   const fetchImpl = dependencies.fetch ?? fetch;
   const now = dependencies.now ?? Date.now;
   const store = new AudioTaskStore(config.stateFile);
-  return createServer(async (request, response) => {
+
+  const inFlight = new Set<Promise<void>>();
+  const track = (work: Promise<void>): void => {
+    // generateAudio records its own failures onto the task, but the write in that failure
+    // path can itself reject. Without this guard that rejection is unhandled, which takes
+    // the whole gateway down under Node's default policy.
+    const tracked: Promise<void> = work
+      .catch((cause) => { console.error('audio generation could not record its outcome', cause); })
+      .finally(() => { inFlight.delete(tracked); });
+    inFlight.add(tracked);
+  };
+
+  const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url ?? '/', 'http://127.0.0.1');
       if (request.method === 'GET' && url.pathname === '/health') {
@@ -85,7 +106,7 @@ export function createElevenLabsAudioGatewayServer(
           status: 'QUEUED', kind: generation.kind, durationSeconds: generation.durationSeconds,
         };
         await store.add(task);
-        void generateAudio(task, generation.prompt, generation.model, config, fetchImpl, store);
+        track(generateAudio(task, generation.prompt, generation.model, config, fetchImpl, store));
         return sendJson(response, 202, { generationId: task.generationId });
       }
 
@@ -115,7 +136,13 @@ export function createElevenLabsAudioGatewayServer(
       const status = cause instanceof HttpError ? cause.status : 500;
       return sendJson(response, status, { error: cause instanceof Error ? cause.message : 'Internal gateway error' });
     }
-  });
+  }) as AudioGatewayServer;
+
+  // Loop rather than a single Promise.all: a generation can be submitted while we wait.
+  server.whenIdle = async (): Promise<void> => {
+    while (inFlight.size > 0) await Promise.all([...inFlight]);
+  };
+  return server;
 }
 
 async function generateAudio(

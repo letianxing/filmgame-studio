@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import type { AddressInfo } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
@@ -41,6 +41,57 @@ test('remote music and SFX adapters use ElevenLabs gateway and signed assets', a
     assert.equal((calls[0]?.body as { model_id?: string }).model_id, 'music_v2');
   } finally {
     await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    // Generation is fire-and-forget, so closing the server does not stop background
+    // writes into `temporary`; removing the directory under them fails with ENOTEMPTY.
+    await server.whenIdle();
+    await rm(temporary, { recursive: true, force: true });
+  }
+});
+
+test('whenIdle waits for a generation that is still writing after the server closes', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'filmgame-audio-idle-'));
+  // Hold the upstream response open so the generation is guaranteed to still be running
+  // when the server closes; without whenIdle the asset write lands after teardown.
+  const upstreamFetch: typeof fetch = async (input) => {
+    if (String(input).endsWith('/models')) return Response.json({ models: [] });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    return new Response(new Uint8Array([9, 9, 9, 9]), {
+      status: 200, headers: { 'content-type': 'audio/mpeg', 'request-id': 'upstream-idle' },
+    });
+  };
+  const assetRoot = path.join(temporary, 'assets');
+  const stateFile = path.join(temporary, 'state.json');
+  const server = createElevenLabsAudioGatewayServer({
+    baseUrl: 'https://api.elevenlabs.io/v1', apiKey: 'eleven-secret', musicModel: 'music_v2',
+    sfxModel: 'eleven_text_to_sound_v2', internalToken: 'audio-token',
+    assetSigningSecret: 'asset-signing-secret', publicBaseUrl: 'http://127.0.0.1:1',
+    assetRoot, stateFile,
+  }, { fetch: upstreamFetch });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address() as AddressInfo;
+  try {
+    const submitted = await fetch(`http://127.0.0.1:${port}/v1/audio/generations`, {
+      method: 'POST',
+      headers: { authorization: 'Bearer audio-token', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        kind: 'SFX', model: 'eleven_text_to_sound_v2',
+        request: { prompt: 'door slam', durationSeconds: 2 },
+        context: { idempotencyKey: 'idle-idem' },
+      }),
+    });
+    assert.equal(submitted.status, 202);
+    const { generationId } = await submitted.json() as { generationId: string };
+
+    await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    await server.whenIdle();
+
+    const state = JSON.parse(await readFile(stateFile, 'utf8')) as Array<{ generationId: string; status: string; filename?: string; sizeBytes?: number }>;
+    const task = state.find((entry) => entry.generationId === generationId);
+    assert.equal(task?.status, 'SUCCEEDED', 'generation must be finished once whenIdle resolves');
+    assert.equal(task?.sizeBytes, 4);
+    assert.equal((await stat(task!.filename!)).size, 4, 'the asset must be fully on disk');
+  } finally {
+    await server.whenIdle();
     await rm(temporary, { recursive: true, force: true });
   }
 });

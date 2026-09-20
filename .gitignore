@@ -6,6 +6,8 @@ coverage/
 .wrangler/
 .open-next/
 *.tsbuildinfo
+__pycache__/
+*.pyc
 *.log
 .env
 .env.*

@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import sys
 import tempfile
@@ -9,6 +10,8 @@ import numpy as np
 import uvicorn
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
+
+from wetext_cache import pin_wetext_to_local_cache, require_text_frontend, text_frontend_of
 
 
 def authorize(authorization: str | None = Header(default=None)) -> None:
@@ -38,9 +41,12 @@ def uploaded_audio(data: bytes) -> str:
 
 @app.get("/health")
 async def health():
+    # textFrontend is reported so a degraded normaliser is visible to callers instead of
+    # only showing up as mispronounced numbers in the audio.
     return {
         "status": "HEALTHY" if model is not None else "STARTING",
         "sampleRate": getattr(model, "sample_rate", None),
+        "textFrontend": text_frontend_of(model) or None,
     }
 
 
@@ -124,15 +130,28 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=50000)
     parser.add_argument("--model-dir", required=True)
     parser.add_argument("--cosyvoice-home", required=True)
+    parser.add_argument(
+        "--allow-degraded-text-frontend",
+        action="store_true",
+        help="Start even when no text normaliser loaded. Numbers and dates will be read "
+        "digit by digit; only use this to get audio out of a machine with no cached FSTs.",
+    )
     args = parser.parse_args()
 
     cosyvoice_home = Path(args.cosyvoice_home).resolve()
     sys.path.insert(0, str(cosyvoice_home))
     sys.path.insert(0, str(cosyvoice_home / "third_party" / "Matcha-TTS"))
+    pin_wetext_to_local_cache()
     from cosyvoice.cli.cosyvoice import AutoModel
 
     global model
     model = AutoModel(model_dir=str(Path(args.model_dir).resolve()))
+    require_text_frontend(
+        model,
+        allow_degraded=args.allow_degraded_text_frontend,
+        opt_out_hint="or pass --allow-degraded-text-frontend to start anyway.",
+    )
+
     uvicorn.run(app, host=args.host, port=args.port)
 
 
