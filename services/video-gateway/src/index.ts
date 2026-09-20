@@ -122,10 +122,16 @@ function toArkRequest(request: NonNullable<GatewayRequest['request']>, model: st
     ? `${request.prompt}\n\nAvoid: ${request.negativePrompt}`
     : request.prompt;
   const content: Array<Record<string, unknown>> = [{ type: 'text', text: prompt }];
-  const imageUris = [request.firstFrameUri, ...(request.referenceAssetUris ?? []), request.lastFrameUri]
-    .filter((value): value is string => Boolean(value));
-  for (const uri of imageUris) {
-    content.push({ type: 'image_url', image_url: { url: uri }, role: 'reference_image' });
+  // Ark distinguishes the roles: `first_frame`/`last_frame` anchor the shot, while
+  // `reference_image` only suggests subject and style. Sending a first frame as a
+  // reference lets the model re-frame and re-stage the shot.
+  const images: Array<[string | undefined, string]> = [
+    [request.firstFrameUri, 'first_frame'],
+    ...(request.referenceAssetUris ?? []).map((uri): [string, string] => [uri, 'reference_image']),
+    [request.lastFrameUri, 'last_frame'],
+  ];
+  for (const [uri, role] of images) {
+    if (uri) content.push({ type: 'image_url', image_url: { url: uri }, role });
   }
   return {
     model,
