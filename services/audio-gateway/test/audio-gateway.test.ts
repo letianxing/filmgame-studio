@@ -95,3 +95,51 @@ test('whenIdle waits for a generation that is still writing after the server clo
     await rm(temporary, { recursive: true, force: true });
   }
 });
+
+test('concurrent generations all persist their final status', async () => {
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'filmgame-audio-concurrent-'));
+  const upstreamFetch: typeof fetch = async (input) => {
+    if (String(input).endsWith('/models')) return Response.json({ models: [] });
+    return new Response(new Uint8Array([1, 2, 3, 4]), {
+      status: 200, headers: { 'content-type': 'audio/mpeg' },
+    });
+  };
+  const stateFile = path.join(temporary, 'state.json');
+  const server = createElevenLabsAudioGatewayServer({
+    baseUrl: 'https://api.elevenlabs.io/v1', apiKey: 'eleven-secret', musicModel: 'music_v2',
+    sfxModel: 'eleven_text_to_sound_v2', internalToken: 'audio-token',
+    assetSigningSecret: 'asset-signing-secret', publicBaseUrl: 'http://127.0.0.1:1',
+    assetRoot: path.join(temporary, 'assets'), stateFile,
+  }, { fetch: upstreamFetch });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address() as AddressInfo;
+  const total = 25;
+  try {
+    // Unserialised saves shared one temp path: the writers truncated each other and the
+    // losing rename failed with ENOENT, dropping status updates (and, before generations
+    // were tracked, crashing the process with an unhandled rejection).
+    const responses = await Promise.all(Array.from({ length: total }, (_, index) =>
+      fetch(`http://127.0.0.1:${port}/v1/audio/generations`, {
+        method: 'POST',
+        headers: { authorization: 'Bearer audio-token', 'content-type': 'application/json' },
+        body: JSON.stringify({
+          kind: 'SFX', model: 'eleven_text_to_sound_v2',
+          request: { prompt: `sfx ${index}`, durationSeconds: 2 },
+          context: { idempotencyKey: `concurrent-${index}` },
+        }),
+      })));
+    assert.deepEqual([...new Set(responses.map((one) => one.status))], [202]);
+
+    await server.whenIdle();
+    const tasks = JSON.parse(await readFile(stateFile, 'utf8')) as Array<{ status: string }>;
+    assert.equal(tasks.length, total, 'every submission must survive in the state file');
+    assert.equal(
+      tasks.filter((task) => task.status === 'SUCCEEDED').length, total,
+      'every generation must record its final status',
+    );
+  } finally {
+    await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    await server.whenIdle();
+    await rm(temporary, { recursive: true, force: true });
+  }
+});

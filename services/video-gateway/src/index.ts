@@ -177,6 +177,8 @@ function validateGeneration(body: GatewayRequest, publicModel: string) {
 class VideoTaskStore {
   #loaded = false;
   #tasks: StoredTask[] = [];
+  #writing: Promise<void> = Promise.resolve();
+  #saveCount = 0;
   constructor(readonly filename: string) {}
   async load(): Promise<void> {
     if (this.#loaded) return;
@@ -188,8 +190,24 @@ class VideoTaskStore {
   byGeneration(id: string): StoredTask | undefined { return this.#tasks.find((task) => task.generationId === id); }
   async add(task: StoredTask): Promise<void> {
     this.#tasks.push(task);
+    await this.#save();
+  }
+
+  /**
+   * Serialise saves. Two concurrent submissions would otherwise share one temp path:
+   * they truncate each other's bytes and then race on rename, where the loser fails with
+   * ENOENT and loses its idempotency record.
+   */
+  async #save(): Promise<void> {
+    const write = (): Promise<void> => this.#writeSnapshot();
+    const run = this.#writing.then(write, write);
+    this.#writing = run.catch(() => undefined); // a failed save must not poison later ones
+    return run;
+  }
+
+  async #writeSnapshot(): Promise<void> {
     await mkdir(path.dirname(this.filename), { recursive: true });
-    const temporary = `${this.filename}.${process.pid}.tmp`;
+    const temporary = `${this.filename}.${process.pid}.${++this.#saveCount}.tmp`;
     await writeFile(temporary, JSON.stringify(this.#tasks, null, 2), 'utf8');
     await rename(temporary, this.filename);
   }

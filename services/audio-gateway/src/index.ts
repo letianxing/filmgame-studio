@@ -195,13 +195,33 @@ function validateGeneration(body: AudioRequest, config: ElevenLabsAudioGatewayCo
 
 class AudioTaskStore {
   #loaded = false; #tasks: AudioTask[] = [];
+  #writing: Promise<void> = Promise.resolve();
+  #saveCount = 0;
   constructor(readonly filename: string) {}
   async load(): Promise<void> { if (this.#loaded) return; try { this.#tasks = JSON.parse(await readFile(this.filename, 'utf8')) as AudioTask[]; } catch (cause) { if ((cause as NodeJS.ErrnoException).code !== 'ENOENT') throw cause; } this.#loaded = true; }
   byIdempotency(key: string): AudioTask | undefined { return this.#tasks.find((task) => task.idempotencyKey === key); }
   byGeneration(id: string): AudioTask | undefined { return this.#tasks.find((task) => task.generationId === id); }
   async add(task: AudioTask): Promise<void> { this.#tasks.push(task); await this.#save(); }
   async update(task: AudioTask): Promise<void> { const index = this.#tasks.findIndex((item) => item.generationId === task.generationId); if (index >= 0) this.#tasks[index] = { ...task }; await this.#save(); }
-  async #save(): Promise<void> { await mkdir(path.dirname(this.filename), { recursive: true }); const temporary = `${this.filename}.${process.pid}.tmp`; await writeFile(temporary, JSON.stringify(this.#tasks, null, 2), 'utf8'); await rename(temporary, this.filename); }
+
+  /**
+   * Serialise saves. Generations run concurrently and each persists several times, so two
+   * writers would otherwise share one temp path: they truncate each other's bytes and then
+   * race on rename, where the loser fails with ENOENT and drops that task's status update.
+   */
+  async #save(): Promise<void> {
+    const write = (): Promise<void> => this.#writeSnapshot();
+    const run = this.#writing.then(write, write);
+    this.#writing = run.catch(() => undefined); // a failed save must not poison later ones
+    return run;
+  }
+
+  async #writeSnapshot(): Promise<void> {
+    await mkdir(path.dirname(this.filename), { recursive: true });
+    const temporary = `${this.filename}.${process.pid}.${++this.#saveCount}.tmp`;
+    await writeFile(temporary, JSON.stringify(this.#tasks, null, 2), 'utf8');
+    await rename(temporary, this.filename);
+  }
 }
 
 function signAsset(id: string, expires: number, secret: string): string { return createHmac('sha256', secret).update(`${id}.${expires}`).digest('hex'); }
