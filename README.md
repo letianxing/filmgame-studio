@@ -94,3 +94,7 @@ See `docs/ARCHITECTURE.md`, `docs/REPO_AUDIT.md`, `docs/IMPLEMENTATION_STATUS.md
 `docs/LOCAL_RESOURCE_POLICY.md`, `docs/REMOTE_MEDIA_CONTRACT.md` and
 `docs/UNREAL_LAUNCHER_RECOVERY.md`. Unreal build evidence is in
 `docs/UNREAL_BUILD_REPORT.md`.
+
+## 换一台电脑
+
+见 [docs/SETUP-NEW-MACHINE.md](docs/SETUP-NEW-MACHINE.md)：clone 之后装依赖、用 SOPS 恢复本地配置、下载模型权重、启动自检的完整步骤，以及哪些东西不在 git 里、各自怎么恢复。
