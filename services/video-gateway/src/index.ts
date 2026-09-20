@@ -25,7 +25,14 @@ interface GatewayRequest {
     firstFrameUri?: string;
     lastFrameUri?: string;
     referenceAssetUris?: string[];
+    referenceVideoUris?: string[];
     seed?: number;
+    /** Ark `camera_fixed`: hard-locks the camera instead of relying on prompt wording. */
+    cameraFixed?: boolean;
+    /** Ark `generate_audio`: defaults to true upstream, so pass false to get a silent track. */
+    generateAudio?: boolean;
+    /** Ark `omni_reference_task_type`: auto | reference | edit | extend. */
+    omniReferenceTaskType?: 'auto' | 'reference' | 'edit' | 'extend';
   };
   context?: { idempotencyKey?: string };
 }
@@ -133,12 +140,21 @@ function toArkRequest(request: NonNullable<GatewayRequest['request']>, model: st
   for (const [uri, role] of images) {
     if (uri) content.push({ type: 'image_url', image_url: { url: uri }, role });
   }
+  // Reference videos are what `omni_reference_task_type: 'extend'` continues from.
+  for (const uri of request.referenceVideoUris ?? []) {
+    content.push({ type: 'video_url', video_url: { url: uri }, role: 'reference_video' });
+  }
   return {
     model,
     content,
     duration: Math.round(request.durationSeconds ?? 5),
     watermark: false,
     ...(request.seed === undefined ? {} : { seed: request.seed }),
+    ...(request.cameraFixed === undefined ? {} : { camera_fixed: request.cameraFixed }),
+    ...(request.generateAudio === undefined ? {} : { generate_audio: request.generateAudio }),
+    ...(request.omniReferenceTaskType === undefined
+      ? {}
+      : { omni_reference_task_type: request.omniReferenceTaskType }),
   };
 }
 
@@ -172,8 +188,14 @@ function validateGeneration(body: GatewayRequest, publicModel: string) {
   if (body.model !== publicModel) throw new HttpError(400, 'Unsupported FilmGame video model alias');
   const request = body.request;
   if (!request?.prompt?.trim()) throw new HttpError(400, 'Video prompt is required');
-  if (!Number.isFinite(request.durationSeconds) || Number(request.durationSeconds) < 1) {
-    throw new HttpError(400, 'durationSeconds must be positive');
+  // -1 is Ark's "keep the source length" sentinel, required by edit/extend tasks.
+  const duration = Number(request.durationSeconds);
+  if (!Number.isFinite(duration) || (duration < 1 && duration !== -1)) {
+    throw new HttpError(400, 'durationSeconds must be positive, or -1 to keep the source length');
+  }
+  const taskType = request.omniReferenceTaskType;
+  if (taskType !== undefined && !['auto', 'reference', 'edit', 'extend'].includes(taskType)) {
+    throw new HttpError(400, 'omniReferenceTaskType must be auto, reference, edit or extend');
   }
   const idempotencyKey = body.context?.idempotencyKey;
   if (!idempotencyKey?.trim()) throw new HttpError(400, 'context.idempotencyKey is required');
