@@ -1,0 +1,1253 @@
+{
+  "scope": "Minimum current review inputs and outputs; not an exhaustive archive of all historical takes or model dependencies",
+  "status": "INVENTORY_ONLY_NOT_TRANSFERRED",
+  "files": [
+    {
+      "path": "artifacts/local-video-evaluation/ltx-clean.wav",
+      "bytes": 128420,
+      "sha256": "04f9d9f904b1c3f28befc9fb6d18ee8222d52ffdcfc143224a63645944c6a066"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr-resume-v1/ran-context.json",
+      "bytes": 3212,
+      "sha256": "9998689f27b16305b52fe8cba7d123016b26831a5ad36c3dc2fefda18e49df3d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-brothers-line-02.json",
+      "bytes": 4452,
+      "sha256": "21848e29527df5336437645ea15e4bd6e455d10d61f13977f7ae80172fed5d02"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-bu-line-02.json",
+      "bytes": 16821,
+      "sha256": "595a5ff4d3732aecbf36ea62cba5462ca4bda38d389dc4e06121f61fb07a6e5f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-bu-line-04.json",
+      "bytes": 7636,
+      "sha256": "f7e40e7f1b3c53ea30a1a70d25df4f535d1cba5760a514a67917559a27f2217f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-bu-line-06.json",
+      "bytes": 4430,
+      "sha256": "7aefc89f941204300d22b674204a53c14bdb0b5386b51b19d78a5db1580b0dfc"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-cheng-line-02.json",
+      "bytes": 13630,
+      "sha256": "c575aaafa106ebcf7bc342520cd0967073d5d6df7aa98404b2ef6892cc66be92"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-cheng-line-04.json",
+      "bytes": 4373,
+      "sha256": "310a98230886c9bd42017e4cfc103c193db6e4517351e06be076d49f067ce390"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-cheng-line-05.json",
+      "bytes": 4464,
+      "sha256": "8620ca04beace5d70122911228a94f6bdf706f09c1ac35ab554d6a0c15f0f1a9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-cheng-line-06.json",
+      "bytes": 2245,
+      "sha256": "264a0971ac97246419f77dc17206177b9f70cae787ad711d92ae483103626b1d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-huang-line-03.json",
+      "bytes": 3374,
+      "sha256": "9dafcce9f592e5e1f744b5144a40ea20383c988c401042d8a08190656e0b99fd"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-jingxiang-line-01.json",
+      "bytes": 8090,
+      "sha256": "1878d250c4a6dbdd321484a5ee9aa623182a01777536ae96019e90db911f4ed2"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-jingxiang-line-02.json",
+      "bytes": 13389,
+      "sha256": "c77810b291e8f4b2e735ea28eb94427736b22c57f2879538d9179f743da400a4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-jingxiang-line-03.json",
+      "bytes": 2565,
+      "sha256": "daf4584e9456b3d77b59d183ab65756592af631825187c7435ed3f27223a8790"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-jingxiang-line-05.json",
+      "bytes": 4408,
+      "sha256": "8583fbfa99fb94b9b936c3a526e1774490332790d903d413d420f7fa5317b2c9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-jingxiang-line-06.json",
+      "bytes": 2911,
+      "sha256": "3c8fb38dac997a685f50be0f35d4c2775d4305018c6020d589d9d7424cedf78c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-01.json",
+      "bytes": 16399,
+      "sha256": "75e101c7502a746d9de92a47d354b5ab0ccf463ac986fd4e308de7ea7aaeb66c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-02.json",
+      "bytes": 13443,
+      "sha256": "a2699c73d996218e3720e3f95cf84d2ca2ff0266038f0700483866c933cdad05"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-03.json",
+      "bytes": 16624,
+      "sha256": "30f9564d82615d77a30918c837540caf9c6dd637b82195c2f1b4d48118fb890f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-05.json",
+      "bytes": 7466,
+      "sha256": "88de4f0d307ccd20f1bf397926e300754d7083a3ebb01383f2f11d18f56ea1b3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-07.json",
+      "bytes": 7898,
+      "sha256": "3db36e8c38892ad77c89f8762f35390b5b712f880052a89fefdafcf421dfbcd8"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-08.json",
+      "bytes": 19603,
+      "sha256": "e6793a05368b19e6898b76e2251ff6ad8f7b37c0c706c8f621fb69a68870c85f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-09.json",
+      "bytes": 2609,
+      "sha256": "6c886841ba34d35a6cb2ae9e7ce14187c6e70c80e7eac9b73fd5c8d53f38cc05"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-liang-response-line-10.json",
+      "bytes": 9659,
+      "sha256": "8561a0e7a96b60629fee36f08897919a217f5a13cec797050283ce2716546e8a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-lu-line-02.json",
+      "bytes": 4519,
+      "sha256": "80cf7b80db81ef9089afbb4edf8a835b6b02552016390734b6f7d9fef684ec24"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-lu-line-03.json",
+      "bytes": 10567,
+      "sha256": "0d928f6d6241fcc2a00485258a07aad805a56c5174e83ae8fa71c0fc94ebf0c5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-lu-line-04.json",
+      "bytes": 5309,
+      "sha256": "6dbe0ec4afcaec74b2c8b36a30d365c91c145d15b440ed7232937fb257760eb9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-lu-line-06.json",
+      "bytes": 6111,
+      "sha256": "edbf84ccb5adc277b36a33c295e1be1fcfb029fb50d34d514af0eb13033f2be2"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-xue-line-02.json",
+      "bytes": 2602,
+      "sha256": "8599147434d49dc563e589148d1ca7e26624a55c8c2b336a54741a3fb6c5a195"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-xue-line-04.json",
+      "bytes": 19034,
+      "sha256": "f27a3fbd6d21ae57c43566e943d82be396710cdd22813193abebbdb49041bc67"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-xue-line-06.json",
+      "bytes": 5480,
+      "sha256": "125a70f238a210c8609e2956e42403242ab62cc11a79a49beff3cd7cbd24ee38"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-yan-line-02.json",
+      "bytes": 15376,
+      "sha256": "250fba5a31f8d56ab597ed772838255233d1f5c0b6abb956c61a66f85b5fa45c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-yan-line-04.json",
+      "bytes": 6305,
+      "sha256": "f5de0ce6bd8821fbbc7aa0a9664b9106f7a0d27a29e6504797d1b631bd68fdcd"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-yu-line-02.json",
+      "bytes": 4604,
+      "sha256": "7a77d2e9d90e03e9f99a76f4b838dae946703e9c55e876a80e524bb57aa5d20f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-yu-line-04.json",
+      "bytes": 13243,
+      "sha256": "c6ca9442d37a0d29f8414c14b23484d13d826978856e70bd5a9852edbf37b994"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-yu-line-06.json",
+      "bytes": 5765,
+      "sha256": "2c1d0926276a8ee5b2119dda2329fb17b90af962307c2e0b2eba7da743889310"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-zhang-indictment-line-01.json",
+      "bytes": 9009,
+      "sha256": "3b6f19a5c71ade39e3325673dc5b24d307601b33df5116ac5ef1c801bab3c76b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-zhang-indictment-line-02.json",
+      "bytes": 16731,
+      "sha256": "96b3f269db59d0bd7291f4f726d53a904b6877520f85107df027a870b04f33b9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-zhang-indictment-line-03.json",
+      "bytes": 9659,
+      "sha256": "f7d530d79ca518cd572e02f7de4cba32f5ad4f85040dddf00bda310653b2ecb6"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-zhang-indictment-line-05.json",
+      "bytes": 3255,
+      "sha256": "265d37ef36a5bdbf420c5a09ac48181a6e4e8666b9ff3d00b7515cbef89e7f89"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/debate-zhang-indictment-line-06.json",
+      "bytes": 16508,
+      "sha256": "116039f0eb443b1d86a487be0e5e202b9bd03392aaa97ddd89fde5ac27a34285"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-answer-reactions-line-01.json",
+      "bytes": 2053,
+      "sha256": "f47b85200c74abc44e93e624a6ea378b196d1ca17214693fbe8f141053123916"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-first-question-line-01.json",
+      "bytes": 4777,
+      "sha256": "aaa855acfca89edd1b5fcef6711d68e2c728eca48171cdca71ea30264885307f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-03.json",
+      "bytes": 902,
+      "sha256": "76680e06dabbe4ede8960f970c67288ee7d3f023461de14f8120246f177438b2"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-04.json",
+      "bytes": 1264,
+      "sha256": "656d5b7b6143f742b7e4c4458144301cf0603d3f097c796f4c89a2173ca3c836"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-06.json",
+      "bytes": 1242,
+      "sha256": "08c846514638e24863939797e025fb797a59b84d539cb8830678447c861d7f0b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-08.json",
+      "bytes": 902,
+      "sha256": "83c9681af4f8ae269f769f73add15a27bd959cafe911d5d9ad14801f292a2765"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-09.json",
+      "bytes": 1283,
+      "sha256": "05b6561fc70e1f4516939488f036dbb2f456aa4b54d90f3951a1c320f207c44b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-11.json",
+      "bytes": 1238,
+      "sha256": "cd00ae340f6c1945a711aab7cc79000697a9ed2c46149f5a04cc07a897987594"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-13.json",
+      "bytes": 1261,
+      "sha256": "06ffd6206a99b610910d9da2d5574a3ac25307c79f6e1b716f77159fc4979a21"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-introductions-line-14.json",
+      "bytes": 1228,
+      "sha256": "31ad10bedab5df55383d0293e91b481250ffaf033ac7de78fb85751f91d9413e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-seating-line-01.json",
+      "bytes": 1651,
+      "sha256": "e252d0dcf6d746c581442b50b9bb16584fd018c25f0753660ace24d7454f1374"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-seating-line-02.json",
+      "bytes": 2284,
+      "sha256": "fe7b96b1df33769b33f3a7f96509898efc68cc799073a6ea7af71b6346bfd11c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-seating-line-03.json",
+      "bytes": 2095,
+      "sha256": "f6d6a3b690b967845b57878db2c43a2f32d8e49320742e64c23ab006c51ede0e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-seating-line-05.json",
+      "bytes": 1968,
+      "sha256": "43271e4d5f264e020077787668a566d639e0648403d43b77d28e230fd9da1466"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-welcome-line-02.json",
+      "bytes": 3659,
+      "sha256": "32688c453be3a6f2f39dc69f28f877b2683d7ba14982b5150385254353f14fcf"
+    },
+    {
+      "path": "artifacts/wolong-local-film/asr/opening-welcome-line-03.json",
+      "bytes": 2411,
+      "sha256": "6629d25d0c7131b5c6db2b8db5cc74a4899db96625c14791bb6d6317f7210bc6"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-bu-zhi-qwen-v3/debate-bu-line-01.wav",
+      "bytes": 198524,
+      "sha256": "0f49ac21e29203b5d945115928035f88d903bb766cfd385c0f777d6e914f05f4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-bu-zhi-qwen-v3/debate-bu-line-03.wav",
+      "bytes": 577724,
+      "sha256": "911cf9bbd7cfef62b4ee0f0269b321d24bb5d010ce6e6acb134acf0ff65cdaa5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-bu-zhi-qwen-v3/debate-bu-line-05.wav",
+      "bytes": 171644,
+      "sha256": "fe3960705858aeda868070fdf3b714e6630032e6902469fbcff803a8c4fb8d78"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-bu-zhi-qwen-v3/opening-introductions-line-07.wav",
+      "bytes": 65804,
+      "sha256": "c9b9d1c9d1904dea2ed48a0bcb73955408fe12ad90ff0af362760180ad2acfa7"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-cheng-bing-qwen-v2/debate-cheng-line-01.wav",
+      "bytes": 554444,
+      "sha256": "eb2d70e9151159f0295e7791819279b5c586babfccce4195250f9f8cdf2a89ae"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-cheng-bing-qwen-v2/debate-cheng-line-03.wav",
+      "bytes": 628364,
+      "sha256": "ee084f9c882b0546f73466cbd15c039c94bad78d5ec180c1ebc5260fe8fca0b3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-gu-yong-diction-v2/debate-liang-response-line-04.wav",
+      "bytes": 703004,
+      "sha256": "b9447b8759fe7a844d5278ec673279007c8c2bd42c5b9db6a0823f781b8bfff1"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-gu-yong-diction-v2/debate-liang-response-line-06.wav",
+      "bytes": 167084,
+      "sha256": "c8d4f9ffbe3b255027d324612ef72b19212aafcf2b6ceb56f291dd384b9c3f02"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-gu-yong-diction-v2/opening-introductions-line-02.wav",
+      "bytes": 70844,
+      "sha256": "28afd4b76ab94258714196b49b9e5b5ab29200d7ca5f8e0f15845571f863f4df"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-huang-gai-diction-v2/debate-huang-line-01.wav",
+      "bytes": 704204,
+      "sha256": "bbff363081dbe960dd492aa8223e6e4a41e05cac8a43c0f8ba5987b2033485c3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-huang-gai-diction-v2/debate-huang-line-02.wav",
+      "bytes": 309644,
+      "sha256": "ab71ea4718ac762fc5c4e891cbbcbaa66d849af979cc9a3ab45243a771db1b42"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-a/kongming-001.wav",
+      "bytes": 167084,
+      "sha256": "2ff4097c23da51d53f7560f3dc22eb4cbb20bab3ef9a8696242fc9e66d758ed4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-a/kongming-002.wav",
+      "bytes": 67244,
+      "sha256": "0a31919491657f9c6bae562e893175f8fc37c2405dc4796ba3463ce02b533357"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-a/kongming-003.wav",
+      "bytes": 74924,
+      "sha256": "8807678b056ae7e3a91476ba2d6f2afbe57c7141f1367fbbc222a2c5adcf8f0f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-a/kongming-004.wav",
+      "bytes": 193964,
+      "sha256": "2daf68876d700ffed6d1da148112e197f7422155aa4c95939b3eeab26d9a628a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-005-01.wav",
+      "bytes": 192044,
+      "sha256": "b05e1cf423064eb0317e92d70c83ee678dd29b98512a443dabfeb740e4fe0e58"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-006-01.wav",
+      "bytes": 111404,
+      "sha256": "d3d91e724469dc73e3ecf41c221bffd870e730c5499d2fd1f5b5f9678f13bc48"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-007-01.wav",
+      "bytes": 865964,
+      "sha256": "3c598152e6a3371ae5f4f5c093bb859704e866902daa5ec6a850d54f80556e20"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-009-01.wav",
+      "bytes": 263084,
+      "sha256": "8565ece0efc91d2d7e443b7cb75e0c66174d1158dbbd76f1f502d70e7e58effd"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-010-01.wav",
+      "bytes": 1376684,
+      "sha256": "ef6fd1a76379b48ffd0577a8d4f6579b550a61a0078b0a64b85d4978228f80ea"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-011-01.wav",
+      "bytes": 1098284,
+      "sha256": "21bce67b2c288424d09ffe9e813b4c55f535f060947d3a4e955aaad046ff55a1"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-012-01.wav",
+      "bytes": 1029164,
+      "sha256": "eaf58b4f2a3b2c4ddc4405ad32f373957ade6d5dd27ccd1374ce093bc154befe"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-013-01.wav",
+      "bytes": 581804,
+      "sha256": "37e7c1dc3003f4498212873a8db25ad37f41a0b60f85dad894bb09516c920ffe"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-014-01.wav",
+      "bytes": 529964,
+      "sha256": "cdc7129bd281e5bf43ae76bff26bff09049b262390c864f95489f364b0dcebfb"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-015-01.wav",
+      "bytes": 1234604,
+      "sha256": "4208d4d58d555f5ab7998971367b1c44d02321a09a3359fad2155de9f9bff087"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-01/kongming-016-01.wav",
+      "bytes": 750764,
+      "sha256": "a1c75a6b3b97d01bab8c9346ed6411366b038f586c9a20bd291b5bbae094c504"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-017-01.wav",
+      "bytes": 307244,
+      "sha256": "699aa163de2b33428de6adf9620ac8cdde96ba85e8648e6c1ec37251bd13c94d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-018-01.wav",
+      "bytes": 919724,
+      "sha256": "2f15f705f11b21c34ef94aa9c644999298ee80f65e92c649daee1b329b9fff46"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-019-01.wav",
+      "bytes": 685484,
+      "sha256": "85f5346ced6f2729e8b49b4e767e0b6e20f141e18c25c2bee7514fb2bdf40e1c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-020-01.wav",
+      "bytes": 1130924,
+      "sha256": "bd76eb1f407707c9f91a3da5698a60e31cbefdce14024eda3897172a838ac4fd"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-021-01.wav",
+      "bytes": 560684,
+      "sha256": "e2646376f34de0e2415596a12aecea0462f5fcaae8912eaac2574054116ddd13"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-022-01.wav",
+      "bytes": 385964,
+      "sha256": "716344da725aacc54d57a6c5d0ec67334d5b4ecc11c25f79a31a65a083dcf905"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-023-01.wav",
+      "bytes": 134444,
+      "sha256": "60277d8e52a76a564db3e323dd2dcae4c0b41ac15ea9b8bd042ea0c76b57d6c3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-024-01.wav",
+      "bytes": 1405484,
+      "sha256": "7cf19e7cedfa00be7748f1a4ac45bafed108904754fefbb26794e069387e1eec"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-025-01.wav",
+      "bytes": 414764,
+      "sha256": "961fbcd36ae0068bc86392728620617a251615982bf3b37212842ab1b252b1e5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-026-01.wav",
+      "bytes": 316844,
+      "sha256": "4b00ae689efc8a95c38eb5d84419f619177fb1e3ecab66503e855b6004541815"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-027-01.wav",
+      "bytes": 687404,
+      "sha256": "a151a519e94b7e4a10e1d8dcad8200429b1e5864bfb7748914bca0302d649159"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-02/kongming-028-01.wav",
+      "bytes": 359084,
+      "sha256": "b46183d18ea7df54ebc55de1787cf9ddd4fdfb87a65de82c293519c09d18e676"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-029-01.wav",
+      "bytes": 435884,
+      "sha256": "57c96b32fae02ba86e5fbe3d3eeb83fc1186a009c4fa7f4c4cb6991c1f894cc2"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-030-01.wav",
+      "bytes": 1094444,
+      "sha256": "140016f1db2875e6b6047be0b5ea1e00793a3230e0b0887e2a045f2e48dea620"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-031-01.wav",
+      "bytes": 485804,
+      "sha256": "98b4583be54043b73d8158aa75581c26095f751b5a5a8dcc872290ea8d7e3e51"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-032-01.wav",
+      "bytes": 992684,
+      "sha256": "5ac708794ddf9788b4c8c055a24149abfb8d8e7f65755ccdc40d627d2f136fb0"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-033-01.wav",
+      "bytes": 336044,
+      "sha256": "e0fbc838c716c6c5e327f28c226cf6a8a3c68d51e2c7c408ae6139d9e8ca6d29"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-034-01.wav",
+      "bytes": 195884,
+      "sha256": "660aee47a91258dc60a2c18ffd440bd88ade277005af5a86db8ff7b7c53f5173"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-035-01.wav",
+      "bytes": 284204,
+      "sha256": "9cccf3bfe2ded547a243b270d68afdc7e27b2388d98f815a2fc12ea7da5ab87a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-batch-03/kongming-036-01.wav",
+      "bytes": 397484,
+      "sha256": "e0bd4c58c6026daafa0090e5f9b75598c3ee23550cb9559294b1c955886aad83"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-kongming-ran-v3/debate-jingxiang-line-04.wav",
+      "bytes": 68924,
+      "sha256": "05909904f14980407f8ba891c57c9955dc82deb043a4bc93fb5987894711de9f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-ji-qwen-v2/debate-lu-line-01.wav",
+      "bytes": 847004,
+      "sha256": "e1a8820b4bc7fac0583d2a1dc5529d74f387fe74d10c0c3013a3a3257de91f7e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-ji-qwen-v2/debate-lu-line-05.wav",
+      "bytes": 199004,
+      "sha256": "0507887d2a38188d5f8c8b8a18a31196ce56bfaf4c7b9f3571e8dc1f08c6a3ba"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-ji-qwen-v2/opening-introductions-line-12.wav",
+      "bytes": 56204,
+      "sha256": "b44e9caeeed56050256b4445132707e76936a966351f0dca1ac004246481f72b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/debate-bu-line-07.wav",
+      "bytes": 546284,
+      "sha256": "fe941feb45ac45d4dc8b906c81d48be14d5060798c2e7e1e718680bb1bd71697"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/debate-huang-line-04.wav",
+      "bytes": 149324,
+      "sha256": "9eda153d1a76d99c0074b69990840c17c8a766daa83ff42f86de6b073c5f7b41"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/debate-zhang-indictment-line-04.wav",
+      "bytes": 320684,
+      "sha256": "adf137e373033925b692b9cd99f568df00eb93d5e373ed65c4d6c61c35c72c9d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/opening-seating-line-04.wav",
+      "bytes": 224684,
+      "sha256": "0e71f4a24e5908f3843e86f76d2e55c5cbf6b5b24ff7554895f9a1d27abf0118"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/opening-welcome-line-01.wav",
+      "bytes": 149324,
+      "sha256": "3ae2fedcb57b1c4a19a7dc4bf8d8dea061e2fc72f7bc70f69870f61b32626847"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-xue-zong-qwen-v2/debate-xue-line-01.wav",
+      "bytes": 159404,
+      "sha256": "a305a2b69cacd8e137324d62586685ce62a4999169f5b393597456890f3e3535"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-xue-zong-qwen-v2/debate-xue-line-03.wav",
+      "bytes": 1080044,
+      "sha256": "faf85edc05f2d622173c49d5b7ef8207a6cba4a9de18c35b3aef1b3bf55b6560"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-xue-zong-qwen-v2/debate-xue-line-07.wav",
+      "bytes": 327404,
+      "sha256": "1adb12a072d01e84c45b9e1cd9102cd17e6fcde06feba6f1b056fb545df54e1a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-xue-zong-qwen-v2/opening-introductions-line-10.wav",
+      "bytes": 38444,
+      "sha256": "82a03ec641b1d1be78162267649af11d0dcda65aafadbf09fab87b002da4e77a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yan-jun-qwen-v3/debate-xue-line-05.wav",
+      "bytes": 216524,
+      "sha256": "21ea0f80be122a328d6e47a0dd44b30df3a3218d35cf554933751f271e7e3754"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yan-jun-qwen-v3/debate-yan-line-01.wav",
+      "bytes": 519164,
+      "sha256": "8c003b887d40a62f2feb7fd28916a7b3d7697dbd253bc2c15e33b415b2dddf7f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yan-jun-qwen-v3/debate-yan-line-03.wav",
+      "bytes": 201404,
+      "sha256": "4858fbde31492830ddda9645fe1d2966b2d687555b564ff43a3eb7647d4c7304"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yu-fan-diction-v3/debate-yu-line-01.wav",
+      "bytes": 375644,
+      "sha256": "94add7b972b78fa83a985242e74986cd2f95ef9a77d059caf98c35b2dec1c6f3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yu-fan-diction-v3/debate-yu-line-03.wav",
+      "bytes": 559004,
+      "sha256": "120562799ef154a61571408c186ac99a7844940f4e90677fcc5faef37dd969e5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yu-fan-diction-v3/debate-yu-line-05.wav",
+      "bytes": 648044,
+      "sha256": "2dae6b832a3dbc32d8d6f8ec0df15c723e23ab4df76742b93de650634f57fc42"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yu-fan-diction-v3/opening-answer-reactions-line-02.wav",
+      "bytes": 82604,
+      "sha256": "cfa6afd4249a9d7be30defb87e56ccc45525af948e14a31e0d0ac87da3278ffb"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-yu-fan-diction-v3/opening-introductions-line-05.wav",
+      "bytes": 36044,
+      "sha256": "be5c7f6ec8f74b6d55855d4dabc8252cc02475add6fe63d3e35db9653e6b357e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-001.wav",
+      "bytes": 332204,
+      "sha256": "3e8dac0bcf881e7c3f0e52730b3a961c8bdabecdae365e0f2b22487eae0a0382"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-003.wav",
+      "bytes": 76844,
+      "sha256": "dca44781daa5e5b34e301a6d84a68283ac169b8e53087be8d9b9693ad6a34252"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-004.wav",
+      "bytes": 80684,
+      "sha256": "ebfbe4dc32c8989fce822e01d38a9432be078b1f8936e403715d7ad6b7aafebb"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-005.wav",
+      "bytes": 134444,
+      "sha256": "ed0987bf9818cdf62649ba3597b8cb300cdcf7177a01ee2ba1705c2c9a33eedd"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-006.wav",
+      "bytes": 126764,
+      "sha256": "cb6be0de3b7da8eabfb62e78b28d2dfcb1206bef20b97dcf31a32d407163d776"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-007.wav",
+      "bytes": 111404,
+      "sha256": "0c1d86522116cc237b4e1c4c1feb120723906f9abd4f3d8c4193b5b21e260c3e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-008.wav",
+      "bytes": 130604,
+      "sha256": "23cb7b9361ab0e8dbcd613682be17f171efb628a8f11329996af36693da0182e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-009.wav",
+      "bytes": 201644,
+      "sha256": "36cdf1c968cf95186ecfb3d073b4f77ed1fc0a1e5d1b1679375fb3ae7c185f92"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-010.wav",
+      "bytes": 134444,
+      "sha256": "cc2b2a6d4e310876c475a00f3e3d610bf9d6d5d727bf5d00b39e5d14f371893e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-011.wav",
+      "bytes": 416684,
+      "sha256": "3b3d43c1ddd78e0258bacf1384a61bf4aafc2426e23e207038f9824babee96f1"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-012.wav",
+      "bytes": 577964,
+      "sha256": "423fd40f712c008a9cbb763c7ecac95ad0d23ee5df13b9f7998ac831c703fe2a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-013.wav",
+      "bytes": 228524,
+      "sha256": "68fd57eaa2d502c54bc4c92ce311ba4edd8d833751cbe2f9a311841666ef894c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-014.wav",
+      "bytes": 330284,
+      "sha256": "d4b22a7708e805acd2c18c487966ccaa26c91716930c5def3635c02563c9fcdf"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-015.wav",
+      "bytes": 752684,
+      "sha256": "ca3d5f5f6d4486e50d4d4f965b564d3f802f700cc90d71f087afa97ebe7a9bb5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-016.wav",
+      "bytes": 1215404,
+      "sha256": "0fb82a8b4d1278bfa7262067a0a68c9f77cd2b1411923c36a4462daf920b2309"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-017.wav",
+      "bytes": 937004,
+      "sha256": "1bc112d231a302dbc09ce0129e06ead50acceff3533968078e19f52094c9ee76"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-018.wav",
+      "bytes": 293804,
+      "sha256": "6ad33cf3c15508e14d7a6bc3d8f9a3505e54ee1804c662e02b756b4e41efc195"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-019.wav",
+      "bytes": 1340204,
+      "sha256": "d474cc20e85f4e28ea4ee696d3dce92dd03118ba09a1acaddebc172390b7b059"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-020.wav",
+      "bytes": 220844,
+      "sha256": "a52c191c8e3eace5a3d25ca884ae6df7f4be6930b956db2cb376a2756a121258"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-02/zhang-zhao-021.wav",
+      "bytes": 362924,
+      "sha256": "4e2d51cb1d3e0889577ec873bb15e4aa912c358f7b7ab09d2e374bc28d416509"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-trim-v1/asr/opening-introductions-line-01.json",
+      "bytes": 1441,
+      "sha256": "a22ab9f71bfa4e3b299c020bcc0d6cb08967d77c7fe183cc1e32095a3e13f7d5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-trim-v1/opening-introductions-line-01.json",
+      "bytes": 453,
+      "sha256": "6306ebc958d01ae0aa075a457deaf20e1abd3caa29dcc6615ba8ab47b4fb821d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhang-zhao-trim-v1/opening-introductions-line-01.wav",
+      "bytes": 79244,
+      "sha256": "2a5a7697f06ffd9d60b7927495e50a096b9a1d79fba4efcdf51ed80297419da4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhuge-jin-qwen-v2/debate-brothers-line-01.wav",
+      "bytes": 164444,
+      "sha256": "608ecae057c4e98c919cb5d32e7cd1a622ba36602af1b080d52cc870665cb686"
+    },
+    {
+      "path": "artifacts/wolong-local-film/dialogue-zhuge-jin-qwen-v2/debate-brothers-line-03.wav",
+      "bytes": 131324,
+      "sha256": "afd8cdc5e03164208f577dda75be4cf9b404823d56ca82bd75745f565d69806a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/canonical-dialogue-draft.srt",
+      "bytes": 11630,
+      "sha256": "c62b8439b00256635708a13c7cb819530c1dda640ed24c488ce212024b7ff500"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/dialogue.wav",
+      "bytes": 61562924,
+      "sha256": "1b417c546c245f7b00d8fe7f39395f07df651d2547b8ff5003392013569b0a52"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/gain-plan.json",
+      "bytes": 2707,
+      "sha256": "4d9f4e3dbfe8fe68ea4ae8360a99c44287f6d9e21b3daa37335f0bad2e6b7501"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/loudness-verification.json",
+      "bytes": 18725,
+      "sha256": "b97dff9c0fcb83fb59a36e80b44717a882258b62f7b98b3d7fb3bf1cbb2bcddb"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/sample-verification.json",
+      "bytes": 214,
+      "sha256": "475a2a7c40edf3e4981553b24943cee504f56c50aa17d2fad482fa7a2b62548d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/scene-action-map.json",
+      "bytes": 18208,
+      "sha256": "519fc8cb14c298e1ec1d595cd2c7f029cfb2c5d5a970092ddf00dd69e790b48c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-balanced-v1/timeline.json",
+      "bytes": 66641,
+      "sha256": "b9aa8883a64254cbf41d3941dba6cdc2c700921d5707b24f96b4e164963b8803"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/canonical-dialogue-draft.srt",
+      "bytes": 11630,
+      "sha256": "c62b8439b00256635708a13c7cb819530c1dda640ed24c488ce212024b7ff500"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/dialogue.wav",
+      "bytes": 61562924,
+      "sha256": "b660a5c382bbea37b6935733b069eed4ca9996dd4e00cdcab4f08a6fd4bce4a3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/loudness.json",
+      "bytes": 31735,
+      "sha256": "179e0f8e3639515e484c7f7dd37bf2776d0066834d9d22c029dce89256bf0a1f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/scene-action-map.json",
+      "bytes": 18208,
+      "sha256": "519fc8cb14c298e1ec1d595cd2c7f029cfb2c5d5a970092ddf00dd69e790b48c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/timeline.json",
+      "bytes": 66527,
+      "sha256": "d6f431735ce596cd2cf54d6ca0ca52195e57c332e15b34d806ac4b2615e048dc"
+    },
+    {
+      "path": "artifacts/wolong-local-film/full-dialogue-worktrack-v1/verification.json",
+      "bytes": 2813,
+      "sha256": "269149f5ebdd80147c0a950753858fbc52e0b74d3a3b79c00fc40b5d0dd8e57d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/assembly-manifest.json",
+      "bytes": 777,
+      "sha256": "a8b0acbdb2d00a2449a6f053f017c8eaea17ba506a637121b7007575d714dae3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/cues.json",
+      "bytes": 665,
+      "sha256": "79895cfd7bb339a26cda1af7599fc09ae470fab65f99a69e0b0728ba8b48125a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/nameplates.json",
+      "bytes": 451,
+      "sha256": "6f6ef4854fe39cbc419248aec48dee75a7b5259663261c6291e0712799c43047"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/opening-preview.mp4",
+      "bytes": 5537255,
+      "sha256": "f86c3e415e54d4781708e79449169b0d674395ababd32db105b6f94afb099051"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/opening-preview.resources.json",
+      "bytes": 94,
+      "sha256": "ec2b296603c3c543710481bc8ba2665eb18383e54a5b86e420b3fef54f1e8162"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/raw.mp4",
+      "bytes": 2007081,
+      "sha256": "9ad7dab29de537858161a5c693309178eecfef1d12115f0476e652121c0d9000"
+    },
+    {
+      "path": "artifacts/wolong-local-film/opening-continuity-v5/review.json",
+      "bytes": 538,
+      "sha256": "3872bcbd47da2e74f6e5738c4179d12fc6dff6e64a73bf56277ddfc915355820"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/bu-zhi.wav",
+      "bytes": 1048364,
+      "sha256": "57d6c88d7976da0be2eed0bd452937a3a992e639f43f4317bfd5ad4bd2e74037"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/cheng-bing.wav",
+      "bytes": 1182764,
+      "sha256": "d19ea034628f7840b6852ae7e6aa9eed6ab2746a655bc2990922436331a4fb4a"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/lu-ji.wav",
+      "bytes": 1102124,
+      "sha256": "15fcd84a2f2f41a4848c60e371656f5a162e6ddb856fd3fdae3ebc2c4ef155ae"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/xue-zong.wav",
+      "bytes": 1605164,
+      "sha256": "56d69b192dc064e070d412a06a9f44c016c972940ed8df7311827223ddc5ec4f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/yan-jun.wav",
+      "bytes": 937004,
+      "sha256": "25bb74f263651a216946c9df1d9dfcf47719779d9fc3bb563da2b861d62d55b9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-cast-v1/zhuge-jin.wav",
+      "bytes": 295724,
+      "sha256": "f092c2393ddbd9049650d47291bb1377b14242cc7b8ddf00da214c7864937507"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-diction-v2/asr/gu-yong.json",
+      "bytes": 9102,
+      "sha256": "0e38b3a54f68c217a6a4b6b386a67636b54d9b33db61bf45e171b290fb520895"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-diction-v2/asr/huang-gai.json",
+      "bytes": 13017,
+      "sha256": "55122a589b3e759a7b559fb72a686d891d42b9993a79e302af2416295e6644f9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-diction-v2/gu-yong.wav",
+      "bytes": 940844,
+      "sha256": "6d476ad2579b11d66c931fe38fc9b8596c7cc679c5775da8b2e3ca35056d67d5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-diction-v2/huang-gai.wav",
+      "bytes": 1013804,
+      "sha256": "9bf062f93536303d4eaf83f7e4708dace05e8992a59abe94aa99bf81f0a9bf62"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-lusu-v2/lu-su.wav",
+      "bytes": 1390124,
+      "sha256": "567d80b0f73593040c8e9810c56d9dc66c947072fa6f2005938d0f2d585e8bc4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-yufan-complete-v3/asr/yu-fan.json",
+      "bytes": 19028,
+      "sha256": "f76fe7ba8ff0ba49efde87c7014d503dae37912074c1b8294ff35ba0a2f5e02f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/qwen-yufan-complete-v3/yu-fan.wav",
+      "bytes": 1701164,
+      "sha256": "374ac47dca72eae3d04ba61152db7bd984af4226c84743645bfd998d6441013f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/voices/zhang-zhao-reference.wav",
+      "bytes": 192590,
+      "sha256": "7748a9eb534713d350d0103100e4228268fa6d215607fe6ec9a08f88854d049f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/base.mp4",
+      "bytes": 482552,
+      "sha256": "203bfadd8a6aa750de1491aab693e32b77dffd1220c6a2bddc5301606fa742a1"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/base.mp4.receipt.json",
+      "bytes": 744,
+      "sha256": "844df7a7923261f49d39a0904363ddc20ee4c0e629e09489505e2a324bad43d5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/cues.json",
+      "bytes": 48,
+      "sha256": "a2b936e98185b553a8b41f485ccc23c56874eb939c14f23c2a33e47442fe0f74"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/dialogue-shot-assembly.json",
+      "bytes": 608,
+      "sha256": "05aad6c62a66efe897a8071a4ca677fe2bdac45c4df190dacbc213c702dc75c3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/dialogue-shot-review.json",
+      "bytes": 839,
+      "sha256": "9f44d6552cf056c5161cfbf7a681efa68b9a9854223ad2e46e7d655ef695b79c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/dialogue-shot.mp4",
+      "bytes": 179061,
+      "sha256": "26361723801b0be4ca51eea857af76e3e62ace3beee67aed4a3900c7b88e640b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected-request.json",
+      "bytes": 729,
+      "sha256": "eeffec3b0db21c1e796c11f0dd9a41ea0460cb16c5f8730adc3df3fbe4c7630b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected-review.json",
+      "bytes": 823,
+      "sha256": "557f94b0b00137f0df47a30cc4b4925717ae0625a92a7474150576b2352c228b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected.features.wav",
+      "bytes": 36046,
+      "sha256": "fd70d49572e4f93d80ed6d9db8d09a00510c08ca4b5d160891ff0063058fa19b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected.mp4",
+      "bytes": 91583,
+      "sha256": "d8152446af77aa378bc2a6c8b63e61eba7eab6b2dd6860cfd9c2a093d17ecca4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected.mp4.evaluation.json",
+      "bytes": 834,
+      "sha256": "5d3bbfb1550ceab478c43c3ae39831ca0335d4e105dcad9dc91316ed365cb19c"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-protected.mp4.resources.json",
+      "bytes": 95,
+      "sha256": "114e23eeece4e600e9cd955afabd68cca2ed13ac47aab37135429edda438bdf8"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-request.json",
+      "bytes": 484,
+      "sha256": "11e3601e1d60b411652b77e7fe09aa12f5d23cd39d2542a21adf1d059f9ddbb6"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-review.json",
+      "bytes": 708,
+      "sha256": "69146f76a0524e474a6d52b9d44465d8995e23fcb7b3c2d1cced11b4b5ce2658"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-roi-request.json",
+      "bytes": 695,
+      "sha256": "8821fd7099540fd7a94a51ecc787a6eae0349bc7f18794666611d24289e6ceff"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-roi.features.wav",
+      "bytes": 36046,
+      "sha256": "fd70d49572e4f93d80ed6d9db8d09a00510c08ca4b5d160891ff0063058fa19b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-roi.mp4",
+      "bytes": 91564,
+      "sha256": "221a22c6c54029fe919f8569d02ec61089459e257ad0b5a8612ac63916c63419"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-roi.mp4.evaluation.json",
+      "bytes": 800,
+      "sha256": "6112b648aa245d8cd40a829aa4eea1fb6dbef56f409896ad4165002f46dbc638"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip-roi.mp4.resources.json",
+      "bytes": 96,
+      "sha256": "c8e6848825544bb15bfeecb0c08325523e5118e4c06e8dbd32b5a81165991170"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/lip.mp4.resources.json",
+      "bytes": 90,
+      "sha256": "c1ad6d6d73daec1bd9bac3cd26802f787f56630efb9fd43d58e463b0d0847cef"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/motion-plan.json",
+      "bytes": 709,
+      "sha256": "86e3398b2a44d2243212b7ff06457cc0fec9b4548da5648aaca827d96d04dc7f"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/review-captioned.mp4",
+      "bytes": 462916,
+      "sha256": "01be6ca0fa9479034949febc4b3bc183178723c819da9c82788326e72688580d"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/review-captioned.resources.json",
+      "bytes": 92,
+      "sha256": "dff1ef6564fadd098e909dce7ed1c497ada4836bdf8c852b9318a88eddb4745b"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/review.json",
+      "bytes": 692,
+      "sha256": "bbbc7a443de0eb416b4745b77f8ea07e4ad8d6037a4d92853a7936118d134c79"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/static-motion.json",
+      "bytes": 7414,
+      "sha256": "a9a057f9641622f74111953d49f331630ceb9f94921cc32fee76a6231c988371"
+    },
+    {
+      "path": "artifacts/wolong-local-film/yu-fan-introduction-v1/static-regions.json",
+      "bytes": 42,
+      "sha256": "4f37882b87f3c853103c3f23c330b65531bd0bb73cf6a6551b0e5bdca91327b3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/base.mp4",
+      "bytes": 403335,
+      "sha256": "92360e7f72e4287db4e469a6697d9407ac63121357f39cad644c1ec7ff2ce8f5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/base.mp4.receipt.json",
+      "bytes": 747,
+      "sha256": "be8c9a2b6104b7d40f5d347b39cbd0ac76692d721660fb1a4097fe8e507dc282"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip-request.json",
+      "bytes": 475,
+      "sha256": "d308c11afa181ae59615cf8f7d769ac0aa4fd1f01cf23009458f72978d192156"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip-stabilized.mp4",
+      "bytes": 113328,
+      "sha256": "0d73806b90199b74733f4be74dc707de97e6d4370f393dc4bf00e75a3e5278f7"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip-stabilized.stabilization.json",
+      "bytes": 519,
+      "sha256": "f9359e7c5f53dbb21dbb3467a0779f0bfaf398251d0c7124ef4168bb75e57162"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip.features.wav",
+      "bytes": 81046,
+      "sha256": "77bdec6661f39726d6b9ff8207722b0bfedea7b1ca8261c6748e6e9e4c3553b4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip.mp4",
+      "bytes": 119484,
+      "sha256": "4b9756ae245c0375ad5d8e038750b24ddee9837041ca100866990a479f2a11c4"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip.mp4.evaluation.json",
+      "bytes": 585,
+      "sha256": "d46adff7833714cd02fa7b16f9595c6b3412564fbfdb03dc5e205a967a090bf5"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/lip.mp4.resources.json",
+      "bytes": 96,
+      "sha256": "9e2722d20105f7d3c810ef2d282ec6d0c1a92c470d9df573ae98f2e2e19c949e"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/motion-plan.json",
+      "bytes": 661,
+      "sha256": "3ed125757581cbfbeaf3d8028274c42683b5a1b3b7bbb02825177e8042ee86c6"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/review.json",
+      "bytes": 1157,
+      "sha256": "877d8926b38b55c22f492189ec5bfc99c92c22ca2c63ffb40b33cfadc0c6fad9"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/stabilized-motion-review.json",
+      "bytes": 8240,
+      "sha256": "8d70b289d8bfcde411d07c19b779b97232edb8b7495b7a1c398c7f50022997c2"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/stabilized-review.json",
+      "bytes": 653,
+      "sha256": "a7afbb3ead1fb08563efece183b9e438bcd1f4669d56bb990b387457fe894daf"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/static-motion-review.json",
+      "bytes": 8138,
+      "sha256": "9860a04f86c5207669d82a0a770f302e5a798ac8a84d4a6076ea28de36a6aab3"
+    },
+    {
+      "path": "artifacts/wolong-local-film/zhang-names-gu-v1/static-regions.json",
+      "bytes": 53,
+      "sha256": "4082383357c92089937840fd503b39667502959d9ceca3a42200b4628da2e5dd"
+    },
+    {
+      "path": "productions/wolong-chengxiang/debate-full/v4.json",
+      "bytes": 48088,
+      "sha256": "c0697db08777940d3c69c94e413f9a29c4e7ba7ed7f30ebdab8884cd4b2417e2"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/bu-zhi-concept-a.png",
+      "bytes": 2068715,
+      "sha256": "0c2790ca07f708c6bb9fbc258d7c54edf8b27e57972ac0fa97ec2dd3040d9e4c"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/bu-zhi-concept-a.prompt.txt",
+      "bytes": 1200,
+      "sha256": "844eb1975d6097773664a0ade2c483f468d1bad89fabc1447faa5bff58d3cd43"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/cheng-bing-concept-a.png",
+      "bytes": 2017789,
+      "sha256": "9c173a979c22c404b97eceb302e297809fc6a34c5d3f34d77fd90ea764c7f96e"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/cheng-bing-concept-a.prompt.txt",
+      "bytes": 1185,
+      "sha256": "0ae16b7818e99dcab488c96c9b292b2a8a03980fd6873c1bb4e18a4db24e7114"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/gu-yong-concept-a.png",
+      "bytes": 2131371,
+      "sha256": "dc0a18efd959b940c3d67e1db0b2966267f3df46b49dfee472b242fbe1b52992"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/gu-yong-concept-a.prompt.txt",
+      "bytes": 1342,
+      "sha256": "fcd998fd2c8eac0c6bdbb62e4caf83cfe28115dab56fd3c8eaa5eab965988940"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/huang-gai-concept-a.png",
+      "bytes": 2036185,
+      "sha256": "08b3417adf67abfaa153dab95ca08581cd38c8b0bc25c5eb44f5577fed46f6c6"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/huang-gai-concept-a.prompt.txt",
+      "bytes": 1331,
+      "sha256": "0c33fbab36cf49e74be9abfe6f0f0e69d3355a3a4fe2b9fdb84cc55e3f5087d9"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/kongming-introduction-closeup-a.png",
+      "bytes": 2051898,
+      "sha256": "3734588b2da0ebe0e6d9a2ec6aa5d4ceeb0572b85260ef7db11e6aaecb0a25a3"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/lu-ji-concept-a.png",
+      "bytes": 2018854,
+      "sha256": "fdbbc3b13917e29f8b2fd00b4563f61002d08c99f197e29f55d4cdb2526b0098"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/lu-ji-concept-a.prompt.txt",
+      "bytes": 1181,
+      "sha256": "390d245710b8fa72bb287b3862d27d7e8c9c11d7a67079476ed59faa14a709d7"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/lusu-concept-b.png",
+      "bytes": 2269454,
+      "sha256": "e36b3aa152b52dd80b0e3b7297748fdc5fd32de2fee420616b38080a08a562b3"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/xue-zong-concept-a.png",
+      "bytes": 1985754,
+      "sha256": "4076c3a473b95767c3490f1575a465905c181adcd43b952113fbf095eb66fc44"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/xue-zong-concept-a.prompt.txt",
+      "bytes": 1172,
+      "sha256": "8a4839d611a0a60176dc38ee9811b8be911a56a8601d0edaed73028e1794e736"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/yan-jun-concept-a.png",
+      "bytes": 2073497,
+      "sha256": "cb44afc68e765aae86f65bc1d3e51bd807994661663fff1bd85fcc7e28dbf3d8"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/yan-jun-concept-a.prompt.txt",
+      "bytes": 1175,
+      "sha256": "4af85a7b0c0367134527d58216dbb9a94ae70a6bd9b9d107c4cc0fbec1dce293"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/yu-fan-concept-b.png",
+      "bytes": 1829494,
+      "sha256": "a2a2e9581388162d4bbfe14673562fe3bd2ea7e29ef67de3a8ac06ab5f400a43"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/yu-fan-concept-b.prompt.txt",
+      "bytes": 1090,
+      "sha256": "e0e91caddbadd27e8dd0deafde5192c72c775d3b8e6092b5ed15deef63cbd5a7"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/zhang-zhao-welcome-closeup-a.png",
+      "bytes": 1937668,
+      "sha256": "5a9de7c83c40f66a283e95d9b0217d3be72d3a173b8357fbe86fb4b96244ac51"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/zhuge-jin-concept-a.png",
+      "bytes": 2037900,
+      "sha256": "39e6ee4ee40afe7b02317dd9d9f4295c1bb394acb65baad8f9d16cba90cff526"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/zhuge-jin-concept-a.prompt.txt",
+      "bytes": 1412,
+      "sha256": "3016fc11731d0a8f6e4fb61d2d745542ae1dc8cd59e44ff10b5c0482bb3c7b10"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/cast-production.json",
+      "bytes": 18678,
+      "sha256": "c0a280f7777b43718a7aa1fa6660642ad370736577db776f1a9a4c31cc669781"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/dialogue-coverage.json",
+      "bytes": 60248,
+      "sha256": "3679d8a3a8b70617d024b75142f7f0c57d741a7028f09908481ab52a2dafa02c"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/production-progress.json",
+      "bytes": 3929,
+      "sha256": "b7ec023ec59355e69aa477729efd15195650f296f75298f72e4a1e0db5c45456"
+    }
+  ],
+  "missing": [],
+  "excluded": "Model stores, virtual environments, credentials and historical intermediate takes. Preserve full productions and referenced artifacts separately for complete project migration."
+}

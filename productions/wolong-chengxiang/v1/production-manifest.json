@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "wolong-chengxiang",
+  "title": "卧龙*丞相",
+  "version": 1,
+  "status": "DEVELOPMENT_AWAITING_HISTORY_POLICY",
+  "userRequirements": {
+    "perspective": "诸葛亮为主，完整人生连续剧",
+    "style": "风格化写实三维国漫，原创角色，参考高规格国漫质感",
+    "pace": "慢节奏，事件跨多集深入",
+    "priorities": [
+      "三顾茅庐",
+      "舌战群儒"
+    ],
+    "minimumMinutesPerPriorityArc": 30,
+    "emotionalGoals": [
+      "感人",
+      "克制而催泪",
+      "个人英雄主义",
+      "历史宏伟感"
+    ],
+    "music": "原创歌词与AI歌曲，时代相关乐器与深邃旋律，不复制卧龙吟"
+  },
+  "budget": {
+    "currency": "CNY",
+    "userReportedAvailable": 318.9,
+    "taskSpendCeiling": 318.9,
+    "submittedVideoJobs": 0,
+    "spentThisTurn": 0,
+    "pricingSource": "https://docs.volcengine.com/docs/ark/model-pricing?lang=zh",
+    "seedance25NoVideo720pCnyPerMillionTokens": 70,
+    "estimatePerSecond": 1.512,
+    "two30MinuteArcsSinglePassEstimate": 5443.2,
+    "budgetRawSecondsEstimate": 210.9126984126984,
+    "note": "估算不包含返工和输入视频；以供应商usage和账单为准。没有调用付费媒体。"
+  },
+  "assets": {
+    "characters": "SPEC_ONLY_NOT_GENERATED",
+    "locations": "SPEC_ONLY_NOT_GENERATED",
+    "song": "LYRICS_AND_BRIEF_ONLY_NOT_GENERATED"
+  },
+  "pendingDecision": "正史为骨架允许标注演绎，还是严格正史或演义为主；已通过异步问题询问用户，未收到答复。",
+  "episodeOutlineFiles": [
+    "jiangdong-one.json",
+    "jiangdong-two.json",
+    "three-visits-one.json",
+    "three-visits-two.json"
+  ],
+  "nextStep": "确认史料尺度后扩写四集逐场剧本并创建时代考据后的主角及核心场景图；按硬预算逐批生成。"
+}

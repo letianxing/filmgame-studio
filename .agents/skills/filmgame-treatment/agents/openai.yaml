@@ -1,0 +1,4 @@
+interface:
+  display_name: "影片开发梗概与提案"
+  short_description: "FilmGame 正式影片创作：影片开发梗概与提案，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-treatment，根据我的影片内容完成影片开发梗概与提案，保留已确定的人物和结局。"

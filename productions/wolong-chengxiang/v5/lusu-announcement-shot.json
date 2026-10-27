@@ -1,0 +1,61 @@
+{
+  "id": "opening-welcome-lusu-announcement-01",
+  "sourceScript": "../debate-full/v4.json",
+  "sourceScene": "opening-welcome",
+  "lineId": "opening-welcome-line-01",
+  "text": "子布先生，孔明先生至。",
+  "audio": "artifacts/wolong-local-film/dialogue-lu-su-qwen-v3/opening-welcome-line-01.wav",
+  "audioSeconds": 3.11,
+  "frame": "assets/lusu-announcement-closeup-a.png",
+  "frameSha256": "4caf722ea5f45ea2adf459a71bd711b4836d9bbc4ccffe70396b55d67c6fa8e0",
+  "firstFrameReview": {
+    "status": "APPROVED_FOR_BOUNDED_LIPSYNC_TEST",
+    "method": "assistant visual comparison with Lu Su concept and entrance master",
+    "passes": [
+      "same broad face and short rounded beard",
+      "same black headwrap and blue-gray robe",
+      "same leftward eyeline and left light",
+      "matching entrance doorway and timber materials"
+    ],
+    "limits": [
+      "hat top cropped in close-up",
+      "motion and lip-sync not yet tested"
+    ]
+  },
+  "camera": "locked eye-level close-up; same side of axis as entrance shot",
+  "motion": "tiny breathing, stable head and expression; lips remain closed for silent base; local lip pass will supply speech",
+  "durationIntentSeconds": 3.5,
+  "videoBackend": "WAN",
+  "status": "ASSEMBLED_CONTINUITY_PREVIEW",
+  "approvedForFinal": false,
+  "durationBasis": "3.11s existing exact-text audio plus short ending hold; no audio truncation or frame looping",
+  "baseVideo": "artifacts/wolong-local-film/lusu-announcement-v1/base.mp4",
+  "lipVideo": "artifacts/wolong-local-film/lusu-announcement-v1/lipsync-complete-v2.mp4",
+  "review": "artifacts/wolong-local-film/lusu-announcement-v1/review.json",
+  "revisedBaseVideo": "artifacts/wolong-local-film/lusu-announcement-v2/base.mp4",
+  "editPlan": {
+    "audioContinuous": true,
+    "lineId": "opening-welcome-line-01",
+    "canonicalText": "子布先生，孔明先生至。",
+    "cutAtSeconds": 1.375,
+    "cutReason": "Show introducer while addressing Zhang Zhao, then show introduced Kongming as his name is spoken",
+    "pictureA": {
+      "character": "lu-su",
+      "source": "artifacts/wolong-local-film/lusu-announcement-v2/lipsync.mp4",
+      "in": 0,
+      "out": 1.375,
+      "needsLipPass": false
+    },
+    "pictureB": {
+      "character": "kongming",
+      "frame": "assets/kongming-introduction-closeup-a.png",
+      "video": "artifacts/wolong-local-film/kongming-introduction-v1/reaction-clean-edge.mp4",
+      "durationNeededSeconds": 1.735,
+      "speakerOffscreen": "lu-su",
+      "performance": "closed mouth, composed acknowledgment; no speaking motion"
+    },
+    "wideGesture": "separate non-speaking action beat; not used as visible unsynchronized speech",
+    "remaining": "Extend preview with Zhang Zhao welcome and Kongming reply; final voice/performance/resolution review pending"
+  },
+  "preview": "artifacts/wolong-local-film/opening-continuity-v1/opening-preview.mp4"
+}

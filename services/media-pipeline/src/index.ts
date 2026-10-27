@@ -133,6 +133,51 @@ export class MediaPipeline {
     return parseMediaSignalLog(result.stderr);
   }
 
+  /** Bound uploaded reference resolution before submitting inline bytes to a provider. */
+  prepareReferenceImage(options: { inputPath: string; outputPath: string; signal?: AbortSignal }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-vf', 'scale=1024:1024:force_original_aspect_ratio=decrease', '-frames:v', '1', '-q:v', '3', options.outputPath],
+      this.config.defaultTimeoutMs, options.signal);
+  }
+
+  /** Normalize a linear-drama shot, keeping dialogue intact and adding a soft subtitle track. */
+  renderDramaShot(options: {
+    visualPath: string; stillImage: boolean; audioPath?: string; subtitlePath?: string;
+    outputPath: string; durationSeconds: number; width: number; height: number; signal?: AbortSignal;
+  }): Promise<MediaCommandResult> {
+    assertPaths(options.visualPath, options.outputPath, ...[options.audioPath, options.subtitlePath].filter((p): p is string => Boolean(p)));
+    if (!Number.isFinite(options.durationSeconds) || options.durationSeconds <= 0 || options.durationSeconds > 300) throw new Error('Invalid shot duration');
+    if (![options.width, options.height].every((n) => Number.isInteger(n) && n >= 64 && n <= 4096 && n % 2 === 0)) throw new Error('Invalid shot dimensions');
+    return this.#run(this.config.ffmpegPath, [
+      '-hide_banner', '-nostdin', '-y',
+      ...(options.stillImage ? ['-loop', '1', '-framerate', '30'] : []), '-i', options.visualPath,
+      ...(options.audioPath ? ['-i', options.audioPath] : ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']),
+      ...(options.subtitlePath ? ['-i', options.subtitlePath] : []),
+      '-map', '0:v:0', '-map', '1:a:0', ...(options.subtitlePath ? ['-map', '2:0', '-c:s', 'mov_text'] : []),
+      '-vf', `scale=${options.width}:${options.height}:force_original_aspect_ratio=decrease,pad=${options.width}:${options.height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=${options.durationSeconds}`,
+      '-af', 'apad', '-t', String(options.durationSeconds), '-c:v', this.config.defaultVideoCodec ?? 'libopenh264',
+      '-pix_fmt', 'yuv420p', '-b:v', '4000k', '-c:a', 'aac', '-ar', '48000', '-ac', '2', '-movflags', '+faststart', options.outputPath,
+    ], this.config.defaultTimeoutMs, options.signal);
+  }
+
+  attachDramaSubtitles(options: { inputPath: string; subtitlePath: string; outputPath: string; signal?: AbortSignal }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.subtitlePath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-i', options.subtitlePath, '-map', '0:v:0', '-map', '0:a:0', '-map', '1:0', '-c:v', 'copy', '-c:a', 'copy',
+      '-c:s', 'mov_text', '-metadata:s:s:0', 'language=zho', '-movflags', '+faststart', options.outputPath],
+      this.config.defaultTimeoutMs, options.signal);
+  }
+
+  mixDramaMusic(options: { inputPath: string; musicPath: string; outputPath: string; signal?: AbortSignal }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.musicPath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-stream_loop', '-1', '-i', options.musicPath, '-filter_complex',
+      '[1:a]volume=0.15[bgm];[0:a][bgm]amix=inputs=2:duration=first:normalize=0[a]',
+      '-map', '0:v:0', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-ar', '48000', '-ac', '2',
+      '-movflags', '+faststart', options.outputPath], this.config.defaultTimeoutMs, options.signal);
+  }
+
   transcode(options: {
     inputPath: string;
     outputPath: string;

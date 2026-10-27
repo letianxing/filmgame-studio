@@ -1,0 +1,4 @@
+interface:
+  display_name: "类型预期与叙事选择"
+  short_description: "FilmGame 正式影片创作：类型预期与叙事选择，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-sw-genre-anatomy，根据我的影片内容完成类型预期与叙事选择，保留已确定的人物和结局。"

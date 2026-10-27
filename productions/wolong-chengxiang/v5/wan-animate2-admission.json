@@ -1,0 +1,33 @@
+{
+  "status": "LARGE_LAYER_PASSED_DISK_ADMISSION_NOT_MET",
+  "largeLayerEvidence": "artifacts/wolong-local-film/animate2-mps-preflight/large-layer-result.json",
+  "largeLayerResources": "artifacts/wolong-local-film/animate2-mps-preflight/large-layer-resources.json",
+  "newFiles": [
+    {
+      "path": "clip_vision/clip_vision_h.safetensors",
+      "bytes": 1264219396,
+      "sha256": "64a7ef761bfccbadbaa3da77366aac4185a6c58fa5de5f589b42a65bcc21f161"
+    },
+    {
+      "path": "diffusion_models/wan_animate_2_distill_int8_convrot.safetensors",
+      "bytes": 16653175528,
+      "sha256": "d2e566ecac3f164cb1a6b63dc7d868d6678c9affa49fbceb3abe4f9458f89c8a"
+    },
+    {
+      "path": "vae/Wan2_1_VAE_bf16.safetensors",
+      "bytes": 253806278,
+      "sha256": "1ab9a32cc2c740f6e39d80d367ce5dcc28db8c71b79b28670546b8973e9d75f9"
+    }
+  ],
+  "newBytes": 18171201202,
+  "freeBytesObserved": 37368209408,
+  "minimumReserveBytes": 21474836480,
+  "minimumAdditionalFreeBytes": 2277828274,
+  "reusedCandidate": "existing umt5_xxl_fp16.safetensors size matches official inventory; SHA verification still required",
+  "limitations": [
+    "download reserve excludes temporary overhead; leave additional margin",
+    "single-layer probe does not prove whole-model peak RAM",
+    "existing Wan2.2 VAE is not interchangeable with required Wan2.1 VAE"
+  ],
+  "decision": "No download started. Do not remove accepted media, 5B fallback or current production models to make space without a concrete preservation plan."
+}

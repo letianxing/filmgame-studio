@@ -1,0 +1,12 @@
+{
+  "status": "ACTUAL_ADAPTER_BUNDLE_VERIFIED_BASE_STILL_DOWNLOADING",
+  "verifier": "scripts/verify-multianimate-adapter.py",
+  "checks": [
+    "Synthetic valid rank-128 bundle accepted",
+    "NaN payload rejected even when local assembly checksum matches",
+    "Payload corruption rejected by checksum"
+  ],
+  "actualBundleValidated": true,
+  "productionApproved": false,
+  "evidence": "artifacts/wolong-local-film/multianimate-bundle-verification/result.json"
+}

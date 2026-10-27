@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "jiangdong-two",
+  "version": 1,
+  "parentVersion": null,
+  "createdAt": "2026-10-13T04:41:02.073Z",
+  "changeReason": "正式连续剧首轮32分钟目标段落大纲；史实演绎尺度待用户确认",
+  "content": {
+    "title": "卧龙*丞相｜江东论战·众声",
+    "format": "SERIES",
+    "targetMinutes": 32,
+    "stage": "OUTLINE",
+    "premise": "从诸葛亮有限视角，细写一个理想主义者怎样选择并承担公共责任。",
+    "theme": "知遇不是免于失败，而是有人愿意与你共同承担。",
+    "ending": "与草庐家门意象遥相呼应，进入赤壁篇",
+    "confirmedConstraints": [
+      "用户指定原创风格化写实三维国漫、慢节奏、多集深入事件。",
+      "保持诸葛亮视角为主；人物、场景、道具与声音跨镜一致。",
+      "正史、裴注异说、文学传统与原创对白分层标注。史实与演绎比例待用户选择。",
+      "本文件是32分钟目标的段落大纲，不是足量完成的对白稿或已生成成片。"
+    ],
+    "lockedFields": [
+      "title",
+      "format",
+      "targetMinutes"
+    ],
+    "characters": [
+      {
+        "id": "liang",
+        "name": "诸葛亮",
+        "goal": "寻找能够承担天下之责的同行者",
+        "need": "承认独善无法护住所有人",
+        "opposition": "既怕轻许一生，又怕自保成为逃避",
+        "change": "从保全小家到自愿承担公共责任",
+        "voice": "年轻、清醒、有锋芒；情深时反而少说"
+      },
+      {
+        "id": "su",
+        "name": "鲁肃",
+        "goal": "促成可执行的抗曹联盟",
+        "need": "让对方承认江东也有自身利益",
+        "opposition": "盟友弱而曹操强，内部决策不一",
+        "change": "从试探使者到共同担责",
+        "voice": "务实、坦率、有战略判断"
+      },
+      {
+        "id": "quan",
+        "name": "孙权",
+        "goal": "保住江东并掌握选择权",
+        "need": "不靠父兄遗产定义自己",
+        "opposition": "战与降都要承担不能转嫁的代价",
+        "change": "在多方意见中自己决断",
+        "voice": "年轻却克制，追问实际代价"
+      },
+      {
+        "id": "zhao",
+        "name": "张昭",
+        "goal": "降低江东覆亡的风险",
+        "need": "面对投降并不能保证所有人安全",
+        "opposition": "兵力差距、民生和名分相互纠缠",
+        "change": "让反对意见保有尊严",
+        "voice": "资深，条理清楚，不写成无知丑角"
+      },
+      {
+        "id": "yu",
+        "name": "周瑜",
+        "goal": "判断并执行可以打的战争",
+        "need": "把政治承诺化为军事条件",
+        "opposition": "时间、训练、粮船与指挥权不足",
+        "change": "用专业判断承担胜负",
+        "voice": "精确，少夸口，不嫉妒化"
+      }
+    ],
+    "beats": [
+      {
+        "id": "jiangdong-two-b1",
+        "summary": "孔明承认现状，但区分失败与不存在抵抗条件",
+        "characterIds": [
+          "liang",
+          "zhao",
+          "su"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b2",
+        "summary": "双方发现没有无代价选择",
+        "characterIds": [
+          "liang",
+          "zhao"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b3",
+        "summary": "亮说清刘备一方能做的部分，不包办江东",
+        "characterIds": [
+          "liang",
+          "su",
+          "zhao"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b4",
+        "summary": "肃以自己的家与决定回应，而非鼓励金句",
+        "characterIds": [
+          "liang",
+          "su"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b5",
+        "summary": "亮按传记所载战略条件回答，权形成自己的判断",
+        "characterIds": [
+          "liang",
+          "quan",
+          "su"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b6",
+        "summary": "出战成为有部署的决定而非被激怒的冲动",
+        "characterIds": [
+          "quan",
+          "yu",
+          "su"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b7",
+        "summary": "亮与肃对彼此说的是责任而非输赢",
+        "characterIds": [
+          "liang",
+          "su"
+        ]
+      },
+      {
+        "id": "jiangdong-two-b8",
+        "summary": "与草庐家门意象遥相呼应，进入赤壁篇",
+        "characterIds": [
+          "liang"
+        ]
+      }
+    ],
+    "scenes": [
+      {
+        "id": "jiangdong-two-s01",
+        "order": 1,
+        "heading": "内景 议事处 日",
+        "characterIds": [
+          "liang",
+          "zhao",
+          "su"
+        ],
+        "goal": "明确来使凭什么提出战争",
+        "conflict": "刘备败退削弱使者资格，孔明不能否认失败",
+        "turn": "孔明承认现状，但区分失败与不存在抵抗条件",
+        "action": "论辩为文学重构，非正史逐句。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "jiangdong-two-s02",
+        "order": 2,
+        "heading": "内景 议事处 连续",
+        "characterIds": [
+          "liang",
+          "zhao"
+        ],
+        "goal": "讨论保境与降附",
+        "conflict": "张昭提出百姓免战之利，亮提出投降后的支配权与长期代价",
+        "turn": "双方发现没有无代价选择",
+        "action": "不把谨慎等同卖国，不靠羞辱完成反转。D。",
+        "dialogue": [],
+        "estimatedSeconds": 300
+      },
+      {
+        "id": "jiangdong-two-s03",
+        "order": 3,
+        "heading": "内景 议事处 连续",
+        "characterIds": [
+          "liang",
+          "su",
+          "zhao"
+        ],
+        "goal": "检验联合的实际条件",
+        "conflict": "兵力、粮道、指挥和信任都不完整",
+        "turn": "亮说清刘备一方能做的部分，不包办江东",
+        "action": "把宏观政治落到可执行承诺。A框架/D组织。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "jiangdong-two-s04",
+        "order": 4,
+        "heading": "外景 廊下 午后",
+        "characterIds": [
+          "liang",
+          "su"
+        ],
+        "goal": "短暂离开争论",
+        "conflict": "亮的手在袖里发紧，第一次承认自己也怕",
+        "turn": "肃以自己的家与决定回应，而非鼓励金句",
+        "action": "让英雄也承受身体与情感压力。D。",
+        "dialogue": [],
+        "estimatedSeconds": 180
+      },
+      {
+        "id": "jiangdong-two-s05",
+        "order": 5,
+        "heading": "内景 孙权见客处 日",
+        "characterIds": [
+          "liang",
+          "quan",
+          "su"
+        ],
+        "goal": "诸葛亮说孙权",
+        "conflict": "孙权追问刘备为何不降、战败后还能如何抗曹",
+        "turn": "亮按传记所载战略条件回答，权形成自己的判断",
+        "action": "诸葛亮传A骨架，尊重孙权主动决策。",
+        "dialogue": [],
+        "estimatedSeconds": 360
+      },
+      {
+        "id": "jiangdong-two-s06",
+        "order": 6,
+        "heading": "内景 军议处 傍晚",
+        "characterIds": [
+          "quan",
+          "yu",
+          "su"
+        ],
+        "goal": "军事判断接住政治选择",
+        "conflict": "周瑜评估曹军与水战条件，指出执行约束",
+        "turn": "出战成为有部署的决定而非被激怒的冲动",
+        "action": "保留周瑜专业贡献；视角切换需标明。A骨架。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "jiangdong-two-s07",
+        "order": 7,
+        "heading": "外景 江岸 夜",
+        "characterIds": [
+          "liang",
+          "su"
+        ],
+        "goal": "联盟初成后卸下紧绷",
+        "conflict": "没有庆功，前方仍有大量人可能死去",
+        "turn": "亮与肃对彼此说的是责任而非输赢",
+        "action": "英雄时刻之后给观众喘息与代价。D。",
+        "dialogue": [],
+        "estimatedSeconds": 180
+      },
+      {
+        "id": "jiangdong-two-s08",
+        "order": 8,
+        "heading": "外景 舟上 黎明",
+        "characterIds": [
+          "liang"
+        ],
+        "goal": "带消息回去",
+        "conflict": "看着两岸灯火，他知道承诺现在必须变成行动",
+        "turn": "与草庐家门意象遥相呼应，进入赤壁篇",
+        "action": "音乐只在末段完整呈现主题的一小部分，不抢对白。D。",
+        "dialogue": [],
+        "estimatedSeconds": 180
+      }
+    ],
+    "openQuestions": [
+      "等待确认正史与文学演绎尺度。",
+      "每段需继续拆场并写足行动、对白与静默，完成读稿计时后修正长度。",
+      "黄氏及家居、官服、冠帻、礼节等需按场次补证。"
+    ],
+    "nextStep": "确认史料尺度后，从第一集开始扩写完整分场剧本；不将估时当成片长验收。"
+  }
+}

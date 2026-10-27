@@ -1,0 +1,68 @@
+{
+  "id": "opening-welcome-kongming-return-bow-01",
+  "sourceScript": "../debate-full/v4.json",
+  "sourceScene": "opening-welcome",
+  "sourceAction": "张昭代表诸士迎前一礼，孔明还礼。",
+  "frame": "assets/entrance-bow-ready-c.png",
+  "frameSha256": "33743cd909cab016b938e3dc35dba733e013fbe0f8c46d8594cdab909b251812",
+  "purpose": "Show actual full-body return greeting, distinct from close-up speaking",
+  "start": "both upright; Kongming right-hand fan and left palm supporting wrist",
+  "action": "Kongming shallow waist bow and recovery; Lu Su upright",
+  "end": "both upright, same feet and fan grip",
+  "durationIntentSeconds": 3,
+  "sound": "silent action beat; later cloth/room tone pending",
+  "status": "REVISE_INDIVIDUAL_ACTION_CONTROL_AND_DEPTH",
+  "approvedForFinal": false,
+  "rejectedMotion": "artifacts/wolong-local-film/kongming-return-bow-v1/review.json",
+  "firstFrameReview": {
+    "status": "APPROVED_FOR_BOUNDED_TEST",
+    "method": "visual comparison to entrance master",
+    "passes": [
+      "head/chest/toes more consistently oriented front-left toward host",
+      "Lu Su and architecture retained",
+      "right-hand fan and left support remain",
+      "clear floor and separated feet"
+    ],
+    "continuityNote": "Kongming stance shifts slightly while reorienting; place after offscreen host greeting, not as a match-frame splice to old pose",
+    "finalAcceptance": false
+  },
+  "latestReview": "artifacts/wolong-local-film/kongming-return-bow-v2/review.json",
+  "sideViewBlocking": {
+    "reference": "artifacts/wolong-local-film/kongming-bow-blockout-v4/",
+    "status": "GEOMETRIC_PROXY_VERIFIED_FINAL_FRAME_PENDING",
+    "cameraLayout": [
+      0.8,
+      8.0,
+      1.25
+    ],
+    "lensMm": 32,
+    "hostLayout": [
+      4.6,
+      6.6
+    ],
+    "guestLayout": [
+      4.6,
+      8.7
+    ],
+    "lusuLayout": [
+      5.5,
+      8.1
+    ],
+    "bowDegrees": 15,
+    "screenDirection": "guest on right bows left toward host",
+    "fan": "right hand = anatomical east side, stays with torso",
+    "limitations": [
+      "proposal requires host approach and entrance stance continuity coverage",
+      "proxy is not final character art or historical costume evidence",
+      "dynamic cloth/hand collisions not tested"
+    ]
+  },
+  "sideViewCandidate": {
+    "frame": "assets/kongming-return-side-start-b.png",
+    "frameSha256": "7384967cc2ca7c4ea31651a24e70b09b7c6251100db5ef91fa631da5c5c586a0",
+    "review": "kongming-return-side-firstframe-review.json",
+    "status": "APPROVED_FOR_BOUNDED_MOTION_TEST_ONLY"
+  },
+  "latestSideViewMotionReview": "artifacts/wolong-local-film/kongming-return-side-v1/review.json",
+  "controlCapabilityAudit": "motion-control-capability-audit.json"
+}

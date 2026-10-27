@@ -1,0 +1,13 @@
+{
+  "previousScript": "../debate-full/v4.json",
+  "currentScript": "../debate-full/v5.json",
+  "currentSha256": "2094466658e66dbf8abc8495368e5a1c3da2d71cbb9f2b9fe6f04bfe34f35533",
+  "changedLineIds": [
+    "debate-yu-line-06"
+  ],
+  "unchangedDialogueLines": 89,
+  "allActionsCharactersLayoutAndEndingUnchanged": true,
+  "existingVisualContractsRemainScopedToUnchangedActions": true,
+  "oldDialogueTracksContainSupersededWording": true,
+  "newAudioRequired": "artifacts/wolong-local-film/dialogue-kongming-wording-v5-request.json"
+}

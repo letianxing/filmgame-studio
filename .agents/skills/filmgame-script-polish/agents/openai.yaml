@@ -1,0 +1,4 @@
+interface:
+  display_name: "剧本语言与可拍性润色"
+  short_description: "FilmGame 正式影片创作：剧本语言与可拍性润色，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-script-polish，根据我的影片内容完成剧本语言与可拍性润色，保留已确定的人物和结局。"

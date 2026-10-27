@@ -1,0 +1,11 @@
+{
+  "repository": "city96/Wan2.1-I2V-14B-720P-gguf",
+  "revision": "ea36d5421cc5f5c57e50067a432a8b2c16dd0dae",
+  "filename": "wan2.1-i2v-14b-720p-Q4_K_M.gguf",
+  "bytes": 11341184384,
+  "sha256": "ffecd91e4b636d8e3e43f3fa388218158ba447109547bde777c6d67ef4fe42a4",
+  "downloaded": true,
+  "architectureCompatibility": "Wan2.1 I2V14B candidate; full tensor/LoRA mapping remains unvalidated",
+  "localPath": ".local/comfyui/models/diffusion_models/wan2.1-i2v-14b-720p-Q4_K_M.gguf",
+  "verificationLog": "artifacts/wolong-local-film/multianimate-download/download.log"
+}

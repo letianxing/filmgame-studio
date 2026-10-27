@@ -1,0 +1,3 @@
+Tool: built-in imagegen
+Reference: entrance-two-person-fan-a.png
+Precise continuity correction to this existing frame: change ONLY the head orientation and eye gaze of the ivory-robed man on the RIGHT (Kongming). Turn his face gently toward camera-left, matching the blue-robed man's gaze toward the SAME offscreen host just left of the camera. Show a mostly frontal face with a slight leftward three-quarter angle, mouth closed. Preserve his exact young identity, eyebrows, nose, moustache, pointed chin beard and dark headwrap. Keep BOTH bodies, hands, feather fan, feet, robes, blue-robed man's face, camera, architecture, composition, lighting and colors unchanged. No other edits.

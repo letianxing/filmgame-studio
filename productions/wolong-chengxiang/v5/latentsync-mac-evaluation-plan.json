@@ -1,0 +1,113 @@
+{
+  "status": "FULL_REAL_SPEECH_PIPELINE_COMPLETE_QUALITY_REVISE",
+  "productionApproved": false,
+  "candidate": "LatentSync 1.6",
+  "source": "https://github.com/bytedance/LatentSync",
+  "revision": "a229c3948406bc2cf6eaf4873e662e70c6a04746",
+  "sourceLicense": "Apache-2.0; transitive model licenses require separate verification",
+  "observedIntegrationIssues": [
+    {
+      "file": "scripts/inference.py",
+      "issue": "Audio encoder and pipeline explicitly use CUDA."
+    },
+    {
+      "file": "latentsync/pipelines/lipsync_pipeline.py",
+      "issue": "ImageProcessor instantiated with CUDA; automatic video looping/reversal must be bypassed by source-coverage validation."
+    },
+    {
+      "file": "latentsync/utils/face_detector.py",
+      "issue": "InsightFace with GPU provider; do not import/download its default weights for commercial production without appropriate license."
+    },
+    {
+      "file": "latentsync/whisper/audio2feature.py",
+      "issue": "Boundary chunks replicate nearest audio features; existing MuseTalk timestamp adapter uses zero padding. Cannot reuse chunks without matching the contract."
+    }
+  ],
+  "adapterPlan": [
+    "Explicit configured CPU/MPS device, serial stage execution and existing resource guard",
+    "Own entrypoint rather than upstream CUDA script; no upstream source edits",
+    "Prealigned face input or separately licensed landmark provider, with coordinate roundtrip validation",
+    "Reject insufficient real frames; do not invoke upstream loop/reverse behavior",
+    "Verify speech feature layout and boundary behavior before reusing encoder output",
+    "Short 512-resolution sample before production adoption"
+  ],
+  "downloadDecision": "Code only fetched. Model weights not downloaded pending adapter and byte-size preflight.",
+  "qualityGate": [
+    "Beard/identity detail improves over current MuseTalk candidate",
+    "Lip movement and temporal coherence on complete original speech",
+    "No new background/head-pose drift",
+    "Observed resource use stays within existing Mac guard"
+  ],
+  "weightLicense": "Model card: openrail++; distinct from Apache-2.0 code license.",
+  "weightRevision": "c42c7e6c8e9c213626389fa7d9a3c444b8536353",
+  "weightBytes": 5072222488,
+  "weightSha256": "0a478e89eb660f82da4c35dbdde8a5adfb27f99d1b4e50edd03729e1e98316d3",
+  "kernelEvidence": "artifacts/wolong-local-film/latentsync-preflight-v1/kernels-nonzero.json",
+  "invalidEarlierEvidence": "kernels.json had zero-initialized constant output, superseded by nonzero probe; not counted as numerical parity evidence.",
+  "next": "Prepare aligned real face conditions, serial VAE encodes, then bounded full denoising with original speech. Two-frame random single-step success is not 16-frame performance or quality acceptance.",
+  "download": {
+    "status": "SHA256_VERIFIED",
+    "log": "artifacts/wolong-local-film/latentsync-preflight-v1/download.log",
+    "partial": ".local/latentsync/models/latentsync_unet.pt.partial",
+    "receipt": "artifacts/wolong-local-film/latentsync-preflight-v1/download-receipt.json",
+    "noAutomaticRetry": true
+  },
+  "fullModelCheck": "scripts/check-latentsync-full-model.py",
+  "audioAdapter": {
+    "module": "scripts/latentsync_audio_features.py",
+    "prepared": "artifacts/wolong-local-film/latentsync-preflight-v1/kongming-audio.npy",
+    "status": "ENCODER_NUMERICAL_COMPARISON_COMPLETE_SHARED_MEL_AND_WEIGHTS",
+    "testsPassed": 3,
+    "criticalDifference": "Pre-final-LN hidden state, not MuseTalk HF normalized final hidden state. Nearest-feature boundary, no extra PE.",
+    "next": "Compare against the upstream encoder on identical mel and converted weights.",
+    "referenceEvidence": "artifacts/wolong-local-film/latentsync-preflight-v1/audio-reference.json"
+  },
+  "fullModelEvidence": "artifacts/wolong-local-film/latentsync-preflight-v1/full-model.json",
+  "fullModelResources": "artifacts/wolong-local-film/latentsync-preflight-v1/full-model.resources.json",
+  "realFaceConditions": {
+    "manifest": "artifacts/wolong-local-film/latentsync-kongming-v1/manifest.json",
+    "review": "artifacts/wolong-local-film/latentsync-kongming-v1/alignment-review.json",
+    "status": "ALIGNMENT_USABLE_FOR_CONTROLLED_COMPARISON_NOT_FINAL_SHOT"
+  },
+  "stagedRun": {
+    "request": "artifacts/wolong-local-film/latentsync-kongming-v1/request.json",
+    "worker": "scripts/latentsync-staged-worker.py",
+    "stage": "sample-0",
+    "status": "COMPLETE_NO_LIVE_JOB",
+    "encode": "artifacts/wolong-local-film/latentsync-kongming-v1/conditions.pt",
+    "encodeResources": "artifacts/wolong-local-film/latentsync-kongming-v1/conditions.resources.json",
+    "next": "Finish remaining windows, restore complete original speech, review quality and chunk boundaries.",
+    "log": "artifacts/wolong-local-film/latentsync-kongming-v1/remaining-stages.log",
+    "output": "artifacts/wolong-local-film/latentsync-kongming-v1/sample-0-batched.pt",
+    "spatialBatchSize": 1,
+    "temporalFrames": 16,
+    "lastObservedMpsDriverBytes": 10569334784,
+    "review": "artifacts/wolong-local-film/latentsync-kongming-v1/first-window-review.json",
+    "previousFailure": {
+      "reason": "Available system RAM below model safety floor",
+      "resources": "artifacts/wolong-local-film/latentsync-kongming-v1/sample-0.resources.json"
+    },
+    "runReport": "artifacts/wolong-local-film/latentsync-kongming-v1/remaining-stages.json",
+    "qualityReview": "artifacts/wolong-local-film/latentsync-kongming-v1/quality-review.json",
+    "preview": "artifacts/wolong-local-film/latentsync-kongming-v1/review.mp4"
+  },
+  "spatialAttentionOptimization": {
+    "module": "scripts/spatial_attention_batching.py",
+    "testsPassed": 4,
+    "testedDevices": [
+      "cpu",
+      "mps"
+    ],
+    "scope": "Independent unmasked attention batches only; temporal token windows untouched.",
+    "resourceGuardTestsPassed": 6,
+    "guardLimitsUnchanged": true
+  },
+  "reviewAssembler": "scripts/assemble-latentsync-review.py",
+  "mouthGeometryDiagnostic": "scripts/measure-lipsync-mouth.py",
+  "weightStorage": {
+    "status": "LOSSLESS_GZIP_ARCHIVED_RESTORE_REQUIRED",
+    "archive": ".local/latentsync/models/latentsync_unet.pt.gz",
+    "receipt": "artifacts/wolong-local-film/latentsync-preflight-v1/weight-archive.json",
+    "originalPathAbsent": true
+  }
+}

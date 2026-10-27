@@ -1,0 +1,22 @@
+{
+  "status": "CONDITION_INJECTION_UNIT_TESTED_NOT_MODEL_VALIDATED",
+  "adapter": "scripts/multianimate_conditioning.py",
+  "tests": "scripts/test_multianimate_conditioning.py",
+  "testCases": 3,
+  "mpsAvailableDuringTest": true,
+  "checks": [
+    "Positive-only condition injection in both CFG batch orders and isolated branches",
+    "Original token tensor unchanged",
+    "Missing branch labels, wrong block, mismatched token grid, wrong model width and nonfinite conditions rejected"
+  ],
+  "sourceMechanism": ".local/multianimate-audit/wan_video_multi.py:model_fn_wan_video",
+  "installedBoundary": "ComfyUI comfy/ldm/wan/model.py first double_block replacement; samplers.py supplies cond_or_uncond",
+  "unverified": [
+    "Quantized base loading and actual LoRA scaling/application",
+    "Production-size memory and runtime",
+    "End-to-end parity, generated identity/action and lip sync quality"
+  ],
+  "productionApproved": false,
+  "realEncoderEvidence": "artifacts/wolong-local-film/multianimate-control-preflight/result.json",
+  "loraShapeEvidence": "multianimate-lora-shape-audit.json"
+}

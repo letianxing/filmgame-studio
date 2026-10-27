@@ -1,0 +1,248 @@
+{
+  "status": "DRAFT_NEEDS_HISTORICAL_AND_BLOCKING_REVIEW",
+  "roomMeters": [
+    10,
+    11
+  ],
+  "north": "y0",
+  "seats": [
+    {
+      "id": "kongming",
+      "name": "孔明",
+      "xy": [
+        2.8,
+        1.8
+      ],
+      "facing": "S",
+      "role": "尊客"
+    },
+    {
+      "id": "zhang-zhao",
+      "name": "张昭",
+      "xy": [
+        5,
+        1.8
+      ],
+      "facing": "S",
+      "role": "主持会客"
+    },
+    {
+      "id": "lu-su",
+      "name": "鲁肃",
+      "xy": [
+        7.2,
+        1.8
+      ],
+      "facing": "S",
+      "role": "接引者"
+    },
+    {
+      "id": "gu-yong",
+      "name": "顾雍",
+      "xy": [
+        2,
+        4.5
+      ],
+      "facing": "E",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "yu-fan",
+      "name": "虞翻",
+      "xy": [
+        8,
+        4.5
+      ],
+      "facing": "W",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "bu-zhi",
+      "name": "步骘",
+      "xy": [
+        2,
+        6.0
+      ],
+      "facing": "E",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "xue-zong",
+      "name": "薛综",
+      "xy": [
+        8,
+        6.0
+      ],
+      "facing": "W",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "lu-ji",
+      "name": "陆绩",
+      "xy": [
+        2,
+        7.5
+      ],
+      "facing": "E",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "yan-jun",
+      "name": "严畯",
+      "xy": [
+        8,
+        7.5
+      ],
+      "facing": "W",
+      "role": "群儒（文学席位提案）"
+    },
+    {
+      "id": "cheng-bing",
+      "name": "程秉",
+      "xy": [
+        8,
+        9
+      ],
+      "facing": "W",
+      "role": "群儒（文学席位提案）"
+    }
+  ],
+  "tables": [
+    {
+      "id": "table-kongming",
+      "center": [
+        2.8,
+        2.75
+      ],
+      "size": [
+        1.0,
+        0.6
+      ]
+    },
+    {
+      "id": "table-zhang-zhao",
+      "center": [
+        5,
+        2.75
+      ],
+      "size": [
+        1.0,
+        0.6
+      ]
+    },
+    {
+      "id": "table-lu-su",
+      "center": [
+        7.2,
+        2.75
+      ],
+      "size": [
+        1.0,
+        0.6
+      ]
+    },
+    {
+      "id": "table-gu-yong",
+      "center": [
+        3.0,
+        4.5
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-yu-fan",
+      "center": [
+        7.0,
+        4.5
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-bu-zhi",
+      "center": [
+        3.0,
+        6.0
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-xue-zong",
+      "center": [
+        7.0,
+        6.0
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-lu-ji",
+      "center": [
+        3.0,
+        7.5
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-yan-jun",
+      "center": [
+        7.0,
+        7.5
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "id": "table-cheng-bing",
+      "center": [
+        7.0,
+        9
+      ],
+      "size": [
+        0.6,
+        1.0
+      ]
+    }
+  ],
+  "guestRoute": [
+    [
+      0.9,
+      9.8
+    ],
+    [
+      0.9,
+      0.75
+    ],
+    [
+      2.8,
+      0.75
+    ],
+    [
+      2.8,
+      1.8
+    ]
+  ],
+  "notes": [
+    "按用户最新要求，上首三人同地平并排，不设君主高台",
+    "孔明西、张昭中、鲁肃东、坐向南为候选席序，不声称是208年实际布局或通用固定礼制",
+    "人数、案席尺寸为调度草案；群儒名单为演义文学聚合，个人履历与在场问题另注",
+    "仅测试孔明二维身体半径0.4m的路线避案，尚未测试其他角色路线和衣料三维碰撞",
+    "入席前脱履点、张昭迎前与回席路线、鲁肃让路与回席路线，进入分镜时逐一冻结"
+  ],
+  "sourceScreenplay": "../../versions/jiangdong-opening/v1.json"
+}

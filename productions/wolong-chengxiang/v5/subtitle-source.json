@@ -1,0 +1,564 @@
+{
+  "script": "../debate-full/v5.json",
+  "scriptSha256": "2094466658e66dbf8abc8495368e5a1c3da2d71cbb9f2b9fe6f04bfe34f35533",
+  "policy": "Subtitle text comes only from these screenplay lines; ASR supplies diagnostic evidence, never replacement wording. Timing remains pending actual edit.",
+  "corrections": [
+    {
+      "incorrectAsr": "量当以实情相告",
+      "canonical": "亮当以实情相告",
+      "reason": "诸葛亮自称，亮字不能写成量；声学发音仍独立核对。"
+    },
+    {
+      "incorrectAsr": "然子布先生",
+      "canonical": "然。 / 子布先生以百姓为问，亮当以实情相告。",
+      "reason": "不同对白条目，不能按上下文试录直接合并正式字幕。"
+    },
+    {
+      "oldScriptText": "纳降者，解其兵以待命",
+      "canonical": "请降者，解其兵以待命",
+      "reason": "纳降为接受投降，此处说向曹操请降；旧录音不能直接沿用。"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-welcome-line-01",
+      "sceneId": "opening-welcome",
+      "characterId": "lu-su",
+      "text": "子布先生，孔明先生至。"
+    },
+    {
+      "id": "opening-welcome-line-02",
+      "sceneId": "opening-welcome",
+      "characterId": "zhang-zhao",
+      "text": "张昭，字子布。先生远来，未及出迎，尚乞见谅。"
+    },
+    {
+      "id": "opening-welcome-line-03",
+      "sceneId": "opening-welcome",
+      "characterId": "kongming",
+      "text": "亮一介布衣，敢劳诸公相迎。"
+    },
+    {
+      "id": "opening-introductions-line-01",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "顾元叹先生。"
+    },
+    {
+      "id": "opening-introductions-line-02",
+      "sceneId": "opening-introductions",
+      "characterId": "gu-yong",
+      "text": "孔明先生。"
+    },
+    {
+      "id": "opening-introductions-line-03",
+      "sceneId": "opening-introductions",
+      "characterId": "kongming",
+      "text": "幸会。"
+    },
+    {
+      "id": "opening-introductions-line-04",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "虞仲翔先生。"
+    },
+    {
+      "id": "opening-introductions-line-05",
+      "sceneId": "opening-introductions",
+      "characterId": "yu-fan",
+      "text": "久仰。"
+    },
+    {
+      "id": "opening-introductions-line-06",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "步子山先生。"
+    },
+    {
+      "id": "opening-introductions-line-07",
+      "sceneId": "opening-introductions",
+      "characterId": "bu-zhi",
+      "text": "先生远来。"
+    },
+    {
+      "id": "opening-introductions-line-08",
+      "sceneId": "opening-introductions",
+      "characterId": "kongming",
+      "text": "幸会。"
+    },
+    {
+      "id": "opening-introductions-line-09",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "薛敬文先生。"
+    },
+    {
+      "id": "opening-introductions-line-10",
+      "sceneId": "opening-introductions",
+      "characterId": "xue-zong",
+      "text": "幸会。"
+    },
+    {
+      "id": "opening-introductions-line-11",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "陆公纪先生。"
+    },
+    {
+      "id": "opening-introductions-line-12",
+      "sceneId": "opening-introductions",
+      "characterId": "lu-ji",
+      "text": "见过先生。"
+    },
+    {
+      "id": "opening-introductions-line-13",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "严曼才先生。"
+    },
+    {
+      "id": "opening-introductions-line-14",
+      "sceneId": "opening-introductions",
+      "characterId": "zhang-zhao",
+      "text": "程德枢先生。"
+    },
+    {
+      "id": "opening-seating-line-01",
+      "sceneId": "opening-seating",
+      "characterId": "zhang-zhao",
+      "text": "孔明先生，请上座。"
+    },
+    {
+      "id": "opening-seating-line-02",
+      "sceneId": "opening-seating",
+      "characterId": "kongming",
+      "text": "亮乃后学，岂敢居先。"
+    },
+    {
+      "id": "opening-seating-line-03",
+      "sceneId": "opening-seating",
+      "characterId": "zhang-zhao",
+      "text": "先生远来是客，不必过谦。"
+    },
+    {
+      "id": "opening-seating-line-04",
+      "sceneId": "opening-seating",
+      "characterId": "lu-su",
+      "text": "子布先生以礼相待，先生请。"
+    },
+    {
+      "id": "opening-seating-line-05",
+      "sceneId": "opening-seating",
+      "characterId": "kongming",
+      "text": "既蒙厚意，亮愧领了。"
+    },
+    {
+      "id": "opening-first-question-line-01",
+      "sceneId": "opening-first-question",
+      "characterId": "zhang-zhao",
+      "text": "昭乃江东微末之士，久闻先生高卧隆中，自比管、乐。此语果有之乎？"
+    },
+    {
+      "id": "opening-answer-reactions-line-01",
+      "sceneId": "opening-answer-reactions",
+      "characterId": "kongming",
+      "text": "此亮平生小可之比也。"
+    },
+    {
+      "id": "opening-answer-reactions-line-02",
+      "sceneId": "opening-answer-reactions",
+      "characterId": "yu-fan",
+      "text": "小可之比？"
+    },
+    {
+      "id": "debate-jingxiang-line-01",
+      "sceneId": "debate-jingxiang",
+      "characterId": "zhang-zhao",
+      "text": "近闻刘豫州三顾先生于草庐之中，幸得先生，以为如鱼得水，思欲席卷荆襄。今一旦以属曹操，未审是何主见？"
+    },
+    {
+      "id": "debate-jingxiang-line-02",
+      "sceneId": "debate-jingxiang",
+      "characterId": "kongming",
+      "text": "吾观取汉上之地，易如反掌。我主刘豫州躬行仁义，不忍夺同宗之基业，故力辞之。刘琮孺子，听信佞言，暗自投降，致使曹操得以猖獗。今我主屯兵江夏，别有良图，非等闲可知也。"
+    },
+    {
+      "id": "debate-jingxiang-line-03",
+      "sceneId": "debate-jingxiang",
+      "characterId": "zhang-zhao",
+      "text": "先生所言，是不忍取，非不能取。"
+    },
+    {
+      "id": "debate-jingxiang-line-04",
+      "sceneId": "debate-jingxiang",
+      "characterId": "kongming",
+      "text": "然。"
+    },
+    {
+      "id": "debate-jingxiang-line-05",
+      "sceneId": "debate-jingxiang",
+      "characterId": "zhang-zhao",
+      "text": "一念不忍，而疆土尽失。疆土上的百姓，又将托付何人？"
+    },
+    {
+      "id": "debate-jingxiang-line-06",
+      "sceneId": "debate-jingxiang",
+      "characterId": "kongming",
+      "text": "子布先生以百姓为问，亮当以实情相告。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-01",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "zhang-zhao",
+      "text": "若此，是先生言行相违也。先生自比管、乐。管仲相桓公，霸诸侯，一匡天下；乐毅扶持微弱之燕，下齐七十余城；此二人者，真济世之才也。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-02",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "zhang-zhao",
+      "text": "先生在草庐之中，但笑傲风月，抱膝危坐；今既从事刘豫州，当为生灵兴利除害，剿灭乱贼。且刘豫州未得先生之时，尚且纵横寰宇，割据城池；今得先生，人皆仰望；虽三尺童蒙，亦谓彪虎生翼，将见汉室复兴，曹氏即灭矣。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-03",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "zhang-zhao",
+      "text": "朝廷旧臣，山林隐士，无不拭目而待：以为拂高天之云翳，仰日月之光辉，拯斯民于水火之中，措天下于衽席之上，在此时也。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-04",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "lu-su",
+      "text": "子布先生，荆州之变，非一人之故。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-05",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "zhang-zhao",
+      "text": "子敬，昭问的，正是遇变之时，先生以何应之。"
+    },
+    {
+      "id": "debate-zhang-indictment-line-06",
+      "sceneId": "debate-zhang-indictment",
+      "characterId": "zhang-zhao",
+      "text": "何先生自归豫州，曹兵一出，弃甲抛戈，望风而窜；上不能报刘表以安庶民，下不能辅孤子而据疆土；乃弃新野，走樊城，败当阳，奔夏口，无容身之地？是豫州既得先生之后，反不如其初也。管仲、乐毅，果如是乎？愚直之言，幸勿见怪！"
+    },
+    {
+      "id": "debate-liang-response-line-01",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "鹏飞万里，其志岂群鸟能识哉？譬如人染沉疴，当先用糜粥以饮之，和药以服之；待其腑脏调和，形体渐安，然后用肉食以补之，猛药以治之；则病根尽去，人得全生也。若不待气脉和缓，便投以猛药厚味，欲求安保，诚为难矣。"
+    },
+    {
+      "id": "debate-liang-response-line-02",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "吾主刘豫州，向日军败于汝南，寄迹刘表，兵不满千，将止关、张、赵云而已；此正如病势尪羸已极之时也。新野山僻小县，人民稀少，粮食鲜薄，豫州不过暂借以容身，岂真将坐守于此耶？"
+    },
+    {
+      "id": "debate-liang-response-line-03",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "至于刘琮降操，豫州实出不知；且又不忍乘乱夺同宗之基业，此真大仁大义也。当阳之败，豫州见有数十万赴义之民，扶老携幼相随，不忍弃之，日行十里，不思进取江陵，甘与同败，此亦大仁大义也。"
+    },
+    {
+      "id": "debate-liang-response-line-04",
+      "sceneId": "debate-liang-response",
+      "characterId": "gu-yong",
+      "text": "容雍一问。携民而行，固为不忍；追兵已至，百姓仍不能免。既欲全之，何以保之？"
+    },
+    {
+      "id": "debate-liang-response-line-05",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "亮不敢以仁义二字，掩当阳之败。既为人谋，不能使其免难，自当知愧。然弃之而独走，便是保全百姓么？"
+    },
+    {
+      "id": "debate-liang-response-line-06",
+      "sceneId": "debate-liang-response",
+      "characterId": "gu-yong",
+      "text": "先生知其难，仍欲为之？"
+    },
+    {
+      "id": "debate-liang-response-line-07",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "百姓既以身家相托，岂能只在事可为时相容，事不可为时便弃之。此行求援，正为使尚存之人，有可守之地。"
+    },
+    {
+      "id": "debate-liang-response-line-08",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "寡不敌众，胜负乃其常事。昔高皇数败于项羽，而垓下一战成功，此非韩信之良谋乎？夫信久事高皇，未尝累胜。盖国家大计，社稷安危，是有主谋，非比夸辩之徒，虚誉欺人，坐议立谈，无人可及；临机应变，百无一能。诚为天下笑耳！"
+    },
+    {
+      "id": "debate-liang-response-line-09",
+      "sceneId": "debate-liang-response",
+      "characterId": "zhang-zhao",
+      "text": "江东若战，死生所系，亦非少数。"
+    },
+    {
+      "id": "debate-liang-response-line-10",
+      "sceneId": "debate-liang-response",
+      "characterId": "kongming",
+      "text": "正因如此，亮才当面陈说，不敢以一封书信求诸公轻许。江夏有江夏之难，江东亦有江东之忧；若只各自求全，曹操便可各个取之。"
+    },
+    {
+      "id": "debate-yu-line-01",
+      "sceneId": "debate-yu",
+      "characterId": "yu-fan",
+      "text": "今曹公兵屯百万，将列千员，龙骧虎视，平吞江夏，公以为何如？"
+    },
+    {
+      "id": "debate-yu-line-02",
+      "sceneId": "debate-yu",
+      "characterId": "kongming",
+      "text": "曹操收袁绍蚁聚之兵，劫刘表乌合之众，虽数百万不足惧也。"
+    },
+    {
+      "id": "debate-yu-line-03",
+      "sceneId": "debate-yu",
+      "characterId": "yu-fan",
+      "text": "军败于当阳，计穷于夏口，区区求救于人，而犹言不惧，此真大言欺人也！"
+    },
+    {
+      "id": "debate-yu-line-04",
+      "sceneId": "debate-yu",
+      "characterId": "kongming",
+      "text": "刘豫州以数千仁义之师，安能敌百万残暴之众，退守夏口，所以待时也。今江东兵精粮足，且有长江之险，犹欲使其主屈膝降贼，不顾天下耻笑。由此论之，刘豫州真不惧操贼者矣！"
+    },
+    {
+      "id": "debate-yu-line-05",
+      "sceneId": "debate-yu",
+      "characterId": "yu-fan",
+      "text": "知不可敌，而退守，先生谓之待时；我江东欲全境安民，何独谓之畏惧？"
+    },
+    {
+      "id": "debate-yu-line-06",
+      "sceneId": "debate-yu",
+      "characterId": "kongming",
+      "text": "退守者，留其兵以待战；请降者，解其兵以待命。二者岂可同日而语？"
+    },
+    {
+      "id": "debate-bu-line-01",
+      "sceneId": "debate-bu",
+      "characterId": "bu-zhi",
+      "text": "孔明欲效仪、秦之舌，游说东吴耶？"
+    },
+    {
+      "id": "debate-bu-line-02",
+      "sceneId": "debate-bu",
+      "characterId": "kongming",
+      "text": "步子山以苏秦、张仪为辩士，不知苏秦、张仪亦豪杰也。苏秦佩六国相印，张仪两次相秦，皆有匡扶人国之谋，非比畏强凌弱，惧刀避剑之人也。君等闻曹操虚发诈伪之词，便畏惧请降，敢笑苏秦、张仪乎？"
+    },
+    {
+      "id": "debate-bu-line-03",
+      "sceneId": "debate-bu",
+      "characterId": "bu-zhi",
+      "text": "子山所忧，不在游说二字。合则共利，患则谁当？江东出兵，刘豫州一方，又能任何事？"
+    },
+    {
+      "id": "debate-bu-line-04",
+      "sceneId": "debate-bu",
+      "characterId": "kongming",
+      "text": "若欲借江东之力，而使江东独当其祸，此盟不能久。刘豫州所存之兵、所守之地，亮当告之吴侯，不以虚数求信。"
+    },
+    {
+      "id": "debate-bu-line-05",
+      "sceneId": "debate-bu",
+      "characterId": "bu-zhi",
+      "text": "败军尚能与人约乎？"
+    },
+    {
+      "id": "debate-bu-line-06",
+      "sceneId": "debate-bu",
+      "characterId": "kongming",
+      "text": "既求同患，便须先明彼此所能；约不能践，言之何益。"
+    },
+    {
+      "id": "debate-bu-line-07",
+      "sceneId": "debate-bu",
+      "characterId": "lu-su",
+      "text": "子山所问，亦肃独往江夏时所问。可行与否，须听两家实情，再定大计。"
+    },
+    {
+      "id": "debate-xue-line-01",
+      "sceneId": "debate-xue",
+      "characterId": "xue-zong",
+      "text": "孔明以操何如人也？"
+    },
+    {
+      "id": "debate-xue-line-02",
+      "sceneId": "debate-xue",
+      "characterId": "kongming",
+      "text": "曹操乃汉贼也，又何必问？"
+    },
+    {
+      "id": "debate-xue-line-03",
+      "sceneId": "debate-xue",
+      "characterId": "xue-zong",
+      "text": "公言差矣。汉历传至今，天数将终。今曹公已有天下三分之二，人皆归心。刘豫州不识天时，强欲与争，正如以卵击石，安得不败乎？"
+    },
+    {
+      "id": "debate-xue-line-04",
+      "sceneId": "debate-xue",
+      "characterId": "kongming",
+      "text": "薛敬文安得出此无父无君之言乎？夫人生天地间，以忠孝为立身之本。公既为汉臣，则见有不臣之人，当誓共戮之，臣之道也。今曹操祖宗叨食汉禄，不思报效，反怀篡逆之心，天下之所共愤。公乃以天数归之，真无父无君之人也！不足与语！请勿复言！"
+    },
+    {
+      "id": "debate-xue-line-05",
+      "sceneId": "debate-xue",
+      "characterId": "yan-jun",
+      "text": "孔明先生，议论虽异，尚当平心。"
+    },
+    {
+      "id": "debate-xue-line-06",
+      "sceneId": "debate-xue",
+      "characterId": "kongming",
+      "text": "亮非不许人言强弱。强弱可以计，进退可以谋；独不敢未尽人事，先言天命。"
+    },
+    {
+      "id": "debate-xue-line-07",
+      "sceneId": "debate-xue",
+      "characterId": "xue-zong",
+      "text": "敬文之言，先生既不取，且听诸公。"
+    },
+    {
+      "id": "debate-lu-line-01",
+      "sceneId": "debate-lu",
+      "characterId": "lu-ji",
+      "text": "曹操虽挟天子以令诸侯，犹自称相国曹参之后。刘豫州虽云中山靖王苗裔，却无可稽考，眼见只是织席贩履之夫耳，何足与曹操抗衡哉！"
+    },
+    {
+      "id": "debate-lu-line-02",
+      "sceneId": "debate-lu",
+      "characterId": "kongming",
+      "text": "公非袁术座间怀橘之陆郎乎？请安坐听吾一言。"
+    },
+    {
+      "id": "debate-lu-line-03",
+      "sceneId": "debate-lu",
+      "characterId": "kongming",
+      "text": "曹操若为曹相国之后，则世为汉臣矣。今乃专权肆横，欺凌君父，是不惟无君，亦且蔑祖；不惟汉室之乱臣，亦曹氏之贼子也！"
+    },
+    {
+      "id": "debate-lu-line-04",
+      "sceneId": "debate-lu",
+      "characterId": "kongming",
+      "text": "且高祖起身亭长，而终有天下；织席贩履，又何足为辱乎？"
+    },
+    {
+      "id": "debate-lu-line-05",
+      "sceneId": "debate-lu",
+      "characterId": "lu-ji",
+      "text": "公纪所问，是其所据之名。"
+    },
+    {
+      "id": "debate-lu-line-06",
+      "sceneId": "debate-lu",
+      "characterId": "kongming",
+      "text": "名不可虚据，亦不可因其贫贱而轻之。若论所行，当问他今日护了何人、弃了何人。"
+    },
+    {
+      "id": "debate-yan-line-01",
+      "sceneId": "debate-yan",
+      "characterId": "yan-jun",
+      "text": "孔明所言，皆强词夺理，均非正论，不必再言。且请问孔明治何经典？"
+    },
+    {
+      "id": "debate-yan-line-02",
+      "sceneId": "debate-yan",
+      "characterId": "kongming",
+      "text": "寻章摘句，世之腐儒也，何能兴邦立事？且古耕莘伊尹，钓渭子牙，张良、陈平之流，邓禹、耿弇之辈，皆有匡扶宇宙之才，未审其生平治何经典。岂亦效书生区区于笔砚之间，数黑论黄，舞文弄墨而已乎？"
+    },
+    {
+      "id": "debate-yan-line-03",
+      "sceneId": "debate-yan",
+      "characterId": "yan-jun",
+      "text": "如此，先生以经术为无用？"
+    },
+    {
+      "id": "debate-yan-line-04",
+      "sceneId": "debate-yan",
+      "characterId": "kongming",
+      "text": "亮所言者，徒守章句而不问世事。经术所以明理，岂为临事却步、相饰虚名而设。"
+    },
+    {
+      "id": "debate-cheng-line-01",
+      "sceneId": "debate-cheng",
+      "characterId": "cheng-bing",
+      "text": "公好为大言，未必真有实学，恐适为儒者所笑耳。"
+    },
+    {
+      "id": "debate-cheng-line-02",
+      "sceneId": "debate-cheng",
+      "characterId": "kongming",
+      "text": "儒有君子小人之别。君子之儒，忠君爱国，守正恶邪，务使泽及当时，名留后世。若夫小人之儒，惟务雕虫，专工翰墨，青春作赋，皓首穷经，笔下虽有千言，胸中实无一策。虽日赋万言，亦何取哉！"
+    },
+    {
+      "id": "debate-cheng-line-03",
+      "sceneId": "debate-cheng",
+      "characterId": "cheng-bing",
+      "text": "先生所责甚重。然临难有守，亦非一言可见。"
+    },
+    {
+      "id": "debate-cheng-line-04",
+      "sceneId": "debate-cheng",
+      "characterId": "kongming",
+      "text": "德枢先生所言是。亮今日之言，亦当以他日之行验之。"
+    },
+    {
+      "id": "debate-cheng-line-05",
+      "sceneId": "debate-cheng",
+      "characterId": "zhang-zhao",
+      "text": "今日之议，先生所言，昭皆记下。至于战守，尚须主公裁断。"
+    },
+    {
+      "id": "debate-cheng-line-06",
+      "sceneId": "debate-cheng",
+      "characterId": "kongming",
+      "text": "亮此来，正为面陈于吴侯。"
+    },
+    {
+      "id": "debate-huang-line-01",
+      "sceneId": "debate-huang",
+      "characterId": "huang-gai",
+      "text": "孔明乃当世奇才，君等以唇舌相难，非敬客之礼也。曹操大军临境，不思退敌之策，乃徒斗口耶！"
+    },
+    {
+      "id": "debate-huang-line-02",
+      "sceneId": "debate-huang",
+      "characterId": "huang-gai",
+      "text": "何不将金石之论为我主言之，乃与众人辩论也？"
+    },
+    {
+      "id": "debate-huang-line-03",
+      "sceneId": "debate-huang",
+      "characterId": "kongming",
+      "text": "诸君不知世务，互相问难，不容不答耳。"
+    },
+    {
+      "id": "debate-huang-line-04",
+      "sceneId": "debate-huang",
+      "characterId": "lu-su",
+      "text": "孔明先生，请。"
+    },
+    {
+      "id": "debate-brothers-line-01",
+      "sceneId": "debate-brothers",
+      "characterId": "zhuge-jin",
+      "text": "贤弟既到江东，如何不来见我？"
+    },
+    {
+      "id": "debate-brothers-line-02",
+      "sceneId": "debate-brothers",
+      "characterId": "kongming",
+      "text": "弟既事豫州，理宜先公后私，公事未毕，不敢及私。望兄见谅。"
+    },
+    {
+      "id": "debate-brothers-line-03",
+      "sceneId": "debate-brothers",
+      "characterId": "zhuge-jin",
+      "text": "贤弟见过吴侯，却来叙话。"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ import type { ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 
 const navigation = [
+  { id: 'drama', label: '漫剧工作台', href: '/drama', icon: Film },
+  { id: 'learn', label: '制作教程', href: '/learn', icon: Play },
   { id: 'idea', label: '创意', href: '/', icon: Sparkles },
   { id: 'story', label: '故事', href: '/story', icon: GitBranch },
   { id: 'production', label: '制作', href: '/production', icon: Clapperboard },
@@ -38,7 +40,7 @@ export function StudioPageShell({
           </div>
           <div>
             <p className="text-sm font-semibold tracking-tight">FilmGame Studio</p>
-            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">雪封山庄 · v0.8</p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Comic Drama / Interactive Film</p>
           </div>
         </Link>
         <Badge variant="outline" className="ml-auto border-emerald-400/25 bg-emerald-400/8 text-emerald-300">
@@ -46,6 +48,9 @@ export function StudioPageShell({
           {status}
         </Badge>
       </header>
+      <nav aria-label="移动端创作流程" className="flex gap-4 overflow-x-auto border-b border-border px-4 py-3 text-sm lg:hidden">
+        {navigation.map(({ id, label, href }) => <Link key={id} href={href} className={`shrink-0 ${id === active ? 'text-[color:var(--signal)]' : 'text-muted-foreground'}`}>{label}</Link>)}
+      </nav>
 
       <div className={`grid min-h-[calc(100vh-3.5rem)] ${aside ? 'lg:grid-cols-[196px_minmax(0,1fr)_300px]' : 'lg:grid-cols-[196px_minmax(0,1fr)]'}`}>
         <aside className="hidden border-r border-border bg-[color:var(--chrome)] p-3 lg:block">

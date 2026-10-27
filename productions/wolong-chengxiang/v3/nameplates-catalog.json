@@ -1,0 +1,56 @@
+{
+  "status": "timings-pending",
+  "rendering": "post-production only",
+  "entries": [
+    {
+      "characterId": "kongming",
+      "name": "诸葛亮",
+      "courtesyName": "孔明"
+    },
+    {
+      "characterId": "lu-su",
+      "name": "鲁肃",
+      "courtesyName": "子敬"
+    },
+    {
+      "characterId": "zhang-zhao",
+      "name": "张昭",
+      "courtesyName": "子布"
+    },
+    {
+      "characterId": "gu-yong",
+      "name": "顾雍",
+      "courtesyName": "元叹"
+    },
+    {
+      "characterId": "yu-fan",
+      "name": "虞翻",
+      "courtesyName": "仲翔"
+    },
+    {
+      "characterId": "bu-zhi",
+      "name": "步骘",
+      "courtesyName": "子山"
+    },
+    {
+      "characterId": "xue-zong",
+      "name": "薛综",
+      "courtesyName": "敬文"
+    },
+    {
+      "characterId": "lu-ji",
+      "name": "陆绩",
+      "courtesyName": "公纪"
+    },
+    {
+      "characterId": "yan-jun",
+      "name": "严畯",
+      "courtesyName": "曼才"
+    },
+    {
+      "characterId": "cheng-bing",
+      "name": "程秉",
+      "courtesyName": "德枢"
+    }
+  ]
+}

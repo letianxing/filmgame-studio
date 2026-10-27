@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "filmgame-screenwriting",
+  "version": "1.0.0",
+  "adaptation": "First-party task instructions, rewritten from workflow concepts; no upstream reference excerpts bundled.",
+  "sources": {
+    "screenwriting": {
+      "repo": "jtydhr88/screenwriting-skills",
+      "commit": "51115f18d160aa8b2ac5813e4432b6f0b425358f",
+      "base": "plugins/screenwriting/skills",
+      "license": "MIT",
+      "notices": {
+        "LICENSE": {
+          "path": "third_party/screenwriting/screenwriting-LICENSE",
+          "sha256": "dcf1862caccc15b318642682e347ae9794ca5d3376ece18a0e94773968959276"
+        },
+        "NOTICE": {
+          "path": "third_party/screenwriting/screenwriting-NOTICE",
+          "sha256": "e6a992ef62ff5eb4b4a5f55223b30f496388a75071d45265395476ec72324bc3"
+        }
+      }
+    },
+    "everyday": {
+      "repo": "Deupaxx/EveryDay-Writer",
+      "commit": "cac4418fb82c92894d6f89e0c3072b16a830eae3",
+      "base": "skills",
+      "license": "MIT",
+      "notices": {
+        "LICENSE": {
+          "path": "third_party/screenwriting/everyday-LICENSE",
+          "sha256": "b2a1cc1e261a0ae4d3a0febd367843d0eeb5f9bf9daae33475cae73dc28b61fe"
+        }
+      }
+    },
+    "autopunk": {
+      "repo": "ur-grue/autopunk-media-skills",
+      "commit": "39e119bfef25957223d6c44fccab0329e936d2f6",
+      "base": "skills/screenwriting/development",
+      "license": "MIT",
+      "notices": {
+        "LICENSE": {
+          "path": "third_party/screenwriting/autopunk-LICENSE",
+          "sha256": "262a837bb724e50e13ce9026767131996a98e660d0ce6fac3bac64512c73f150"
+        }
+      }
+    }
+  },
+  "skills": [
+    {
+      "name": "filmgame-sw-workflow",
+      "upstreamSkill": "sw-workflow",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-workflow/SKILL.md",
+      "upstreamSha256": "1e51911c81123196dfcfe4a4a5712d09483745f626a75c832bda2188c53e24d8",
+      "path": ".agents/skills/filmgame-sw-workflow",
+      "role": "core",
+      "files": {
+        "SKILL.md": "cb4136490de431a1560684df843428fbf805b8f6d600ab1a8c370b10384fab45",
+        "agents/openai.yaml": "57971a8c82fd4fcfa356446bd8db0c70573f0cbe3ab424b93691bf67b66e6747",
+        "references/project-contract.md": "d82f92b7a122ab6f68819049a93f4d75568fb8a5e0b26534cb0901e1667e4aec"
+      }
+    },
+    {
+      "name": "filmgame-sw-premise-theme",
+      "upstreamSkill": "sw-premise-theme",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-premise-theme/SKILL.md",
+      "upstreamSha256": "1a715602130e43a14da78f700d4af757e856e4bd1466ae3d23ee7c91473259c5",
+      "path": ".agents/skills/filmgame-sw-premise-theme",
+      "role": "core",
+      "files": {
+        "SKILL.md": "dae04fb221b2351e0da24c85dbd05672271388cd86e3e2723e091498596e0484",
+        "agents/openai.yaml": "97d0f67b0c2ccfe18b7c1fe5209371ad33e8613f8cc7c346e079cefd9f9b5964"
+      }
+    },
+    {
+      "name": "filmgame-sw-story-structure",
+      "upstreamSkill": "sw-story-structure",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-story-structure/SKILL.md",
+      "upstreamSha256": "342aeeabd58cd40446d46673ca7ca8b7fadc38fe0ed8de518469ef8e87faa64a",
+      "path": ".agents/skills/filmgame-sw-story-structure",
+      "role": "core",
+      "files": {
+        "SKILL.md": "763c25103445e0273ea6533606e595b604786651b01be3a9527601266a0a9c6f",
+        "agents/openai.yaml": "e71ab1ade7c65ed7c10b3d9e0ad35aa6323004fb6f160544e63837954095ce32"
+      }
+    },
+    {
+      "name": "filmgame-sw-character-conflict",
+      "upstreamSkill": "sw-character-conflict",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-character-conflict/SKILL.md",
+      "upstreamSha256": "eec1ede6394ae995137e819d33775df5598851aed03734d45e02693f5fcfedaf",
+      "path": ".agents/skills/filmgame-sw-character-conflict",
+      "role": "core",
+      "files": {
+        "SKILL.md": "6cd5753a93ace5b024b5284621413a49bdc49582cc9b9ba55b5ea6e4d7f67fdb",
+        "agents/openai.yaml": "e23a75fd2e30d1b83cad99512d98023ad8fdd99396c3412196d4510b10be65a1"
+      }
+    },
+    {
+      "name": "filmgame-sw-scene-craft",
+      "upstreamSkill": "sw-scene-craft",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-scene-craft/SKILL.md",
+      "upstreamSha256": "8e17bd548c7b27e7c88d8bceb498cf7d61e545d567085efecb1e4818f4e0e902",
+      "path": ".agents/skills/filmgame-sw-scene-craft",
+      "role": "core",
+      "files": {
+        "SKILL.md": "9d4e798fe70fa03a1d202781081955c29fdcdf8fbfe3debcdf525f8572f6afdd",
+        "agents/openai.yaml": "f66cd179f94ede535e27f7af4b9e0333198f5fa0f31d23c0833e7159ac0328ef"
+      }
+    },
+    {
+      "name": "filmgame-sw-dialogue",
+      "upstreamSkill": "sw-dialogue",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-dialogue/SKILL.md",
+      "upstreamSha256": "f7fd1ab1cdc78be10c7604e464d048072af873ec84f8b28654692be74448a3a1",
+      "path": ".agents/skills/filmgame-sw-dialogue",
+      "role": "core",
+      "files": {
+        "SKILL.md": "d10ef05428fa65fd8f9de7824cb5624e3f924efa4bc7583f063ef5f76e5ca045",
+        "agents/openai.yaml": "df93274da10b3d1bcf83506641b939066cb8452a86c53c17e8bc7a7e45869d69"
+      }
+    },
+    {
+      "name": "filmgame-sw-format-adaptation",
+      "upstreamSkill": "sw-format-adaptation",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-format-adaptation/SKILL.md",
+      "upstreamSha256": "8e5b3459cb6adab0da67284b5200ef58e8c447d516e1cc1bab37852e7ffe8911",
+      "path": ".agents/skills/filmgame-sw-format-adaptation",
+      "role": "core",
+      "files": {
+        "SKILL.md": "fda26b6347c7aa87a660be1cc4ca973b604f430864655f3a6782ffd0bf1bb4d8",
+        "agents/openai.yaml": "de612acdd5273e7803af3c92503af7a88c5a2d86c9a13447235c650c838efef1"
+      }
+    },
+    {
+      "name": "filmgame-sw-truby-anatomy",
+      "upstreamSkill": "sw-truby-anatomy",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-truby-anatomy/SKILL.md",
+      "upstreamSha256": "e057bdd7ffc34e070b9ec3906b9563b3a2fac7c421e5d7ca2b600e799b58c102",
+      "path": ".agents/skills/filmgame-sw-truby-anatomy",
+      "role": "supplement",
+      "files": {
+        "SKILL.md": "97e3436c619a682198263445063cd75b013e482d195139159fee9916df55d57a",
+        "agents/openai.yaml": "6f064a6925c5749c67d4508f2d9be2c528485cf09183733b212655d166a11fdf"
+      }
+    },
+    {
+      "name": "filmgame-sw-genre-anatomy",
+      "upstreamSkill": "sw-genre-anatomy",
+      "source": "screenwriting",
+      "upstreamPath": "plugins/screenwriting/skills/sw-genre-anatomy/SKILL.md",
+      "upstreamSha256": "055245ddb7cf27a9267f3c3230d0dd75603e014aa5fedcb83de060abe9effaca",
+      "path": ".agents/skills/filmgame-sw-genre-anatomy",
+      "role": "supplement",
+      "files": {
+        "SKILL.md": "04ff2a86ce6feaf796f788669cae881b2d25d5c6c7d6cdd38aecba0329ca9ce1",
+        "agents/openai.yaml": "244b922debc5a9b1a0d46ce0a458ebd81e59817909c2dbb6a4824618507451be"
+      }
+    },
+    {
+      "name": "filmgame-script-polish",
+      "upstreamSkill": "script-writing",
+      "source": "everyday",
+      "upstreamPath": "skills/script-writing/SKILL.md",
+      "upstreamSha256": "d3246912aee2360fbebf66d0514e77afdfe1b8993f8ad4c688c16c7d7804dd11",
+      "path": ".agents/skills/filmgame-script-polish",
+      "role": "supplement",
+      "files": {
+        "SKILL.md": "2859b71bd9776b9485d980947bd985cb25d1bb7b438fe063b0d822c8787cda8e",
+        "agents/openai.yaml": "da59ab2e67383a17c6b4e6eccfc22321526ffa5ca30d17dbdab7ac1e9031b80c"
+      }
+    },
+    {
+      "name": "filmgame-treatment",
+      "upstreamSkill": "treatment-writer",
+      "source": "autopunk",
+      "upstreamPath": "skills/screenwriting/development/treatment-writer/SKILL.md",
+      "upstreamSha256": "231ac8a664479851857754394633f0dfedbc93acba5807203cce381c2f146a96",
+      "path": ".agents/skills/filmgame-treatment",
+      "role": "supplement",
+      "files": {
+        "SKILL.md": "4ca2025af273c322f18292a4961d5e3d06df2d02b4b8897034063a8ce96591d1",
+        "agents/openai.yaml": "24c1495b0b93bc81ca933cf197f4a1b53791724760b4fa993eb11ef107f78f79"
+      }
+    }
+  ]
+}

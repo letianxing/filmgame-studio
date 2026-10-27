@@ -1,0 +1,4 @@
+interface:
+  display_name: "人物选择与故事联动"
+  short_description: "FilmGame 正式影片创作：人物选择与故事联动，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-sw-truby-anatomy，根据我的影片内容完成人物选择与故事联动，保留已确定的人物和结局。"

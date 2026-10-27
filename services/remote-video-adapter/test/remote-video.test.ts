@@ -4,6 +4,23 @@ import test from 'node:test';
 
 import { RemoteVideoProvider } from '../src/index.js';
 
+test('gateway rejection details are actionable and redact internal token and URLs', async () => {
+  const server = createServer((_request, response) => {
+    response.writeHead(502, { 'content-type': 'application/json' });
+    response.end(JSON.stringify({ error: 'Image rejected. Token secret-token, source https://example.test/private?signature=123' }));
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address !== 'string');
+  try {
+    const provider = new RemoteVideoProvider({ baseUrl: `http://127.0.0.1:${address.port}`, model: 'test', token: 'secret-token' });
+    await assert.rejects(() => provider.generateVideo({ prompt: 'test', durationSeconds: 4, referenceAssetUris: [] },
+      { projectId: 'p', storyVersion: 1, requestId: 'r', idempotencyKey: 'k' }), (error: unknown) => {
+        assert(error instanceof Error); assert.match(error.message, /Image rejected/);
+        assert.ok(!error.message.includes('secret-token')); assert.ok(!error.message.includes('signature=123')); return true;
+      });
+  } finally { await new Promise<void>((resolve) => server.close(() => resolve())); }
+});
+
 test('remote video provider submits and polls the stable first-party contract', async () => {
   let polls = 0;
   const server = createServer((request, response) => {

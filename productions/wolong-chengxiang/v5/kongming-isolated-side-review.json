@@ -1,0 +1,13 @@
+{
+  "status": "APPROVED_FOR_ISOLATED_MOTION_TEST_ONLY",
+  "image": "assets/kongming-isolated-side-a.png",
+  "sha256": "50ac2e2a26a06a9ab5854857b9aed63755815b07ac63c81b3b53adceddcd509b",
+  "review": "对照群像B，孔明的位置、侧面朝向、冠服轮廓与扇柄持握保持接近；其余五人已移除。生成式编辑不是像素级保留，最终合成仍须查脸、衣纹与边缘。",
+  "notFinalShot": "群儒必须在最终画面恢复；当前空场只是动作层素材。",
+  "pending": [
+    "浅俯幅度",
+    "足部、扇柄和手部逐帧连续性",
+    "人物遮罩与鲁肃遮挡合成",
+    "背景重建区域不能直接覆盖最终群像"
+  ]
+}

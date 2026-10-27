@@ -23,6 +23,8 @@ import { IdeaComposer } from '@/components/idea-composer';
 import { listProjects } from '@/lib/database';
 
 const navItems = [
+  { label: '漫剧工作台', icon: Film, href: '/drama' },
+  { label: '制作教程', icon: Play, href: '/learn' },
   { label: '创意', icon: Sparkles, href: '/', active: true },
   { label: '故事', icon: GitBranch, href: '/story' },
   { label: '制作', icon: Clapperboard, href: '/production' },

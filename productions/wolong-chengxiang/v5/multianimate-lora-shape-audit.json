@@ -1,0 +1,14 @@
+{
+  "status": "ALL_LORA_SHAPES_MATCH_META_BASE",
+  "pairs": 400,
+  "rankValues": [
+    128
+  ],
+  "errors": [],
+  "baseInstantiation": "Meta-device WanModel I2V: in36,out16,dim5120,ffn13824,40 layers,40 heads; no base weight allocation.",
+  "productionApproved": false,
+  "limitations": [
+    "Tensor names and shapes only; not proof of weight semantics or scaling.",
+    "Quantized base loading and actual LoRA numerical application remain untested."
+  ]
+}

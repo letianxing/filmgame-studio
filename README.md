@@ -8,6 +8,14 @@ Owner-only Creator Console alpha: `https://filmgame-story-studio.letianxing94111
 IDEA -> DESIGN -> GENERATE -> PLAYTEST -> REFINE -> BUILD -> PUBLISH
 ```
 
+## AI 漫剧模式
+
+正式影片编剧已提供 11 个项目适配 Skill，入口 `$filmgame-sw-workflow`，覆盖前提、结构、人物、场景、对白、格式、类型、润色与提案。使用 `npm run skills:check` 验证，版本保存与导出见 [编剧工作流](docs/SCREENWRITING_WORKFLOW.md)。
+
+`http://localhost:3000/drama` 提供独立线性漫剧创作：自然语言剧本与修改提案、角色参考图和配音绑定、分镜编辑与排序、视频/分镜预演、可选配乐、整集预览及 MP4/字幕下载。无需多人运行时或 Unreal。
+
+`http://localhost:3000/learn` 提供按制作步骤分类的 B 站原站教程播放器与创作提示词。使用方法、配置、开源选型与验收范围见 [docs/DRAMA_STUDIO.md](docs/DRAMA_STUDIO.md)。这些功能本轮在本地源码与服务中验证，远程 Sites 部署尚未更新。
+
 ## What is working
 
 - Creator Console with Idea, Story, Production, Playtest and Publish surfaces.

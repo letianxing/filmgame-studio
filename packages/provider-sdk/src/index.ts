@@ -274,6 +274,12 @@ export interface ImageProvider extends Provider {
 
 export interface VideoGenerationRequest {
   prompt: string;
+  aspectRatio?: '16:9' | '9:16' | 'adaptive';
+  generateAudio?: boolean;
+  resolution?: '480p' | '720p' | '1080p';
+  referenceVideoUris?: string[];
+  referenceAudioUris?: string[];
+  omniReferenceTaskType?: 'auto' | 'reference' | 'edit' | 'extend';
   negativePrompt?: string;
   durationSeconds: number;
   firstFrameUri?: string;

@@ -1,0 +1,83 @@
+{
+  "status": "PREPARED_NOT_EXECUTABLE_UNTIL_STORAGE_AND_INPUTS_READY",
+  "engine": "local ComfyUI native Wan Animate 2",
+  "checkpointChoice": "base int8 convrot matching inspected official workflow; distilled variant not assumed sampler-compatible",
+  "repository": "Comfy-Org/Wan-Animate-2",
+  "revision": "e7181fe1896b7f2ce34120d1a3663413548240d7",
+  "requiredNewFiles": [
+    {
+      "path": "clip_vision/clip_vision_h.safetensors",
+      "bytes": 1264219396,
+      "sha256": "64a7ef761bfccbadbaa3da77366aac4185a6c58fa5de5f589b42a65bcc21f161"
+    },
+    {
+      "path": "diffusion_models/wan_animate_2_int8_convrot.safetensors",
+      "bytes": 16653175528,
+      "sha256": "0580ecdd65e47e97c30df9670d13a6c4a131d26de5a1faf2ccc78392d5167584"
+    },
+    {
+      "path": "vae/Wan2_1_VAE_bf16.safetensors",
+      "bytes": 253806278,
+      "sha256": "1ab9a32cc2c740f6e39d80d367ce5dcc28db8c71b79b28670546b8973e9d75f9"
+    },
+    {
+      "path": "loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "bytes": 738005744,
+      "sha256": "85c4a61c30e0497aa44b91d93a893b624708461a56fe5485183b28fa07e2dfb3"
+    }
+  ],
+  "existingTextEncoderCandidate": ".local/comfyui/models/text_encoders/umt5_xxl_fp16.safetensors",
+  "officialWorkflowEvidence": "artifacts/wolong-local-film/animate2-mps-preflight/official-workflow-dependencies.json",
+  "resourceProbe": {
+    "width": 256,
+    "height": 144,
+    "frames": 17,
+    "batchSize": 1,
+    "purpose": "memory and finite-frame validation only, not final motion acceptance",
+    "sampler": {
+      "scheduler": "simple",
+      "steps": 6,
+      "sampler": "lcm",
+      "cfg": 1,
+      "shift": 5,
+      "requiresLora": "loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors"
+    }
+  },
+  "guards": {
+    "rssLimitMiB": 24576,
+    "minimumAvailableGiB": 8,
+    "maximumSwapGrowthGiB": 1,
+    "minimumFreeDiskGiB": 20,
+    "timeoutSeconds": 1800,
+    "mpsHighWatermark": 0.45,
+    "mpsLowWatermark": 0.35,
+    "customNodes": false,
+    "paidFallback": false
+  },
+  "requiredBeforeLaunch": [
+    "verify downloaded SHA256 and existing text encoder hash",
+    "provide genuinely controlled single-character driving video and fixed reference",
+    "construct and validate exact official-node graph",
+    "check no other heavy task and current disk/RAM admission"
+  ],
+  "storage": {
+    "freeBytesObserved": 39017934848,
+    "newBytes": 18909206946,
+    "additionalMarginRequestedBytes": 3000000000
+  },
+  "qualityGateAfterResourceProbe": [
+    "full-body shallow inclination and return",
+    "right-hand feather fan remains",
+    "face/costume identity",
+    "background and observers unaffected after compositing",
+    "actual audio/video sync review later"
+  ],
+  "graph": "wan-animate2-probe-graph.json",
+  "graphValidation": "All 23 node parameter-name checks and 33 link type/index checks pass against installed classes. Media, weights, execution and image quality remain pending.",
+  "poseCache": false,
+  "offlineParameterCheck": "artifacts/wolong-local-film/animate2-mps-preflight/graph-schema-result.json",
+  "offlineLinkCheck": "artifacts/wolong-local-film/animate2-mps-preflight/graph-links-result.json",
+  "existingTextEncoderVerification": "wan-animate2-reused-text-encoder.json",
+  "localCacheStatus": "INT8_CHECKPOINT_EVICTED_REDOWNLOAD_REQUIRED",
+  "restoreReceipt": ".local/model-archives/wan-animate2-eviction.json"
+}

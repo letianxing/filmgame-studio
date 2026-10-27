@@ -1,0 +1,31 @@
+{
+  "status": "ALL_SELECTED_WEIGHTS_SHA256_VERIFIED",
+  "files": [
+    {
+      "path": "clip_vision/clip_vision_h.safetensors",
+      "expectedBytes": 1264219396,
+      "published": true,
+      "partialBytes": 0
+    },
+    {
+      "path": "diffusion_models/wan_animate_2_int8_convrot.safetensors",
+      "expectedBytes": 16653175528,
+      "published": true,
+      "partialBytes": 0
+    },
+    {
+      "path": "vae/Wan2_1_VAE_bf16.safetensors",
+      "expectedBytes": 253806278,
+      "published": true,
+      "partialBytes": 0
+    },
+    {
+      "path": "loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "expectedBytes": 738005744,
+      "published": true,
+      "partialBytes": 0
+    }
+  ],
+  "freeBytes": 46955581440,
+  "log": "artifacts/wolong-local-film/animate2-download/download.log"
+}

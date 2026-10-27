@@ -1,0 +1,56 @@
+{
+  "status": "CANDIDATE_BATCH_NOT_FINAL_CAST",
+  "characters": [
+    {
+      "id": "gu-yong",
+      "image": "assets/gu-yong-concept-a.png",
+      "prompt": "assets/gu-yong-concept-a.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "yu-fan",
+      "image": "assets/yu-fan-concept-b.png",
+      "prompt": "assets/yu-fan-concept-b.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "bu-zhi",
+      "image": "assets/bu-zhi-concept-a.png",
+      "prompt": "assets/bu-zhi-concept-a.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "xue-zong",
+      "image": "assets/xue-zong-concept-a.png",
+      "prompt": "assets/xue-zong-concept-a.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "lu-ji",
+      "image": "assets/lu-ji-concept-a.png",
+      "prompt": "assets/lu-ji-concept-a.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "yan-jun",
+      "image": "assets/yan-jun-concept-a.png",
+      "prompt": "assets/yan-jun-concept-a.prompt.txt",
+      "approvedForFinal": false
+    },
+    {
+      "id": "cheng-bing",
+      "image": "assets/cheng-bing-concept-a.png",
+      "prompt": "assets/cheng-bing-concept-a.prompt.txt",
+      "approvedForFinal": false
+    }
+  ],
+  "review": "Original candidate images visually compared. Yu Fan A retained as rejected resemblance draft, B selected for scene tests. Neutral standing poses are design references, not the final introduction shot designs.",
+  "pending": [
+    "in-scene consistency",
+    "seated and side/back views",
+    "motion and performance validation",
+    "historical costume review"
+  ],
+  "lateCastMissing": [],
+  "lateCastFollowup": "cast-candidate-review-02.json"
+}

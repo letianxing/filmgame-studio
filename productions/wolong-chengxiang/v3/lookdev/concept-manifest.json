@@ -1,0 +1,47 @@
+{
+  "status": "CANDIDATE_NOT_APPROVED",
+  "character": "kongming",
+  "ageDesign": 27,
+  "proportionTarget": "约8头身，不计帽；艺术设计值而非史书测量",
+  "candidates": [
+    {
+      "file": "kongming-concept-a.png",
+      "prompt": "kongming-concept-a.prompt.txt",
+      "assessment": "偏摄影质感，不作为生产母版"
+    },
+    {
+      "file": "kongming-concept-b.png",
+      "prompt": "kongming-concept-b.prompt.txt",
+      "assessment": "闭合交领与CG塑形修订候选，未冻结"
+    },
+    {
+      "file": "kongming-concept-c.png",
+      "prompt": "kongming-concept-c.prompt.txt",
+      "assessment": "依据新用户参考保留骨相、月白墨灰与国漫塑形；披发残留、服饰结构仍须修订，不作历史准确性结论"
+    },
+    {
+      "file": "kongming-dialogue-test-c.png",
+      "prompt": "kongming-dialogue-test-c.prompt.txt",
+      "assessment": "新参考派生单人半身镜头候选；束发修正，尚未角色冻结。仅允许本地短样片验证，不能证明全身衣装或落座物理通过。"
+    }
+  ],
+  "tool": "built-in imagegen",
+  "historySources": [
+    "https://zh.wikisource.org/wiki/三國志/卷35",
+    "https://zh.wikisource.org/wiki/諸葛亮集_(張澍)/進諸葛亮集表"
+  ],
+  "review": "../../审查/开场人物与汉末空间复核.md",
+  "productionAllowed": false,
+  "notes": [
+    "四分之三侧面、正面、全身是同一角色的设计视图，不能整张作为群戏首帧",
+    "不沿用旧影片作为通过审查的人物或场景母版",
+    "后续主客座布局和其他人物母版尚待完成"
+  ],
+  "currentBlockingProposal": "hall-parallel-seats-v1.json",
+  "technicalDialogueFirstFrame": "kongming-dialogue-test-c.png",
+  "userStyleReference": {
+    "file": "kongming-user-style-reference.png",
+    "sha256": "941fc4176a2f6b2ec5b0ba20cf39c2772d23f483ab20108949e11601a72d781f",
+    "scope": "用户选择的美術方向；非服饰考证凭证，非最终角色冻结"
+  }
+}

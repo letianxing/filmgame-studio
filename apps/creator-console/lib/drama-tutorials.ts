@@ -1,0 +1,23 @@
+/** Curated source links, not mirrored videos or copied course materials. Review date: 2026-10-12. */
+export const dramaTutorials = [
+  { id: 'script', stage: '01 · 剧本', title: '把创意拆成可拍摄的剧本', bvid: 'BV1V5Ee6iE8k', page: 1,
+    sourceTitle: 'AI漫剧零基础教程 · 制作剧本脚本', source: 'AI电影系统教学 · Bilibili',
+    description: '先写清主角目标、冲突和本集转折，再把每一段拆成单一动作的镜头。',
+    prompt: '将这个故事写成一集 30 秒的漫剧，4 个镜头，一个主角；开头有悬念，中间有转折，结尾留一个问题。每镜写清画面、景别和一句简短对白。', target: 'idea' },
+  { id: 'character', stage: '02 · 角色', title: '固定角色外貌与画面风格', bvid: 'BV1Sqge63ESK', page: 2,
+    sourceTitle: 'AI漫剧制作全流程 · 保持人物一致性', source: 'ComfyUI系统教程 · Bilibili',
+    description: '建立角色卡，固定发型、服装、色彩和道具；参考图用于视频生成，输出后仍需逐镜复核。',
+    prompt: '完善每个角色的外貌设定，明确年龄感、发型、服装配色与标志性道具；所有镜头保持一致，不改变已有情节。', target: 'characters' },
+  { id: 'storyboard', stage: '03 · 分镜', title: '从剧本到景别和运镜', bvid: 'BV1V5Ee6iE8k', page: 9,
+    sourceTitle: 'AI漫剧零基础教程 · 剧本和分镜制作', source: 'AI电影系统教学 · Bilibili',
+    description: '每镜只安排一个主要动作，交替使用全景、中景和特写，让视线和动作方向连续。',
+    prompt: '检查当前分镜的连续性，每镜只保留一个主要动作，补充景别、视角、运镜和镜头时长，避免无动机的跳切。', target: 'shots' },
+  { id: 'voice', stage: '04 · 配音', title: 'CosyVoice 音色与参考声音', bvid: 'BV1Mz421B7bE', page: 1,
+    sourceTitle: 'AI语音 · CosyVoice 使用教程', source: '与AI同行1996 · Bilibili',
+    description: '了解参考声音与音色控制。教程为早期版本，项目使用 CosyVoice2；上传有权使用的 WAV，并填写准确的参考文字。',
+    prompt: '把对白改得更口语化，每句尽量简短，保持角色性格；不要替角色编造音色 ID 或授权信息。', target: 'characters' },
+  { id: 'editing', stage: '05 · 成片', title: '配音、音效与后期剪辑', bvid: 'BV1V5Ee6iE8k', page: 6,
+    sourceTitle: 'AI漫剧零基础教程 · AI动画后期剪辑制作', source: 'AI电影系统教学 · Bilibili',
+    description: '用声音检查节奏，再查看镜头连接与字幕。本项目按镜头顺序合成 MP4，并提供字幕轨与 VTT 下载。',
+    prompt: '检查整集节奏，删减重复信息，让相邻镜头自然衔接，保留开头悬念和结尾转折。', target: 'output' },
+] as const;

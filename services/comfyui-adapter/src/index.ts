@@ -26,6 +26,9 @@ export interface ComfyUIConfig {
   timeoutMs?: number;
   minimumFreeRamBytes?: number;
   headers?: Record<string, string>;
+  /** Dedicated safe worker: do not share its queue with other tasks. */
+  exclusiveQueue?: boolean;
+  releaseModelsAfterVideo?: boolean;
 }
 
 interface PromptResponse {
@@ -96,6 +99,15 @@ export class ComfyUIClient {
     workflow: ComfyApiWorkflow,
     context: ProviderContext,
   ): Promise<{ asset: GeneratedAsset; promptId: string }> {
+    context.signal?.throwIfAborted();
+    await this.#ensureMemoryHeadroom();
+    if (this.config.exclusiveQueue) {
+      const queue = await this.#request<{ queue_running?: unknown[]; queue_pending?: unknown[] }>('/queue', {
+        headers: this.config.headers ?? {}, signal: AbortSignal.timeout(3000),
+      });
+      if (!Array.isArray(queue.queue_running) || !Array.isArray(queue.queue_pending)) throw new ProviderError('comfyui', 'INVALID_RESPONSE', 'Cannot verify local queue', false);
+      if (queue.queue_running.length || queue.queue_pending.length) throw new ProviderError('comfyui', 'UNAVAILABLE', 'Local model queue is busy; refusing concurrent inference', false);
+    }
     const promptResponse = await this.#request<PromptResponse>('/prompt', {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...this.config.headers },
@@ -111,7 +123,9 @@ export class ComfyUIClient {
       );
     }
 
-    const history = await this.#waitForHistory(promptResponse.prompt_id, context.signal);
+    let history: HistoryRecord;
+    try { history = await this.#waitForHistory(promptResponse.prompt_id, context.signal); }
+    catch (error) { await this.#cancelOwnedPrompt(promptResponse.prompt_id); throw error; }
     const output = firstOutput(history);
     if (!output) {
       throw new ProviderError(
@@ -134,6 +148,22 @@ export class ComfyUIClient {
         mimeType: inferMimeType(output.filename),
       },
     };
+  }
+
+  async releaseModels(): Promise<void> {
+    for (let i = 0; i < 12; i++) {
+      const queue = await this.#request<{ queue_running?: unknown[]; queue_pending?: unknown[] }>('/queue', {
+        headers: this.config.headers ?? {}, signal: AbortSignal.timeout(3000),
+      });
+      if (queue.queue_running?.length === 0 && queue.queue_pending?.length === 0) {
+        await this.#request('/free', { method: 'POST', headers: { 'content-type': 'application/json', ...this.config.headers },
+          body: JSON.stringify({ unload_models: true, free_memory: true }), signal: AbortSignal.timeout(3000) });
+        await delay(1500);
+        return;
+      }
+      await delay(250);
+    }
+    throw new ProviderError('comfyui', 'UNAVAILABLE', 'Cannot release busy local model queue before audio work', false);
   }
 
   async importImage(sourceUri: string, filename: string): Promise<string> {
@@ -196,38 +226,45 @@ export class ComfyUIClient {
         { headers: this.config.headers ?? {}, signal: signal ?? null },
       );
       const record = history[promptId];
-      if (record?.status?.completed) return record;
       if (record?.status?.status_str === 'error') {
         throw new ProviderError('comfyui', 'INVALID_RESPONSE', `Prompt ${promptId} failed`, false);
       }
+      if (record?.status?.completed) return record;
       await this.#ensureMemoryHeadroom(promptId);
       await delay(this.#pollIntervalMs, signal);
     }
     throw new ProviderError('comfyui', 'TIMEOUT', `Prompt ${promptId} timed out`, true);
   }
 
-  async #ensureMemoryHeadroom(promptId: string): Promise<void> {
+  async #ensureMemoryHeadroom(promptId?: string): Promise<void> {
     if (this.#minimumFreeRamBytes <= 0) return;
     const stats = await this.#request<{ system?: { ram_free?: number } }>('/system_stats', {
       headers: this.config.headers ?? {},
       signal: AbortSignal.timeout(3_000),
     });
     const freeRam = stats.system?.ram_free;
-    if (typeof freeRam !== 'number' || freeRam >= this.#minimumFreeRamBytes) return;
-    try {
-      await this.#request<unknown>('/interrupt', {
-        method: 'POST',
-        headers: this.config.headers ?? {},
-      });
-    } catch {
-      // Preserve the resource-exhaustion error even if interruption races with completion.
-    }
+    if (typeof freeRam !== 'number' || !Number.isFinite(freeRam)) throw new ProviderError('comfyui', 'UNAVAILABLE', 'Cannot verify available RAM', false);
+    if (freeRam >= this.#minimumFreeRamBytes) return;
     throw new ProviderError(
       'comfyui',
       'UNAVAILABLE',
       `Interrupted prompt ${promptId}: free RAM ${freeRam} is below safety floor ${this.#minimumFreeRamBytes}`,
       false,
     );
+  }
+
+  async #cancelOwnedPrompt(promptId: string): Promise<void> {
+    try {
+      const queue = await this.#request<{ queue_running?: unknown[][] }>('/queue', {
+        headers: this.config.headers ?? {}, signal: AbortSignal.timeout(3000),
+      });
+      await this.#request('/queue', { method: 'POST', headers: { 'content-type': 'application/json', ...this.config.headers },
+        body: JSON.stringify({ delete: [promptId] }), signal: AbortSignal.timeout(3000) });
+      // Comfy's interrupt is global: never stop another user's running prompt.
+      if (queue.queue_running?.some((item) => item[1] === promptId)) await this.#request('/interrupt', {
+        method: 'POST', headers: this.config.headers ?? {}, signal: AbortSignal.timeout(3000),
+      });
+    } catch { /* The dedicated local worker watchdog remains the hard-stop fallback. */ }
   }
 
   async #request<T>(path: string, init: RequestInit): Promise<T> {
@@ -245,7 +282,8 @@ export class ComfyUIClient {
         response.status >= 500 || response.status === 429,
       );
     }
-    return (await response.json()) as T;
+    const body = await response.text();
+    return (body.trim() ? JSON.parse(body) : {}) as T;
   }
 }
 
@@ -299,6 +337,7 @@ export class ComfyUIVideoProvider implements VideoProvider {
     context: ProviderContext,
   ): Promise<ProviderResult<GeneratedAsset>> {
     const startedAt = new Date().toISOString();
+    if (request.generateAudio || request.referenceVideoUris?.length || request.lastFrameUri) throw new ProviderError(this.id, 'INVALID_RESPONSE', 'Wan TI2V 5B cannot honor native audio, video reference or last frame constraints', false);
     if (request.referenceAssetUris.length) {
       throw new ProviderError(
         this.id,
@@ -318,6 +357,7 @@ export class ComfyUIVideoProvider implements VideoProvider {
       : request;
     const workflow = await this.client.workflows.video(preparedRequest);
     const { asset, promptId } = await this.client.runWorkflow(workflow, context);
+    if (this.client.config.releaseModelsAfterVideo) await this.client.releaseModels();
     return {
       data: asset,
       provider: this.id,

@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FilmGame Studio — AI 多人互动影游创作台',
+  title: 'FilmGame Studio — AI 漫剧与互动影游创作台',
   description:
-    '用自然语言设计、生成、试玩、迭代并发布 4～8 人多人互动影游。',
+    '用自然语言创作 AI 漫剧与互动影游，从剧本、角色、分镜到配音和整集成片。',
 };
 
 export default function RootLayout({

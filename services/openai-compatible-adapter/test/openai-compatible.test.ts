@@ -20,5 +20,8 @@ test('DeepSeek JSON mode sends max_tokens and parses structured response', async
     assert.equal(body?.max_tokens, 321);
     assert.equal(body?.max_completion_tokens, undefined);
     assert.deepEqual(body?.response_format, { type: 'json_object' });
+    const messages = body?.messages as Array<{ role: string; content: string }>;
+    assert.match(messages[0]!.content, /JSON Schema/);
+    assert.match(messages[0]!.content, /"type":"object"/);
   } finally { globalThis.fetch = originalFetch; }
 });

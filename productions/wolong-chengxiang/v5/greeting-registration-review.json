@@ -1,0 +1,37 @@
+{
+  "status": "RIG_REVISION_REQUIRED_BEFORE_CAMERA_FREEZE",
+  "bodyAnchors": "artifacts/wolong-local-film/greeting-spatial-contract-v1/body-anchor-detection.json",
+  "rejectedAutomaticAnchors": {
+    "kongming": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "zhang-zhao": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ]
+  },
+  "reason": "Leg/foot detections are occluded by robes; several estimated feet sit above visible shoes. High-confidence torso points also remain garment-based estimates.",
+  "rigFindings": [
+    "Proxy shoulder links were placed at hip+0.35m (about 1.25-1.28m), below plausible shoulder level for the configured adult heights.",
+    "Shared artwork shows more open torsos with heads independently turned toward the other actor; single facing vector is insufficient."
+  ],
+  "requiredChanges": [
+    "Separate torso facing, head gaze and foot contact orientation.",
+    "Place shoulder rig around anatomically plausible height, then visually validate against reference.",
+    "Use visible shoe contact observations for ground plane; do not use low-confidence inferred ankles.",
+    "Repeat common-camera fit after rig correction; do not approve earlier camera residuals."
+  ]
+}

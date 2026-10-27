@@ -1,0 +1,274 @@
+{
+  "title": "卧龙*丞相｜江东论战·江上客",
+  "format": "SERIES",
+  "targetMinutes": 32.0,
+  "stage": "OUTLINE",
+  "premise": "从诸葛亮有限视角，细写一个理想主义者怎样选择并承担公共责任。",
+  "theme": "知遇不是免于失败，而是有人愿意与你共同承担。",
+  "ending": "张昭请他入内，论战才开始",
+  "confirmedConstraints": [
+    "用户指定原创风格化写实三维国漫、慢节奏、多集深入事件。",
+    "保持诸葛亮视角为主；人物、场景、道具与声音跨镜一致。",
+    "正史、裴注异说、文学传统与原创对白分层标注。史实与演绎比例待用户选择。",
+    "本文件是32分钟目标的段落大纲，不是足量完成的对白稿或已生成成片。"
+  ],
+  "lockedFields": [
+    "title",
+    "format",
+    "targetMinutes"
+  ],
+  "characters": [
+    {
+      "id": "liang",
+      "name": "诸葛亮",
+      "goal": "寻找能够承担天下之责的同行者",
+      "need": "承认独善无法护住所有人",
+      "opposition": "既怕轻许一生，又怕自保成为逃避",
+      "change": "从保全小家到自愿承担公共责任",
+      "voice": "年轻、清醒、有锋芒；情深时反而少说"
+    },
+    {
+      "id": "bei",
+      "name": "刘备",
+      "goal": "请到能共担事业的人",
+      "need": "让求贤不止是求一条取胜之计",
+      "opposition": "屡败与名声无法保证未来",
+      "change": "从试探人才到坦陈自己做不到的事",
+      "voice": "平实，有阅历，不句句讲仁义"
+    },
+    {
+      "id": "su",
+      "name": "鲁肃",
+      "goal": "促成可执行的抗曹联盟",
+      "need": "让对方承认江东也有自身利益",
+      "opposition": "盟友弱而曹操强，内部决策不一",
+      "change": "从试探使者到共同担责",
+      "voice": "务实、坦率、有战略判断"
+    },
+    {
+      "id": "quan",
+      "name": "孙权",
+      "goal": "保住江东并掌握选择权",
+      "need": "不靠父兄遗产定义自己",
+      "opposition": "战与降都要承担不能转嫁的代价",
+      "change": "在多方意见中自己决断",
+      "voice": "年轻却克制，追问实际代价"
+    },
+    {
+      "id": "zhao",
+      "name": "张昭",
+      "goal": "降低江东覆亡的风险",
+      "need": "面对投降并不能保证所有人安全",
+      "opposition": "兵力差距、民生和名分相互纠缠",
+      "change": "让反对意见保有尊严",
+      "voice": "资深，条理清楚，不写成无知丑角"
+    },
+    {
+      "id": "civilian",
+      "name": "流民父亲（原创合成人物）",
+      "goal": "让家人活过这个冬天",
+      "need": "在困境里保有尊严",
+      "opposition": "饥饿、迁徙与征役",
+      "change": "由被动受助到做出微小互助",
+      "voice": "具体朴素，不替作者说主题"
+    }
+  ],
+  "beats": [
+    {
+      "id": "jiangdong-one-b1",
+      "summary": "亮决定出使争取时间与盟友",
+      "characterIds": [
+        "liang",
+        "bei",
+        "civilian"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b2",
+      "summary": "两人明确能承担与不能虚报的筹码",
+      "characterIds": [
+        "liang",
+        "bei"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b3",
+      "summary": "双方承認各有必须保护的人与地方",
+      "characterIds": [
+        "liang",
+        "su"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b4",
+      "summary": "亮调整说服方式，从名分转向共同风险",
+      "characterIds": [
+        "liang",
+        "su"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b5",
+      "summary": "亮选择先听不同意见",
+      "characterIds": [
+        "liang",
+        "su"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b6",
+      "summary": "孙权没有立即表态，要求把代价说清楚",
+      "characterIds": [
+        "quan",
+        "zhao",
+        "su"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b7",
+      "summary": "两人把争论的问题改成“谁来付出什么”",
+      "characterIds": [
+        "liang",
+        "su"
+      ]
+    },
+    {
+      "id": "jiangdong-one-b8",
+      "summary": "张昭请他入内，论战才开始",
+      "characterIds": [
+        "liang",
+        "zhao"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "jiangdong-one-s01",
+      "order": 1,
+      "heading": "外景 夏口水边 晨",
+      "characterIds": [
+        "liang",
+        "bei",
+        "civilian"
+      ],
+      "goal": "确认残军与百姓处境",
+      "conflict": "同一条船要载兵也要载家人",
+      "turn": "亮决定出使争取时间与盟友",
+      "action": "夏口出使A；具体家庭场面D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "jiangdong-one-s02",
+      "order": 2,
+      "heading": "内景 临时营舍 日",
+      "characterIds": [
+        "liang",
+        "bei"
+      ],
+      "goal": "谈出使能拿什么作保证",
+      "conflict": "刘备没有可轻许的胜局",
+      "turn": "两人明确能承担与不能虚报的筹码",
+      "action": "不靠主角空口夸兵。D，兵力依据传文另核。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "jiangdong-one-s03",
+      "order": 3,
+      "heading": "外景 江船 日",
+      "characterIds": [
+        "liang",
+        "su"
+      ],
+      "goal": "鲁肃试探诸葛亮",
+      "conflict": "亮维护刘备，肃指出江东不会为一方的名分自动开战",
+      "turn": "双方承認各有必须保护的人与地方",
+      "action": "鲁肃是战略合作者，不是被戏弄的传话人。A骨架/D对白。",
+      "dialogue": [],
+      "estimatedSeconds": 300
+    },
+    {
+      "id": "jiangdong-one-s04",
+      "order": 4,
+      "heading": "外景 江东渡口 午后",
+      "characterIds": [
+        "liang",
+        "su"
+      ],
+      "goal": "观察江东的备战与不安",
+      "conflict": "繁忙不是安全，船工和粮船都受战争牵动",
+      "turn": "亮调整说服方式，从名分转向共同风险",
+      "action": "宏伟感来自组织、运输与人，不用空泛航拍。D。",
+      "dialogue": [],
+      "estimatedSeconds": 180
+    },
+    {
+      "id": "jiangdong-one-s05",
+      "order": 5,
+      "heading": "内景 客舍 日",
+      "characterIds": [
+        "liang",
+        "su"
+      ],
+      "goal": "准备与孙权相见",
+      "conflict": "亮想直接呈策，鲁肃指出他先要听懂江东的担忧",
+      "turn": "亮选择先听不同意见",
+      "action": "作为外交能力成长，而非装谦虚。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "jiangdong-one-s06",
+      "order": 6,
+      "heading": "内景 江东议事处 日",
+      "characterIds": [
+        "quan",
+        "zhao",
+        "su"
+      ],
+      "goal": "呈现迎曹意见的合理处",
+      "conflict": "军民负担与北方优势构成严肃压力",
+      "turn": "孙权没有立即表态，要求把代价说清楚",
+      "action": "此场暂离孔明视角，需后续决定是否通过鲁肃转述。A/B背景。",
+      "dialogue": [],
+      "estimatedSeconds": 300
+    },
+    {
+      "id": "jiangdong-one-s07",
+      "order": 7,
+      "heading": "内景 客舍 夜",
+      "characterIds": [
+        "liang",
+        "su"
+      ],
+      "goal": "亮发现联盟的难点",
+      "conflict": "肃不愿用“胆怯”概括反对者，亮想起流亡中的普通人",
+      "turn": "两人把争论的问题改成“谁来付出什么”",
+      "action": "为次集辩论建立人物而非题库。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "jiangdong-one-s08",
+      "order": 8,
+      "heading": "外景 议事处廊下 次日",
+      "characterIds": [
+        "liang",
+        "zhao"
+      ],
+      "goal": "第一次面对张昭",
+      "conflict": "双方礼貌交锋，都不肯替对方省略失败风险",
+      "turn": "张昭请他入内，论战才开始",
+      "action": "克制结尾，不出现胜利配乐。D。",
+      "dialogue": [],
+      "estimatedSeconds": 180
+    }
+  ],
+  "openQuestions": [
+    "等待确认正史与文学演绎尺度。",
+    "每段需继续拆场并写足行动、对白与静默，完成读稿计时后修正长度。",
+    "黄氏及家居、官服、冠帻、礼节等需按场次补证。"
+  ],
+  "nextStep": "确认史料尺度后，从第一集开始扩写完整分场剧本；不将估时当成片长验收。"
+}

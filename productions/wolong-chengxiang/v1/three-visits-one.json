@@ -1,0 +1,283 @@
+{
+  "title": "卧龙*丞相｜三顾茅庐·门外人",
+  "format": "SERIES",
+  "targetMinutes": 32.0,
+  "stage": "OUTLINE",
+  "premise": "从诸葛亮有限视角，细写一个理想主义者怎样选择并承担公共责任。",
+  "theme": "知遇不是免于失败，而是有人愿意与你共同承担。",
+  "ending": "亮把拜帖留在案上，故事进入第二次选择",
+  "confirmedConstraints": [
+    "用户指定原创风格化写实三维国漫、慢节奏、多集深入事件。",
+    "保持诸葛亮视角为主；人物、场景、道具与声音跨镜一致。",
+    "正史、裴注异说、文学传统与原创对白分层标注。史实与演绎比例待用户选择。",
+    "本文件是32分钟目标的段落大纲，不是足量完成的对白稿或已生成成片。"
+  ],
+  "lockedFields": [
+    "title",
+    "format",
+    "targetMinutes"
+  ],
+  "characters": [
+    {
+      "id": "liang",
+      "name": "诸葛亮",
+      "goal": "寻找能够承担天下之责的同行者",
+      "need": "承认独善无法护住所有人",
+      "opposition": "既怕轻许一生，又怕自保成为逃避",
+      "change": "从保全小家到自愿承担公共责任",
+      "voice": "年轻、清醒、有锋芒；情深时反而少说"
+    },
+    {
+      "id": "bei",
+      "name": "刘备",
+      "goal": "请到能共担事业的人",
+      "need": "让求贤不止是求一条取胜之计",
+      "opposition": "屡败与名声无法保证未来",
+      "change": "从试探人才到坦陈自己做不到的事",
+      "voice": "平实，有阅历，不句句讲仁义"
+    },
+    {
+      "id": "xu",
+      "name": "徐庶",
+      "goal": "让彼此适合的人相见",
+      "need": "承认每个人都要自己做选择",
+      "opposition": "朋友的安稳与天下需要相冲突",
+      "change": "推荐但不替朋友许诺",
+      "voice": "直截，有熟人间的幽默"
+    },
+    {
+      "id": "cui",
+      "name": "崔州平",
+      "goal": "保护朋友不被名望吞没",
+      "need": "理解出与处都可能有代价",
+      "opposition": "看见政治的风险而不愿轻率乐观",
+      "change": "保留分歧仍尊重选择",
+      "voice": "冷静，反问少而准"
+    },
+    {
+      "id": "jun",
+      "name": "诸葛均",
+      "goal": "守住来之不易的家",
+      "need": "学会不把离开理解为遗弃",
+      "opposition": "担心兄长远去与自己被留下",
+      "change": "主动接住家中职责",
+      "voice": "亲近时直白，避免孩子化"
+    },
+    {
+      "id": "huang",
+      "name": "黄氏",
+      "goal": "共同经营可持续的生活",
+      "need": "让家人之间说真话",
+      "opposition": "不愿以贤内助姿态消失于宏大故事",
+      "change": "表达自己的选择与担忧",
+      "voice": "姓名与细节待考；日常语言克制"
+    },
+    {
+      "id": "civilian",
+      "name": "流民父亲（原创合成人物）",
+      "goal": "让家人活过这个冬天",
+      "need": "在困境里保有尊严",
+      "opposition": "饥饿、迁徙与征役",
+      "change": "由被动受助到做出微小互助",
+      "voice": "具体朴素，不替作者说主题"
+    }
+  ],
+  "beats": [
+    {
+      "id": "three-visits-one-b1",
+      "summary": "亮先疏邻田，自己的活反而迟了",
+      "characterIds": [
+        "liang",
+        "jun"
+      ]
+    },
+    {
+      "id": "three-visits-one-b2",
+      "summary": "亮拒绝把自比管乐当作已经有资格救天下",
+      "characterIds": [
+        "liang",
+        "cui",
+        "xu"
+      ]
+    },
+    {
+      "id": "three-visits-one-b3",
+      "summary": "亮发现自己关于“安居”的议论缺少他们的声音",
+      "characterIds": [
+        "liang",
+        "civilian"
+      ]
+    },
+    {
+      "id": "three-visits-one-b4",
+      "summary": "亮第一次说自己未必能一直留下",
+      "characterIds": [
+        "liang",
+        "huang",
+        "jun"
+      ]
+    },
+    {
+      "id": "three-visits-one-b5",
+      "summary": "刘备决定登门",
+      "characterIds": [
+        "xu",
+        "bei"
+      ]
+    },
+    {
+      "id": "three-visits-one-b6",
+      "summary": "刘备问他做什么、何时回来，不留下勒令",
+      "characterIds": [
+        "bei",
+        "jun"
+      ]
+    },
+    {
+      "id": "three-visits-one-b7",
+      "summary": "亮开始想知道来者真正的目的",
+      "characterIds": [
+        "liang",
+        "civilian"
+      ]
+    },
+    {
+      "id": "three-visits-one-b8",
+      "summary": "亮把拜帖留在案上，故事进入第二次选择",
+      "characterIds": [
+        "liang",
+        "jun"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "three-visits-one-s01",
+      "order": 1,
+      "heading": "外景 田畦 清晨",
+      "characterIds": [
+        "liang",
+        "jun"
+      ],
+      "goal": "修一段被雨冲坏的沟渠",
+      "conflict": "均希望尽快回屋，亮还在看邻田的积水",
+      "turn": "亮先疏邻田，自己的活反而迟了",
+      "action": "以劳动和邻里利益建立人物，不用旁白夸其胸怀。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s02",
+      "order": 2,
+      "heading": "内景 草庐 午后",
+      "characterIds": [
+        "liang",
+        "cui",
+        "xu"
+      ],
+      "goal": "讨论是否出仕",
+      "conflict": "崔州平说地方秩序不能只靠一人志向，徐庶说避开选择也是选择",
+      "turn": "亮拒绝把自比管乐当作已经有资格救天下",
+      "action": "让好友观点都成立，使用日常饭食与田务打断高论。交游A，论辩D。",
+      "dialogue": [],
+      "estimatedSeconds": 300
+    },
+    {
+      "id": "three-visits-one-s03",
+      "order": 3,
+      "heading": "外景 村路 傍晚",
+      "characterIds": [
+        "liang",
+        "civilian"
+      ],
+      "goal": "弄清流民为什么不愿再走",
+      "conflict": "父亲怕入城登记意味着又被征用",
+      "turn": "亮发现自己关于“安居”的议论缺少他们的声音",
+      "action": "流民作为原创合成人物，不添加具体屠杀实录。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s04",
+      "order": 4,
+      "heading": "内景 屋内 夜",
+      "characterIds": [
+        "liang",
+        "huang",
+        "jun"
+      ],
+      "goal": "决定来年的生计",
+      "conflict": "均期待兄长留下，黄氏问田地计划里有没有他自己的以后",
+      "turn": "亮第一次说自己未必能一直留下",
+      "action": "黄氏细节待考，以角色行动而非神化发明塑造。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s05",
+      "order": 5,
+      "heading": "内景 新野住所 日",
+      "characterIds": [
+        "xu",
+        "bei"
+      ],
+      "goal": "徐庶推荐孔明",
+      "conflict": "刘备习惯让幕僚带人来，徐庶坚持此人须亲往",
+      "turn": "刘备决定登门",
+      "action": "举荐与亲访A，具体措辞可据原文改写。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s06",
+      "order": 6,
+      "heading": "外景 草庐门前 日",
+      "characterIds": [
+        "bei",
+        "jun"
+      ],
+      "goal": "第一次求见",
+      "conflict": "孔明不在，刘备不能用身份把人催回来",
+      "turn": "刘备问他做什么、何时回来，不留下勒令",
+      "action": "第一次未见的具象组织D，不断言正史记载天气。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s07",
+      "order": 7,
+      "heading": "外景 村路 日暮",
+      "characterIds": [
+        "liang",
+        "civilian"
+      ],
+      "goal": "回家途中了解来客",
+      "conflict": "流民父亲只记得来客下马问路、没有驱赶挡道孩子",
+      "turn": "亮开始想知道来者真正的目的",
+      "action": "以小事传达未知，不提前给刘备完美圣人结论。D。",
+      "dialogue": [],
+      "estimatedSeconds": 240
+    },
+    {
+      "id": "three-visits-one-s08",
+      "order": 8,
+      "heading": "内景 草庐 夜",
+      "characterIds": [
+        "liang",
+        "jun"
+      ],
+      "goal": "面对留下的拜帖",
+      "conflict": "均问他是否会去，亮看了很久没有收进书堆",
+      "turn": "亮把拜帖留在案上，故事进入第二次选择",
+      "action": "以不回答结束，不用煽情音乐替他决定。D。",
+      "dialogue": [],
+      "estimatedSeconds": 180
+    }
+  ],
+  "openQuestions": [
+    "等待确认正史与文学演绎尺度。",
+    "每段需继续拆场并写足行动、对白与静默，完成读稿计时后修正长度。",
+    "黄氏及家居、官服、冠帻、礼节等需按场次补证。"
+  ],
+  "nextStep": "确认史料尺度后，从第一集开始扩写完整分场剧本；不将估时当成片长验收。"
+}

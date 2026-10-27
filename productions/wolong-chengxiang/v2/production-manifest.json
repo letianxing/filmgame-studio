@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "wolong-chengxiang",
+  "title": "卧龙*丞相",
+  "version": 2,
+  "status": "APPROVED_HISTORY_POLICY_DEVELOPING_OPENING",
+  "userRequirements": {
+    "perspective": "诸葛亮为主，完整人生连续剧",
+    "style": "牧神记方向的风格化写实三维国漫；本机《夜渡》最终样片为用户认可质感基准",
+    "pace": "慢节奏，事件跨多集深入",
+    "priorities": [
+      "三顾茅庐",
+      "舌战群儒"
+    ],
+    "minimumMinutesPerPriorityArc": 30,
+    "emotionalGoals": [
+      "感人",
+      "克制而催泪",
+      "个人英雄主义",
+      "历史宏伟感"
+    ],
+    "music": "原创歌词与AI歌曲，时代相关乐器与深邃旋律，不复制卧龙吟"
+  },
+  "budget": {
+    "currency": "CNY",
+    "userReportedAvailable": 318.9,
+    "taskSpendCeiling": 318.9,
+    "submittedVideoJobs": 0,
+    "spentThisTurn": 0,
+    "pricingSource": "https://docs.volcengine.com/docs/ark/model-pricing?lang=zh",
+    "seedance25NoVideo720pCnyPerMillionTokens": 70,
+    "estimatePerSecond": 1.512,
+    "two30MinuteArcsSinglePassEstimate": 5443.2,
+    "budgetRawSecondsEstimate": 210.9126984126984,
+    "note": "估算不包含返工和输入视频；以供应商usage和账单为准。没有调用付费媒体。"
+  },
+  "assets": {
+    "characters": "SPEC_ONLY_NOT_GENERATED",
+    "locations": "SPEC_ONLY_NOT_GENERATED",
+    "song": "LYRICS_AND_BRIEF_ONLY_NOT_GENERATED"
+  },
+  "pendingDecision": null,
+  "episodeOutlineFiles": [
+    "jiangdong-one.json",
+    "jiangdong-two.json",
+    "three-visits-one.json",
+    "three-visits-two.json"
+  ],
+  "nextStep": "生成舌战群儒开场约120秒：入堂、座次、逐一问候、落座、张昭第一轮问难。",
+  "confirmedHistoryPolicy": "正史为骨架，结合演义情节与原创衔接；经典辩论尽量采用演义原文，1994影视仅参考表演与节奏，不复制其特有台词。",
+  "confirmedVisualBenchmark": "以既有《夜渡》最终国漫样片的三维动画脸部、表情、布料与电影光照为质感基准，孔明/张昭/鲁肃重新原创造型。"
+}

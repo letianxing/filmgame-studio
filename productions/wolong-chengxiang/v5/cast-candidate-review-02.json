@@ -1,0 +1,19 @@
+{
+  "status": "CANDIDATE_BATCH_NOT_FINAL_CAST",
+  "characters": [
+    {
+      "id": "huang-gai",
+      "image": "assets/huang-gai-concept-a.png",
+      "sha256": "08b3417adf67abfaa153dab95ca08581cd38c8b0bc25c5eb44f5577fed46f6c6",
+      "observed": "宽厚体态、较宽颧颌、连髭短灰须，赭褐交领袍、深色布巾和皮带；神情沉着。",
+      "approvedForFinal": false
+    },
+    {
+      "id": "zhuge-jin",
+      "image": "assets/zhuge-jin-concept-a.png",
+      "sha256": "39e6ee4ee40afe7b02317dd9d9f4295c1bb394acb65baad8f9d16cba90cff526",
+      "observed": "修长体态、较长脸、细髭颏须，蓝灰交领袍、深色布带；年龄感偏年轻，兄长成熟感待复核。",
+      "approvedForFinal": false
+    }
+  ]
+}

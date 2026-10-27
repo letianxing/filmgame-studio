@@ -1,0 +1,243 @@
+{
+  "status": "LOWER_GUIDANCE_NOT_SELECTED_IDENTITY_AND_GRIP_UNRESOLVED",
+  "productionApproved": false,
+  "sourceContract": "productions/wolong-chengxiang/v5/greeting-spatial-contract-v2.json",
+  "candidateReference": "productions/wolong-chengxiang/v5/assets/greeting-shared-start-b.png",
+  "finding": {
+    "existingAnimate2": "Consumes RGB driving video; pose_video name does not imply independent skeleton/depth conditioning. Do not label proxy-driver RGB as depth/pose ControlNet.",
+    "selectedNode": "Wan22FunControlToVideo",
+    "selectedBase": "alibaba-pai/Wan2.2-Fun-5B-Control",
+    "inputRegistrationPending": true
+  },
+  "weights": {
+    "repo": "QuantStack/Wan2.2-Fun-5B-Control-GGUF",
+    "revision": "f994aab7895ba843a404688bdd7f422b33d9fd9b",
+    "filename": "Wan2.2-Fun-5B-Control-Q8_0.gguf",
+    "bytes": 5411097440,
+    "sha256": "4f1e79318fef3e5405c6a5c0de1cfc5582d56aafcd4e32cd94832e59dd1f7918",
+    "license": "apache-2.0",
+    "downloaded": true,
+    "provenance": "Third-party quantization of Alibaba PAI base; quality and Mac execution unvalidated."
+  },
+  "reuse": {
+    "textEncoder": ".local/comfyui/models/text_encoders/umt5_xxl_fp16.safetensors",
+    "vae": ".local/comfyui/models/vae/wan2.2_vae.safetensors"
+  },
+  "loader": {
+    "source": "https://github.com/city96/ComfyUI-GGUF",
+    "path": ".local/wan-fun-control/gguf-upstream",
+    "revision": "6ea2651e7df66d7585f6ffee804b20e92fb38b8a",
+    "dependency": "gguf 0.17.1 in .local/wan-fun-control/deps",
+    "macKernelCheck": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/q8-loader.json",
+    "fullModelCpuEvidence": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/model-load-fixed.json",
+    "fullModelMpsEvidence": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/model-mps.json",
+    "resources": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/model-mps.resources.json"
+  },
+  "disk": {
+    "freeBytesObserved": 30961426432,
+    "requiredReserveBytes": 21474836480
+  },
+  "constraints": [
+    "No 14B Animate2 LoRA on 5B Control weights.",
+    "Use matching base sampling; no arbitrary few-step distillation assumptions.",
+    "Preserve source model files and existing media.",
+    "Serial guarded workers, CPU VAE, no paid fallback."
+  ],
+  "next": [
+    "Complete reference/rig registration with separate torso and head orientation.",
+    "Export the correctly registered pose/depth sequence for Wan22FunControlToVideo.",
+    "Run serial text/visual/sample/decode stages with standard matching sampling, then inspect actual control following."
+  ],
+  "download": {
+    "status": "SHA256_VERIFIED",
+    "log": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/download.log",
+    "receipt": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/download-receipt.json",
+    "noAutomaticRetry": true
+  },
+  "registrationEvidence": "artifacts/wolong-local-film/greeting-spatial-contract-v1/camera-fit-multistart-v3.json",
+  "registrationStatus": "OCCLUSION_AWARE_CAMERA_CANDIDATE_CONTROL_PREPARATION",
+  "registrationFindings": [
+    "Initial manual face centers were not equivalent to proxy head centers.",
+    "Detected nose-tip anchors are more explicit, but matching proxy anatomy remains approximate.",
+    "Expanded common-camera fit reaches near bounds and leaves 22px maximum residual; not sufficient to claim registration.",
+    "Need shoulder/hip/sole constraints and silhouette checks before freezing camera or generating control sequence."
+  ],
+  "registrationReview": "artifacts/wolong-local-film/greeting-spatial-contract-v1/calibration-v5-review.json",
+  "rigRevision": {
+    "contract": "productions/wolong-chengxiang/v5/greeting-spatial-contract-v3.json",
+    "scene": "artifacts/wolong-local-film/greeting-spatial-contract-v1/scene-v3-rig-fixed/greeting-scene.blend",
+    "fix": "Independent head facing and anatomical shoulder elevation; corrected world-space head pivot parenting.",
+    "rejectedScene": "artifacts/wolong-local-film/greeting-spatial-contract-v1/scene-v3-rig",
+    "remaining": "Common-camera and silhouette registration still pending; not a validated control sequence."
+  },
+  "controlSequence": {
+    "status": "DEPTH_SEQUENCE_READY_FOR_BOUNDED_CONTROL_TRIAL",
+    "productionApproved": false,
+    "contract": "productions/wolong-chengxiang/v5/greeting-spatial-contract-v6.json",
+    "scene": "artifacts/wolong-local-film/greeting-spatial-contract-v1/scene-v6-fan/greeting-scene.blend",
+    "depthManifest": "artifacts/wolong-local-film/greeting-spatial-contract-v1/depth-v6/manifest.json",
+    "frames": 49,
+    "fps": 16,
+    "reference": "productions/wolong-chengxiang/v5/assets/greeting-shared-start-b.png",
+    "fanGripMaxDistanceMeters": 9.702933189928356e-07,
+    "observations": [
+      "Fan plane is visible rather than edge-only after explicit wrist-relative yaw.",
+      "All 49 depth frames exist at 512x288; sampled apex shows both actors and scene depth ordering.",
+      "Head/torso parenting and single fan/right-hand attachment invariants passed."
+    ],
+    "limitations": [
+      "Head clearance uses proxy bounding-corner distance, not full beard/hand collision certification.",
+      "Reference and depth silhouettes are approximate; this is a control-following experiment, not approved film footage.",
+      "Fine fingers, cloth and background cast identities remain unvalidated."
+    ]
+  },
+  "trial": {
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-v1/request.json",
+    "worker": "scripts/wan-fun-staged-worker.py",
+    "text": "artifacts/wolong-local-film/wan-fun-greeting-v1/text.pt",
+    "visual": "artifacts/wolong-local-film/wan-fun-greeting-v1/visual.pt",
+    "stage": "sample",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-v1/sample.log",
+    "steps": 50,
+    "frames": 49,
+    "status": "COMPLETE_REJECTED",
+    "productionApproved": false,
+    "controlExpectations": "artifacts/wolong-local-film/wan-fun-greeting-v1/control-expectations.json",
+    "lastObservedStep": 24,
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-v1/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-v1/review.mp4"
+  },
+  "isolationReview": "artifacts/wolong-local-film/wan-fun-greeting-v1/isolation-review.json",
+  "conditioningAudit": "artifacts/wolong-local-film/wan-fun-greeting-v2/conditioning-audit.json",
+  "trialV2": {
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-v2/request.json",
+    "stage": "sample",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-v2/sample.log",
+    "productionApproved": false,
+    "status": "COMPLETE_REJECTED",
+    "verification": "artifacts/wolong-local-film/wan-fun-greeting-v2/condition-verification.json",
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-v2/quality-review.json"
+  },
+  "longIsolationReview": "artifacts/wolong-local-film/wan-fun-greeting-v2/long-isolation-review.json",
+  "conditionNumerics": {
+    "status": "FULL_LENGTH_SINGLE_FORWARD_COMPARISON_COMPLETE",
+    "constants": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/normalization-comparison.json",
+    "packing": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/condition-numerics.json",
+    "fullForwardLog": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/full-condition-backend.log",
+    "fullForwardResult": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/full-condition-backend.json",
+    "next": "Wait for existing live full-length CPU/MPS comparison; do not restart.",
+    "meanAbsoluteError": 0.0006985696381889284,
+    "maxAbsoluteError": 0.06103515625,
+    "scope": "Real full-length conditions, one shared synthetic latent state at sigma .5; not full sampling trajectory parity."
+  },
+  "staticControlIsolation": {
+    "request": "artifacts/wolong-local-film/wan-fun-static-canny-v1/request.json",
+    "status": "COMPLETE_REJECTED",
+    "productionApproved": false,
+    "purpose": "Reference-registered static Canny diagnostic, not bow footage.",
+    "log": "artifacts/wolong-local-film/wan-fun-static-canny-v1/sample.log",
+    "review": "artifacts/wolong-local-film/wan-fun-static-canny-v1/quality-review.json"
+  },
+  "referenceTimestepFix": {
+    "status": "SINGLE_POLICY_VISUAL_IMPROVEMENT_OBSERVED",
+    "adapter": "scripts/wan22_reference_timesteps.py",
+    "testFile": "scripts/test_wan22_reference_timesteps.py",
+    "testsPassed": 3,
+    "audit": "artifacts/wolong-local-film/wan-fun-control-preflight-v1/reference-timestep-audit.json",
+    "sourceComparison": ".local/wan-fun-control/reference-transformer.py",
+    "newRun": "artifacts/wolong-local-film/wan-fun-static-canny-v2",
+    "log": "artifacts/wolong-local-film/wan-fun-static-canny-v2/sample.log",
+    "productionApproved": false,
+    "review": "artifacts/wolong-local-film/wan-fun-static-canny-v2/quality-review.json"
+  },
+  "trialV3": {
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-v3/request.json",
+    "stage": "sample",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-v3/sample.log",
+    "status": "COMPLETE_CONTINUITY_REVISE",
+    "productionApproved": false,
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-v3/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-v3/review.mp4"
+  },
+  "fanRegistration": {
+    "status": "DRAPED_SLEEVE_PROXY_VISIBLE_FAN_DEPTH_EXPORTED",
+    "review": "artifacts/wolong-local-film/greeting-spatial-contract-v1/sleeves-v11-review.json",
+    "productionApproved": false
+  },
+  "trialV4": {
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-v4/request.json",
+    "stage": "sample",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-v4/sample.log",
+    "status": "COMPLETE_CONTINUITY_REVISE",
+    "productionApproved": false,
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-v4/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-v4/review.mp4"
+  },
+  "headRegistration": {
+    "status": "LOCAL_HEADCLOTH_CONTROL_REVISION_READY_FOR_COMPARISON",
+    "review": "artifacts/wolong-local-film/greeting-spatial-contract-v1/head-control-v12-review.json",
+    "productionApproved": false
+  },
+  "trialV5": {
+    "status": "COMPLETE_CONTINUITY_REVISE",
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-v5/request.json",
+    "stage": "sample",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-v5/sample.log",
+    "productionApproved": false,
+    "runReport": "artifacts/wolong-local-film/wan-fun-greeting-v5/run.json",
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-v5/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-v5/review.mp4"
+  },
+  "nativeResolutionTrial": {
+    "status": "COMPLETE_CONTINUITY_REVISE",
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/request.json",
+    "preparation": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/preparation.json",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/decode-tiled.log",
+    "productionApproved": false,
+    "stage": "sample",
+    "runReport": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/run.json",
+    "lastObservedStep": 21,
+    "reviewExporter": "scripts/export-wan-control-review.py",
+    "reviewScope": "All 49 decoded frames on contact pages, plus original-rate video; crop only declared 8px vertical padding.",
+    "lastObservedStatus": "LIVE_SESSION_19886_CONFIRMED",
+    "regressionTests": {
+      "wan22FirstFrameAndReferenceTimesteps": 6,
+      "faceAlignmentGeometry": 2,
+      "status": "PASSED_NOT_MEDIA_APPROVAL"
+    },
+    "sample": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/sample.pt",
+    "decodeFailure": "Swap growth 1.273 GiB exceeded 1 GiB; full decode terminated by guard.",
+    "tiledDecode": "Prepared spatial 384px tiles with 96px overlap, whole temporal window retained; first-latent probe did not start because disk <20 GiB.",
+    "freeGiB": 19.704952239990234,
+    "cacheArchive": "artifacts/wolong-local-film/decoded-cache-archive.json",
+    "next": "Poll existing decode session; export review only after successful exit and all 49 frames are written. No automatic restart.",
+    "firstFrameProbe": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/tiled-first-probe.pt",
+    "decodeMode": "Spatial tiles384 overlap96; full temporal window retained",
+    "observedProcess": {
+      "pid": 96610,
+      "cpuPercent": 192.2,
+      "rssKiB": 9474064,
+      "elapsedAtObservation": "06:02"
+    },
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/review.mp4"
+  },
+  "nativeGuidanceTrial": {
+    "status": "COMPLETE_NOT_SELECTED",
+    "request": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/request.json",
+    "log": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/decode.log",
+    "runReport": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/run.json",
+    "changed": "CFG6 to CFG3 only; same spatial tiled decode as baseline",
+    "productionApproved": false,
+    "comparisonExporter": "scripts/compare-wan-control-takes.py",
+    "reviewRegions": [
+      "kongming-head",
+      "kongming-grip",
+      "zhang-head"
+    ],
+    "stage": "decode",
+    "qualityReview": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/review.mp4"
+  },
+  "multiCharacterReferenceAudit": "productions/wolong-chengxiang/v5/multi-character-reference-audit.json"
+}

@@ -14,6 +14,10 @@ export interface FilmGameComfyWorkflowConfig {
   videoHeight?: number;
   videoFps?: number;
   outputPrefix?: string;
+  videoSteps?: number;
+  videoSampler?: 'euler' | 'uni_pc';
+  textEncoderDevice?: 'cpu' | 'default';
+  tiledVideoDecode?: boolean;
 }
 
 export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
@@ -25,6 +29,10 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
   readonly #videoHeight: number;
   readonly #videoFps: number;
   readonly #outputPrefix: string;
+  readonly #videoSteps: number;
+  readonly #videoSampler: 'euler' | 'uni_pc';
+  readonly #textEncoderDevice: 'cpu' | 'default';
+  readonly #tiledVideoDecode: boolean;
 
   constructor(config: FilmGameComfyWorkflowConfig = {}) {
     this.#fluxCheckpoint = config.fluxSchnellCheckpoint ?? 'flux1-schnell-fp8.safetensors';
@@ -37,6 +45,12 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
     this.#videoHeight = normalizeVideoDimension(config.videoHeight ?? 480);
     this.#videoFps = normalizeFps(config.videoFps ?? 24);
     this.#outputPrefix = config.outputPrefix ?? 'filmgame';
+    this.#videoSteps = config.videoSteps ?? 20;
+    this.#videoSampler = config.videoSampler ?? 'uni_pc';
+    if (!['euler', 'uni_pc'].includes(this.#videoSampler)) throw new Error('Unsupported video sampler');
+    if (!Number.isInteger(this.#videoSteps) || this.#videoSteps < 1 || this.#videoSteps > 50) throw new Error('Invalid video steps');
+    this.#textEncoderDevice = config.textEncoderDevice ?? 'default';
+    this.#tiledVideoDecode = config.tiledVideoDecode ?? false;
   }
 
   async image(request: ImageGenerationRequest): Promise<ComfyApiWorkflow> {
@@ -98,6 +112,7 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
   }
 
   async video(request: VideoGenerationRequest): Promise<ComfyApiWorkflow> {
+    if (request.generateAudio || request.referenceVideoUris?.length) throw new Error('Wan TI2V 5B does not support native audio or reference videos');
     if (request.workflowId && request.workflowId !== 'wan2-2-ti2v-5b-v1') {
       throw new Error(`Unsupported video workflow ${request.workflowId}`);
     }
@@ -129,7 +144,7 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
         inputs: {
           clip_name: this.#wanTextEncoder,
           type: 'wan',
-          device: 'default',
+          device: this.#textEncoderDevice,
         },
       },
       vae: {
@@ -153,8 +168,8 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
         class_type: 'Wan22ImageToVideoLatent',
         inputs: {
           vae: ['vae', 0],
-          width: this.#videoWidth,
-          height: this.#videoHeight,
+          width: request.aspectRatio === '9:16' ? this.#videoHeight : this.#videoWidth,
+          height: request.aspectRatio === '9:16' ? this.#videoWidth : this.#videoHeight,
           length: frameCount,
           batch_size: 1,
           ...(firstFrame ? { start_image: ['first_frame', 0] } : {}),
@@ -172,9 +187,9 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
         class_type: 'KSampler',
         inputs: {
           seed: request.seed ?? 1,
-          steps: 20,
+          steps: this.#videoSteps,
           cfg: 5,
-          sampler_name: 'uni_pc',
+          sampler_name: this.#videoSampler,
           scheduler: 'simple',
           denoise: 1,
           model: ['model_sampling', 0],
@@ -184,8 +199,9 @@ export class FilmGameComfyWorkflowRegistry implements ComfyWorkflowRegistry {
         },
       },
       decode: {
-        class_type: 'VAEDecode',
-        inputs: { samples: ['sampler', 0], vae: ['vae', 0] },
+        class_type: this.#tiledVideoDecode ? 'VAEDecodeTiled' : 'VAEDecode',
+        inputs: { samples: ['sampler', 0], vae: ['vae', 0],
+          ...(this.#tiledVideoDecode ? { tile_size: 256, overlap: 64, temporal_size: 16, temporal_overlap: 4 } : {}) },
       },
       create_video: {
         class_type: 'CreateVideo',
@@ -230,7 +246,7 @@ function normalizeWanFrameCount(durationSeconds: number, fps: number): number {
     throw new Error(`Video duration ${durationSeconds} is outside 0-10 seconds`);
   }
   const requested = Math.max(1, Math.round(durationSeconds * fps));
-  return Math.floor((requested - 1) / 4) * 4 + 1;
+  return Math.ceil((requested - 1) / 4) * 4 + 1;
 }
 
 function parseComfyInputUri(value: string): string {

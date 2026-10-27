@@ -86,7 +86,8 @@ export class OpenAICompatibleLLMProvider implements LLMProvider {
         body: JSON.stringify({
           model: this.config.model,
           messages: [
-            { role: 'system', content: request.system },
+            { role: 'system', content: useStrictSchema ? request.system
+              : `${request.system}\n\nReturn a JSON object conforming exactly to this JSON Schema. Use the specified property names and types; do not add properties:\n${JSON.stringify(request.jsonSchema)}` },
             { role: 'user', content: request.prompt },
           ],
           temperature: request.temperature ?? 0.4,

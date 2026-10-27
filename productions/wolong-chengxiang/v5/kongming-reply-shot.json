@@ -1,0 +1,19 @@
+{
+  "id": "opening-welcome-kongming-reply-01",
+  "sourceScript": "../debate-full/v4.json",
+  "sourceScene": "opening-welcome",
+  "lineId": "opening-welcome-line-03",
+  "text": "亮一介布衣，敢劳诸公相迎。",
+  "audio": "artifacts/wolong-local-film/dialogue-kongming-a/kongming-001.wav",
+  "audioSeconds": 3.48,
+  "frame": "assets/kongming-introduction-closeup-a.png",
+  "frameSha256": "3734588b2da0ebe0e6d9a2ec6aa5d4ceeb0572b85260ef7db11e6aaecb0a25a3",
+  "firstFrameReview": "same entrance identity, wardrobe, eyeline and light as preceding guest reactions",
+  "durationIntentSeconds": 3.5,
+  "status": "ASSEMBLED_DIALOGUE_PREVIEW",
+  "blockingGap": "full-body return greeting remains separate and unproduced",
+  "approvedForFinal": false,
+  "baseVideo": "artifacts/wolong-local-film/kongming-reply-v1/base.mp4",
+  "lipVideo": "artifacts/wolong-local-film/kongming-reply-v1/reply-lip.mp4",
+  "preview": "artifacts/wolong-local-film/opening-continuity-v3/opening-preview.mp4"
+}

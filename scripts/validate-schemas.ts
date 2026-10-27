@@ -1,9 +1,12 @@
 import { readFile } from 'node:fs/promises';
 
-import Ajv2020, { type AnySchema } from 'ajv/dist/2020.js';
-import addFormats from 'ajv-formats';
+import { Ajv2020, type AnySchema } from 'ajv/dist/2020.js';
+import addFormatsModule, { type FormatsPlugin } from 'ajv-formats';
 
 const schemaPaths = [
+  'packages/story-schema/screenplay.schema.json',
+  'packages/story-schema/directed-drama.schema.json',
+  'packages/story-schema/drama.schema.json',
   'packages/story-schema/story.schema.json',
   'packages/production-schema/production.schema.json',
   'packages/runtime-schema/runtime.schema.json',
@@ -11,7 +14,7 @@ const schemaPaths = [
 ] as const;
 
 const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
-addFormats(ajv);
+(addFormatsModule as unknown as FormatsPlugin)(ajv);
 
 const schemas = new Map<string, AnySchema>();
 for (const schemaPath of schemaPaths) {

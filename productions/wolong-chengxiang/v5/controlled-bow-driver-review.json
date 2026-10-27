@@ -1,0 +1,23 @@
+{
+  "status": "DRIVER_READY_FOR_TRANSFER_TEST_NOT_FINAL_FOOTAGE",
+  "driver": "artifacts/wolong-local-film/controlled-bow-driver-v1/driver.mp4",
+  "sha256": "21a0f5bc73903e35365872f2af40560d891ffbdab6e7f0494faa25bf9fb6944b",
+  "frames": 49,
+  "fps": 16,
+  "seconds": 3.0625,
+  "maxTorsoDegrees": 15,
+  "feetFixed": true,
+  "startAndEndUpright": true,
+  "visualFramesInspected": [
+    0,
+    20,
+    48
+  ],
+  "pending": [
+    "proxy-to-character transfer fidelity",
+    "anatomical hands and fan occlusion in generated result",
+    "no background style leakage",
+    "full generated-frame review"
+  ],
+  "graph": "wan-animate2-controlled-bow-graph.json"
+}

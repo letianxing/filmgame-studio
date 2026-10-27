@@ -1,4 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
+import { DramaStore } from './drama-store.js';
+import { DramaHttp } from './drama-http.js';
+import { createDramaProviders } from './drama-providers.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import path from 'node:path';
 
@@ -95,6 +98,9 @@ interface ProductionPlanningJob {
 
 const port = parsePort(process.env.ORCHESTRATOR_PORT ?? '4100');
 const provider = createProvider();
+const dramaStore = new DramaStore(path.resolve(process.env.DRAMA_STORAGE_ROOT || path.join(process.cwd(), '.local', 'drama')));
+await dramaStore.init();
+const dramaHttp = new DramaHttp(dramaStore, provider, (backend) => createDramaProviders(dramaStore.root, backend));
 const workflow = provider ? new StoryGenerationWorkflow(provider) : null;
 const productionWorkflow = provider ? new ProductionPlanningWorkflow(provider) : null;
 const jobs = new Map<string, GenerationJob>();
@@ -113,6 +119,7 @@ const server = createServer(async (request, response) => {
     if (request.method === 'OPTIONS') return send(response, 204, null);
     if (!authorize(request)) return send(response, 401, { error: 'UNAUTHORIZED' });
     const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
+    if (await dramaHttp.handle(request, response, url)) return;
 
     if (request.method === 'GET' && url.pathname === '/health') {
       const health: ProviderHealth = provider

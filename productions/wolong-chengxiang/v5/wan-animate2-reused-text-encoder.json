@@ -1,0 +1,7 @@
+{
+  "path": ".local/comfyui/models/text_encoders/umt5_xxl_fp16.safetensors",
+  "bytes": 11366399385,
+  "sha256": "7b8850f1961e1cf8a77cca4c964a358d303f490833c6c087d0cff4b2f99db2af",
+  "expectedSha256": "7b8850f1961e1cf8a77cca4c964a358d303f490833c6c087d0cff4b2f99db2af",
+  "matches": true
+}

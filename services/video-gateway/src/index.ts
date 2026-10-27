@@ -20,12 +20,15 @@ interface GatewayRequest {
   model?: string;
   request?: {
     prompt?: string;
+    aspectRatio?: '16:9' | '9:16' | 'adaptive';
+    resolution?: '480p' | '720p' | '1080p';
     negativePrompt?: string;
     durationSeconds?: number;
     firstFrameUri?: string;
     lastFrameUri?: string;
     referenceAssetUris?: string[];
     referenceVideoUris?: string[];
+    referenceAudioUris?: string[];
     seed?: number;
     /** Ark `camera_fixed`: hard-locks the camera instead of relying on prompt wording. */
     cameraFixed?: boolean;
@@ -144,11 +147,16 @@ function toArkRequest(request: NonNullable<GatewayRequest['request']>, model: st
   for (const uri of request.referenceVideoUris ?? []) {
     content.push({ type: 'video_url', video_url: { url: uri }, role: 'reference_video' });
   }
+  for (const uri of request.referenceAudioUris ?? []) {
+    content.push({ type: 'audio_url', audio_url: { url: uri }, role: 'reference_audio' });
+  }
   return {
     model,
     content,
     duration: Math.round(request.durationSeconds ?? 5),
     watermark: false,
+    ...(request.resolution === undefined ? {} : { resolution: request.resolution }),
+    ...(request.aspectRatio === undefined ? {} : { ratio: request.aspectRatio }),
     ...(request.seed === undefined ? {} : { seed: request.seed }),
     ...(request.cameraFixed === undefined ? {} : { camera_fixed: request.cameraFixed }),
     ...(request.generateAudio === undefined ? {} : { generate_audio: request.generateAudio }),
@@ -188,6 +196,14 @@ function validateGeneration(body: GatewayRequest, publicModel: string) {
   if (body.model !== publicModel) throw new HttpError(400, 'Unsupported FilmGame video model alias');
   const request = body.request;
   if (!request?.prompt?.trim()) throw new HttpError(400, 'Video prompt is required');
+  if (request.aspectRatio !== undefined && !['16:9', '9:16', 'adaptive'].includes(request.aspectRatio)) throw new HttpError(400, 'Unsupported aspectRatio');
+  if (request.resolution !== undefined && !['480p', '720p', '1080p'].includes(request.resolution)) throw new HttpError(400, 'Unsupported resolution');
+  for (const key of ['referenceVideoUris', 'referenceAudioUris', 'referenceAssetUris'] as const) {
+    const entries = request[key];
+    if (entries !== undefined && (!Array.isArray(entries) || entries.length > 30 || entries.some((uri) => typeof uri !== 'string' || !/^(https?:\/\/|data:)/.test(uri)))) {
+      throw new HttpError(400, `Invalid ${key}`);
+    }
+  }
   // -1 is Ark's "keep the source length" sentinel, required by edit/extend tasks.
   const duration = Number(request.durationSeconds);
   if (!Number.isFinite(duration) || (duration < 1 && duration !== -1)) {
@@ -258,7 +274,8 @@ async function readUpstreamJson(response: Response): Promise<unknown> {
 }
 async function readJson<T>(request: IncomingMessage): Promise<T> {
   const chunks: Buffer[] = []; let size = 0;
-  for await (const chunk of request) { const buffer = Buffer.from(chunk); size += buffer.length; if (size > 1_000_000) throw new HttpError(413, 'Request body too large'); chunks.push(buffer); }
+  // Authenticated requests can carry bounded base64 character reference images.
+  for await (const chunk of request) { const buffer = Buffer.from(chunk); size += buffer.length; if (size > 16 * 1024 * 1024) throw new HttpError(413, 'Request body too large'); chunks.push(buffer); }
   try { return JSON.parse(Buffer.concat(chunks).toString('utf8')) as T; } catch { throw new HttpError(400, 'Invalid JSON'); }
 }
 function requireBearer(request: IncomingMessage, expected: string): void {

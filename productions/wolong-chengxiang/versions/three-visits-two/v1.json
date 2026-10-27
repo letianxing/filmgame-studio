@@ -1,0 +1,284 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectId": "three-visits-two",
+  "version": 1,
+  "parentVersion": null,
+  "createdAt": "2026-10-13T04:41:01.675Z",
+  "changeReason": "正式连续剧首轮32分钟目标段落大纲；史实演绎尺度待用户确认",
+  "content": {
+    "title": "卧龙*丞相｜三顾茅庐·天下问",
+    "format": "SERIES",
+    "targetMinutes": 32,
+    "stage": "OUTLINE",
+    "premise": "从诸葛亮有限视角，细写一个理想主义者怎样选择并承担公共责任。",
+    "theme": "知遇不是免于失败，而是有人愿意与你共同承担。",
+    "ending": "亮走向未知，镜头留给空下的家门",
+    "confirmedConstraints": [
+      "用户指定原创风格化写实三维国漫、慢节奏、多集深入事件。",
+      "保持诸葛亮视角为主；人物、场景、道具与声音跨镜一致。",
+      "正史、裴注异说、文学传统与原创对白分层标注。史实与演绎比例待用户选择。",
+      "本文件是32分钟目标的段落大纲，不是足量完成的对白稿或已生成成片。"
+    ],
+    "lockedFields": [
+      "title",
+      "format",
+      "targetMinutes"
+    ],
+    "characters": [
+      {
+        "id": "liang",
+        "name": "诸葛亮",
+        "goal": "寻找能够承担天下之责的同行者",
+        "need": "承认独善无法护住所有人",
+        "opposition": "既怕轻许一生，又怕自保成为逃避",
+        "change": "从保全小家到自愿承担公共责任",
+        "voice": "年轻、清醒、有锋芒；情深时反而少说"
+      },
+      {
+        "id": "bei",
+        "name": "刘备",
+        "goal": "请到能共担事业的人",
+        "need": "让求贤不止是求一条取胜之计",
+        "opposition": "屡败与名声无法保证未来",
+        "change": "从试探人才到坦陈自己做不到的事",
+        "voice": "平实，有阅历，不句句讲仁义"
+      },
+      {
+        "id": "cui",
+        "name": "崔州平",
+        "goal": "保护朋友不被名望吞没",
+        "need": "理解出与处都可能有代价",
+        "opposition": "看见政治的风险而不愿轻率乐观",
+        "change": "保留分歧仍尊重选择",
+        "voice": "冷静，反问少而准"
+      },
+      {
+        "id": "jun",
+        "name": "诸葛均",
+        "goal": "守住来之不易的家",
+        "need": "学会不把离开理解为遗弃",
+        "opposition": "担心兄长远去与自己被留下",
+        "change": "主动接住家中职责",
+        "voice": "亲近时直白，避免孩子化"
+      },
+      {
+        "id": "huang",
+        "name": "黄氏",
+        "goal": "共同经营可持续的生活",
+        "need": "让家人之间说真话",
+        "opposition": "不愿以贤内助姿态消失于宏大故事",
+        "change": "表达自己的选择与担忧",
+        "voice": "姓名与细节待考；日常语言克制"
+      },
+      {
+        "id": "civilian",
+        "name": "流民父亲（原创合成人物）",
+        "goal": "让家人活过这个冬天",
+        "need": "在困境里保有尊严",
+        "opposition": "饥饿、迁徙与征役",
+        "change": "由被动受助到做出微小互助",
+        "voice": "具体朴素，不替作者说主题"
+      }
+    ],
+    "beats": [
+      {
+        "id": "three-visits-two-b1",
+        "summary": "亮承认不能等一个不会败的人",
+        "characterIds": [
+          "liang",
+          "cui"
+        ]
+      },
+      {
+        "id": "three-visits-two-b2",
+        "summary": "刘备留下处理事务后再等人",
+        "characterIds": [
+          "bei",
+          "jun",
+          "civilian"
+        ]
+      },
+      {
+        "id": "three-visits-two-b3",
+        "summary": "亮承诺不以大道理要求她不难过",
+        "characterIds": [
+          "liang",
+          "huang"
+        ]
+      },
+      {
+        "id": "three-visits-two-b4",
+        "summary": "刘备坦陈自己能守住什么、做不到什么",
+        "characterIds": [
+          "liang",
+          "bei"
+        ]
+      },
+      {
+        "id": "three-visits-two-b5",
+        "summary": "双方找到可共同承担的路线，但看见困难未消失",
+        "characterIds": [
+          "liang",
+          "bei"
+        ]
+      },
+      {
+        "id": "three-visits-two-b6",
+        "summary": "备请求的是共担失败与后果，亮不许诺必胜",
+        "characterIds": [
+          "liang",
+          "bei"
+        ]
+      },
+      {
+        "id": "three-visits-two-b7",
+        "summary": "均主动接下修沟，黄氏递来已经缝好的衣",
+        "characterIds": [
+          "liang",
+          "huang",
+          "jun"
+        ]
+      },
+      {
+        "id": "three-visits-two-b8",
+        "summary": "亮走向未知，镜头留给空下的家门",
+        "characterIds": [
+          "liang",
+          "bei",
+          "jun"
+        ]
+      }
+    ],
+    "scenes": [
+      {
+        "id": "three-visits-two-s01",
+        "order": 1,
+        "heading": "外景 村舍 日",
+        "characterIds": [
+          "liang",
+          "cui"
+        ],
+        "goal": "检验刘备来意",
+        "conflict": "崔问他要找的是圣人还是可共同犯错的人",
+        "turn": "亮承认不能等一个不会败的人",
+        "action": "好友并不负责给主角盖章。D。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "three-visits-two-s02",
+        "order": 2,
+        "heading": "外景 草庐村路 日",
+        "characterIds": [
+          "bei",
+          "jun",
+          "civilian"
+        ],
+        "goal": "第二次来访",
+        "conflict": "路上遇地方实际难处，求贤日程与帮助人的时间冲突",
+        "turn": "刘备留下处理事务后再等人",
+        "action": "来访骨架A，具体困难与处理D，避免廉价施舍圣人戏。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "three-visits-two-s03",
+        "order": 3,
+        "heading": "内景 草庐 夜",
+        "characterIds": [
+          "liang",
+          "huang"
+        ],
+        "goal": "说明出山会失去什么",
+        "conflict": "黄氏不接受一句“为天下”遮蔽家人承担的后果",
+        "turn": "亮承诺不以大道理要求她不难过",
+        "action": "家不是必须战胜的阻碍，黄氏也有决定权。D。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "three-visits-two-s04",
+        "order": 4,
+        "heading": "内景 草庐 日",
+        "characterIds": [
+          "liang",
+          "bei"
+        ],
+        "goal": "第三顾相见，先问败局",
+        "conflict": "刘备不能拿现有实力证明未来，亮不接受只谈名分",
+        "turn": "刘备坦陈自己能守住什么、做不到什么",
+        "action": "三顾A，场内问答组织D。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "three-visits-two-s05",
+        "order": 5,
+        "heading": "内景 草庐 连续",
+        "characterIds": [
+          "liang",
+          "bei"
+        ],
+        "goal": "讨论荆益与天下形势",
+        "conflict": "地理策略一展开就触及州郡百姓与地方力量，非空白棋盘",
+        "turn": "双方找到可共同承担的路线，但看见困难未消失",
+        "action": "隆中对核心A；原文分段使用，讨论不是整段背诵。",
+        "dialogue": [],
+        "estimatedSeconds": 360
+      },
+      {
+        "id": "three-visits-two-s06",
+        "order": 6,
+        "heading": "内景 草庐 连续",
+        "characterIds": [
+          "liang",
+          "bei"
+        ],
+        "goal": "追问出山的条件",
+        "conflict": "亮担心求的是万能军师，备担心对方只肯论不肯行",
+        "turn": "备请求的是共担失败与后果，亮不许诺必胜",
+        "action": "全剧关系的核心，不让预言代替选择。D。",
+        "dialogue": [],
+        "estimatedSeconds": 240
+      },
+      {
+        "id": "three-visits-two-s07",
+        "order": 7,
+        "heading": "内景 家中 黎明",
+        "characterIds": [
+          "liang",
+          "huang",
+          "jun"
+        ],
+        "goal": "安排离家后的生活",
+        "conflict": "计划中的田务、书册和修屋都还在",
+        "turn": "均主动接下修沟，黄氏递来已经缝好的衣",
+        "action": "把别离的痛落到熟悉劳动。D。",
+        "dialogue": [],
+        "estimatedSeconds": 180
+      },
+      {
+        "id": "three-visits-two-s08",
+        "order": 8,
+        "heading": "外景 村口 清晨",
+        "characterIds": [
+          "liang",
+          "bei",
+          "jun"
+        ],
+        "goal": "走出熟悉的路",
+        "conflict": "亮回头看见均站着，却不能用归期安慰他",
+        "turn": "亮走向未知，镜头留给空下的家门",
+        "action": "不快切未来成就，保留这次出门的重量。D。",
+        "dialogue": [],
+        "estimatedSeconds": 180
+      }
+    ],
+    "openQuestions": [
+      "等待确认正史与文学演绎尺度。",
+      "每段需继续拆场并写足行动、对白与静默，完成读稿计时后修正长度。",
+      "黄氏及家居、官服、冠帻、礼节等需按场次补证。"
+    ],
+    "nextStep": "确认史料尺度后，从第一集开始扩写完整分场剧本；不将估时当成片长验收。"
+  }
+}

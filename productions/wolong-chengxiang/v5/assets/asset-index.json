@@ -1,0 +1,188 @@
+{
+  "tool": "built-in imagegen",
+  "assets": [
+    {
+      "file": "hall-master-b.png",
+      "role": "ten-seat hall location proposal",
+      "status": "CANDIDATE",
+      "bytes": 2298271
+    },
+    {
+      "file": "kongming-fullbody-aisle-a.png",
+      "role": "Kongming full-body clothing and ground contact",
+      "status": "CANDIDATE",
+      "bytes": 2347075
+    },
+    {
+      "file": "lusu-concept-b.png",
+      "role": "Lu Su identity and costume views",
+      "status": "CANDIDATE",
+      "bytes": 2269454
+    },
+    {
+      "file": "feather-fan-design-a.png",
+      "role": "feather fan prop design candidate",
+      "status": "CANDIDATE",
+      "bytes": 2130425
+    },
+    {
+      "file": "kongming-fullbody-fan-a.png",
+      "role": "Kongming headwrap and right-hand fan reference",
+      "status": "CANDIDATE",
+      "bytes": 2201464
+    },
+    {
+      "file": "entrance-two-person-fan-a.png",
+      "role": "entrance composition; eyeline correction required",
+      "status": "REVISE",
+      "bytes": 2168735
+    },
+    {
+      "file": "entrance-two-person-fan-b.png",
+      "role": "eyeline-corrected entrance first frame",
+      "status": "APPROVED_FOR_BOUNDED_MOTION_TEST_ONLY",
+      "bytes": 2058927
+    },
+    {
+      "file": "lusu-announcement-closeup-a.png",
+      "role": "Lu Su entrance announcement close-up",
+      "status": "CANDIDATE_FOR_MOTION_AND_EDIT_REVIEW",
+      "bytes": 2146432
+    },
+    {
+      "file": "kongming-introduction-closeup-a.png",
+      "role": "Kongming listening during introduction",
+      "status": "CANDIDATE_FOR_MOTION_AND_EDIT_REVIEW",
+      "bytes": 2051898
+    },
+    {
+      "file": "zhang-zhao-welcome-closeup-a.png",
+      "role": "Zhang Zhao north-side welcome reverse close-up",
+      "status": "CANDIDATE_FOR_MOTION_AND_EDIT_REVIEW",
+      "bytes": 1937668
+    },
+    {
+      "file": "entrance-bow-ready-c.png",
+      "role": "guest greeting-ready aligned torso/feet",
+      "status": "CANDIDATE_FOR_MOTION_TEST",
+      "bytes": 2033175
+    },
+    {
+      "file": "zhang-rise-start-a.png",
+      "role": "rejected rise composition",
+      "status": "REVISE_LAYOUT",
+      "bytes": 2273806
+    },
+    {
+      "file": "zhang-rise-start-b.png",
+      "role": "rejected rise headroom",
+      "status": "REVISE_FRAMING",
+      "bytes": 2001495
+    },
+    {
+      "file": "zhang-rise-start-c.png",
+      "role": "north-seat rising start with headroom",
+      "status": "CANDIDATE_FOR_MOTION_TEST",
+      "bytes": 2093438
+    },
+    {
+      "file": "gu-yong-concept-a.png",
+      "role": "Gu Yong independent character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 2131371
+    },
+    {
+      "file": "yu-fan-concept-a.png",
+      "role": "Yu Fan first draft; resemblance issue",
+      "status": "REVISE_IDENTITY",
+      "bytes": 1925557
+    },
+    {
+      "file": "yu-fan-concept-b.png",
+      "role": "Yu Fan revised distinct face candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 1829494
+    },
+    {
+      "file": "bu-zhi-concept-a.png",
+      "role": "bu-zhi original character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 2068715
+    },
+    {
+      "file": "xue-zong-concept-a.png",
+      "role": "xue-zong original character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 1985754
+    },
+    {
+      "file": "lu-ji-concept-a.png",
+      "role": "lu-ji original character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 2018854
+    },
+    {
+      "file": "yan-jun-concept-a.png",
+      "role": "yan-jun original character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 2073497
+    },
+    {
+      "file": "cheng-bing-concept-a.png",
+      "role": "cheng-bing original character candidate",
+      "status": "CANDIDATE_FOR_SHOT_TEST",
+      "bytes": 2017789
+    },
+    {
+      "file": "huang-gai-concept-a.png",
+      "role": "huang-gai original character candidate",
+      "status": "CANDIDATE_REVIEW_PENDING",
+      "bytes": 2036185,
+      "sha256": "08b3417adf67abfaa153dab95ca08581cd38c8b0bc25c5eb44f5577fed46f6c6"
+    },
+    {
+      "file": "zhuge-jin-concept-a.png",
+      "role": "zhuge-jin original character candidate",
+      "status": "CANDIDATE_REVIEW_PENDING",
+      "bytes": 2037900,
+      "sha256": "39e6ee4ee40afe7b02317dd9d9f4295c1bb394acb65baad8f9d16cba90cff526"
+    },
+    {
+      "file": "zhuge-jin-concept-b.png",
+      "role": "Zhuge Jin face maturity candidate; costume texture change requires repair",
+      "status": "HOLD_COSTUME_CONTINUITY",
+      "bytes": 1884925,
+      "sha256": "5e351573ff23cbfddba2d61619651032e9bff92e87638fc077020901350e4f74"
+    },
+    {
+      "file": "yu-fan-introduction-start-a.png",
+      "role": "Yu Fan east-side introduction motion-test first frame",
+      "status": "APPROVED_FOR_BOUNDED_MOTION_TEST_ONLY",
+      "bytes": 2102137,
+      "sha256": "9b4dbc5fad8417bca684ce3c2cd43f73c7e178fb5dc9dc83182358bb9a28a6dc"
+    },
+    {
+      "file": "kongming-return-side-start-a.png",
+      "role": "side-view return-greeting first frame",
+      "status": "REVISE_MISSING_BACKGROUND_CAST",
+      "bytes": 2406197,
+      "sha256": "d48f5d4b1c10e986e057040c2441912b6d55e90cb86ef21460c29471ea45325c"
+    },
+    {
+      "file": "kongming-return-side-start-b.png",
+      "role": "side-view return-greeting first frame",
+      "status": "APPROVED_FOR_BOUNDED_MOTION_TEST_ONLY",
+      "bytes": 2338487,
+      "sha256": "7384967cc2ca7c4ea31651a24e70b09b7c6251100db5ef91fa631da5c5c586a0"
+    },
+    {
+      "file": "gu-yong-scene-reference-v2.png",
+      "role": "Gu Yong scene look revision2, intentionally selected before footage acceptance",
+      "status": "BOUNDED_MOTION_TEST_ONLY",
+      "sha256": "ce1a3e17e3fe134de013d4f66b675e4bd023e60e6749961cf7ed8cf34f7c0782",
+      "bytes": 2029470,
+      "sourceImage": "gu-yong-introduction-start-f.png"
+    }
+  ],
+  "note": "Identity/lookdev candidates are not historical certification or final video approval"
+}

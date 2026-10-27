@@ -144,10 +144,16 @@ export class RemoteVideoProvider implements VideoProvider {
       throw new ProviderError(this.id, 'UNAVAILABLE', 'Unable to reach remote video service', true, cause);
     }
     if (!response.ok) {
+      const payload = await response.json().catch(() => null) as { error?: unknown } | null;
+      const detail = typeof payload?.error === 'string' ? payload.error
+        .replace(/https?:\/\/[^\s"']+/g, '[provider URL]')
+        .replace(/data:[^\s"']+/g, '[inline media]')
+        .replace(/Bearer\s+\S+/gi, 'Bearer [redacted]')
+        .replaceAll(this.config.token || '\u0000', '[redacted]').slice(0, 1200) : '';
       throw new ProviderError(
         this.id,
         response.status === 429 ? 'QUOTA' : 'INVALID_RESPONSE',
-        `Remote video service returned HTTP ${response.status}`,
+        `Remote video service returned HTTP ${response.status}${detail ? `: ${detail}` : ''}`,
         response.status >= 500 || response.status === 429,
       );
     }

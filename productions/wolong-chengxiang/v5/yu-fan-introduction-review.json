@@ -1,0 +1,16 @@
+{
+  "status": "APPROVED_FOR_BOUNDED_MOTION_TEST_ONLY",
+  "image": "assets/yu-fan-introduction-start-a.png",
+  "sha256": "9b4dbc5fad8417bca684ce3c2cd43f73c7e178fb5dc9dc83182358bb9a28a6dc",
+  "observed": [
+    "宽颧颌、鼻形、短灰须与固定虞翻参考匹配；冠服颜色和领缘保持。",
+    "东窗在画面右、北屏风在左，与东北方向机位意图相符，未增加高案或其他人物。",
+    "手在腰前合拢，画面为腰上中景，不代替完整揖礼动作镜头。"
+  ],
+  "pending": [
+    "近景衣料纹理比全身参考更明显，最终分辨率需复核",
+    "与实际群像站位及反打视线连接",
+    "动作中的人脸、冠服、背景保持"
+  ],
+  "approvedForFinal": false
+}

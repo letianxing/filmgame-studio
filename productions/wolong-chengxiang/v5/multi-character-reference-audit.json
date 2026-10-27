@@ -1,0 +1,73 @@
+{
+  "status": "SINGLE_SCENE_REFERENCE_NO_PER_ACTOR_BINDING_CONFIRMED",
+  "productionApproved": false,
+  "evidence": [
+    {
+      "file": "/Users/letianxing/Golands/ComfyUI/comfy_extras/nodes_wan.py",
+      "behavior": "Wan22FunControlToVideo uses ref_image[:1] and stores one reference latent."
+    },
+    {
+      "file": "/Users/letianxing/Golands/ComfyUI/comfy/model_base.py",
+      "behavior": "WAN21.extra_conds takes reference_latents[-1], inherited by WAN22."
+    }
+  ],
+  "conclusion": "Current shared-scene reference does not independently bind each actor identity; depth control constrains geometry, not exact facial/hand appearance.",
+  "guard": "scripts/wan_reference_contract.py rejects multiple references rather than silently using only the last.",
+  "candidateResearch": {
+    "name": "Phantom",
+    "source": "https://github.com/Phantom-video/Phantom",
+    "scope": "Single/multi-subject reference generation; different compatible weights required.",
+    "localValidated": false,
+    "depthControlCompatibilityVerified": false
+  },
+  "decision": "Do not download or switch engines merely because a project claims identity preservation. Prioritize a bounded MultiAnimate compatibility audit (checkpoint size, architecture, attention/device paths) before deciding whether a Mac adapter is feasible. Keep current depth-only trial stop condition.",
+  "next": "Validate matching quantized Wan2.1-I2V-14B base availability and architecture/attention path; retain bounded resource budgets. If viable, extract only selected tensors rather than downloading 34.24 GiB of duplicate base weights.",
+  "latestFailedControlledComparison": "artifacts/wolong-local-film/wan-fun-host-greeting-v2-recovery/quality-review.json",
+  "alternativesAudit": [
+    {
+      "name": "MultiAnimate",
+      "source": "https://github.com/hyc001/MultiAnimate",
+      "inferenceSource": "https://raw.githubusercontent.com/hyc001/MultiAnimate/main/examples/inference_multi3.py",
+      "mechanism": "Per-person masks plus pose input; separate multi-character-trained weights on Wan2.1-I2V-14B-720P.",
+      "observedRuntime": "Official example uses CUDA/bfloat16 with VRAM management; separate base and eight checkpoint shards.",
+      "fit": "Most directly addresses independent actors among inspected options.",
+      "blockers": [
+        "Mac/MPS inference and quantized Wan2.1 I2V base compatibility unvalidated.",
+        "Not a drop-in adapter for Fun-5B.",
+        "Selective tensor extraction is feasible by bounded HTTP Range, but no model tensor data downloaded or loaded yet."
+      ],
+      "downloaded": false,
+      "productionApproved": false,
+      "checkpointInventory": "multianimate-weight-inventory.json",
+      "selectiveWeightAudit": "multianimate-selective-weight-audit.json",
+      "storageFinding": {
+        "fullCheckpointGiB": 34.23980113118887,
+        "loaderSelectedTensorGiB": 2.2879523187875748,
+        "headersInspected": 8,
+        "baseModelStillRequired": true
+      }
+    },
+    {
+      "name": "Stand-In with VACE",
+      "source": "https://github.com/WeChatCV/Stand-In",
+      "mechanism": "Identity conditioning combined with reference control video.",
+      "limitations": [
+        "Official docs warn VACE face bias affects identity and joint use is harder.",
+        "Released base routes target 14B; no evidence of compatibility with current Fun-5B.",
+        "Inspected interface uses one ip_image; not evidence of independent two-person identity binding."
+      ],
+      "productionApproved": false
+    },
+    {
+      "name": "ID-V2V",
+      "source": "https://github.com/Eyeline-Labs/ID-V2V",
+      "mechanism": "Restyle source performance with stylized keyframes; requires a suitable source performance video.",
+      "limitations": [
+        "Official environment is CUDA; documented complete checkpoint setup about 96 GB.",
+        "No accepted source performance for this film; cannot correct a bad performance merely by restyling it.",
+        "No Mac validation observed."
+      ],
+      "productionApproved": false
+    }
+  ]
+}

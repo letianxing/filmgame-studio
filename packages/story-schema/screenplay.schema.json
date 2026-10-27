@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/screenplay-1.0.0.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "format",
+    "targetMinutes",
+    "stage",
+    "premise",
+    "theme",
+    "ending",
+    "confirmedConstraints",
+    "lockedFields",
+    "characters",
+    "beats",
+    "scenes",
+    "openQuestions",
+    "nextStep"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "format": {
+      "enum": [
+        "SHORT_FILM",
+        "FEATURE_FILM",
+        "SERIES"
+      ]
+    },
+    "targetMinutes": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 600
+    },
+    "stage": {
+      "enum": [
+        "PREMISE",
+        "STRUCTURE",
+        "CHARACTERS",
+        "OUTLINE",
+        "DRAFT",
+        "REVISION",
+        "HANDOFF"
+      ]
+    },
+    "premise": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "theme": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "ending": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "confirmedConstraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4000
+      },
+      "minItems": 0,
+      "maxItems": 100
+    },
+    "lockedFields": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "title",
+          "format",
+          "targetMinutes",
+          "ending",
+          "characters"
+        ]
+      },
+      "minItems": 0,
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "goal",
+          "need",
+          "opposition",
+          "change",
+          "voice"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,79}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "need": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "opposition": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "change": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "voice": {
+            "type": "string",
+            "maxLength": 16000
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 100
+    },
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "summary",
+          "characterIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,79}$"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "characterIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,79}$"
+            },
+            "minItems": 0,
+            "maxItems": 100,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 500
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "order",
+          "heading",
+          "characterIds",
+          "goal",
+          "conflict",
+          "turn",
+          "action",
+          "dialogue",
+          "estimatedSeconds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,79}$"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "heading": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1
+          },
+          "characterIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,79}$"
+            },
+            "minItems": 0,
+            "maxItems": 50,
+            "uniqueItems": true
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "conflict": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "turn": {
+            "type": "string",
+            "maxLength": 16000
+          },
+          "action": {
+            "type": "string",
+            "maxLength": 50000
+          },
+          "dialogue": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "characterId",
+                "text"
+              ],
+              "properties": {
+                "characterId": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,79}$"
+                },
+                "text": {
+                  "type": "string",
+                  "maxLength": 6000,
+                  "minLength": 1
+                }
+              }
+            },
+            "minItems": 0,
+            "maxItems": 200
+          },
+          "estimatedSeconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 7200
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 500
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4000
+      },
+      "minItems": 0,
+      "maxItems": 100
+    },
+    "nextStep": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  }
+}

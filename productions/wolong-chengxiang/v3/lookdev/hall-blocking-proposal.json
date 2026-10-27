@@ -1,0 +1,161 @@
+{
+  "status": "SUPERSEDED_BY_CREATOR_PARALLEL_SEATING_DIRECTION",
+  "roomMeters": [
+    10,
+    10
+  ],
+  "coordinateSystem": "north at y0; west at x0; south at y10",
+  "seats": [
+    {
+      "id": "guest-kongming",
+      "person": "孔明",
+      "xy": [
+        2.1,
+        1.8
+      ],
+      "facing": "E",
+      "role": "客"
+    },
+    {
+      "id": "host-zhang",
+      "person": "张昭",
+      "xy": [
+        7.8,
+        1.8
+      ],
+      "facing": "W",
+      "role": "主方"
+    },
+    {
+      "id": "host-gu",
+      "person": "顾雍",
+      "xy": [
+        7.8,
+        3.3
+      ],
+      "facing": "W",
+      "role": "主方"
+    },
+    {
+      "id": "host-lu",
+      "person": "鲁肃",
+      "xy": [
+        7.8,
+        4.8
+      ],
+      "facing": "W",
+      "role": "主方"
+    },
+    {
+      "id": "scholar-a",
+      "person": "士人甲",
+      "xy": [
+        7.8,
+        6.3
+      ],
+      "facing": "W",
+      "role": "主方"
+    },
+    {
+      "id": "scholar-b",
+      "person": "士人乙",
+      "xy": [
+        7.8,
+        7.8
+      ],
+      "facing": "W",
+      "role": "主方"
+    }
+  ],
+  "tables": [
+    {
+      "id": "table-guest-kongming",
+      "center": [
+        3.25,
+        1.8
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    },
+    {
+      "id": "table-host-zhang",
+      "center": [
+        6.65,
+        1.8
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    },
+    {
+      "id": "table-host-gu",
+      "center": [
+        6.65,
+        3.3
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    },
+    {
+      "id": "table-host-lu",
+      "center": [
+        6.65,
+        4.8
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    },
+    {
+      "id": "table-scholar-a",
+      "center": [
+        6.65,
+        6.3
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    },
+    {
+      "id": "table-scholar-b",
+      "center": [
+        6.65,
+        7.8
+      ],
+      "size": [
+        0.65,
+        1.2
+      ]
+    }
+  ],
+  "guestRoute": [
+    [
+      1,
+      9.2
+    ],
+    [
+      1,
+      2.9
+    ],
+    [
+      2.1,
+      2.9
+    ],
+    [
+      2.1,
+      1.8
+    ]
+  ],
+  "guestBodyRadiusMeters": 0.35,
+  "checked": "2D sampled path avoids table footprints; does not validate3D cloth or video motion",
+  "scope": "六名前景角色的调度示意；群儒完整人数、背景席位、冠服及建筑尺度待定，不可直接投产",
+  "historicalBasis": "主客分路参考礼记；具体相向会客座次为创作推演，不是208年实景考古复原",
+  "supersededBy": "hall-parallel-seats-v1.json"
+}

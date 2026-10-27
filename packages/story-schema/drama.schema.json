@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://filmgame.studio/schemas/drama-content-1.0.0.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "visualStyle",
+    "aspectRatio",
+    "characters",
+    "episodes"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 160,
+      "minLength": 1
+    },
+    "visualStyle": {
+      "type": "string",
+      "maxLength": 2000,
+      "minLength": 1
+    },
+    "aspectRatio": {
+      "enum": [
+        "16:9",
+        "9:16"
+      ]
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "appearance",
+          "voiceId",
+          "referenceImageAssetId",
+          "voiceReferenceAssetId",
+          "referenceTranscript",
+          "rightsConfirmed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,79}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1
+          },
+          "appearance": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1
+          },
+          "voiceId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "referenceImageAssetId": {
+            "type": "string",
+            "pattern": "^(asset-[a-f0-9]{64})?$"
+          },
+          "voiceReferenceAssetId": {
+            "type": "string",
+            "pattern": "^(asset-[a-f0-9]{64})?$"
+          },
+          "referenceTranscript": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "rightsConfirmed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 16
+    },
+    "episodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "shots"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,79}$"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1
+          },
+          "shots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "description",
+                "camera",
+                "durationSeconds",
+                "characterIds",
+                "dialogue"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,79}$"
+                },
+                "description": {
+                  "type": "string",
+                  "maxLength": 2000,
+                  "minLength": 1
+                },
+                "camera": {
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "durationSeconds": {
+                  "type": "integer",
+                  "minimum": 2,
+                  "maximum": 15
+                },
+                "characterIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,79}$"
+                  },
+                  "minItems": 0,
+                  "maxItems": 8,
+                  "uniqueItems": true
+                },
+                "dialogue": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "characterId",
+                      "text"
+                    ],
+                    "properties": {
+                      "characterId": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9-]{0,79}$"
+                      },
+                      "text": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "minItems": 0,
+                  "maxItems": 12
+                },
+                "firstFrameAssetId": {
+                  "type": "string",
+                  "pattern": "^(asset-[a-f0-9]{64})?$"
+                }
+              }
+            },
+            "minItems": 1,
+            "maxItems": 60
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 12
+    }
+  }
+}

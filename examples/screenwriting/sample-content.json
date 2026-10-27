@@ -1,0 +1,91 @@
+{
+  "title": "末班早车",
+  "format": "SHORT_FILM",
+  "targetMinutes": 3,
+  "stage": "OUTLINE",
+  "premise": "姐姐送弟弟离开县城，藏起挽留的话，最终把车票交到他手里。",
+  "theme": "支持有时表现为放手。",
+  "ending": "姐姐留在家乡，弟弟乘车离开。",
+  "confirmedConstraints": [
+    "只出现姐弟两个人。",
+    "不是战争或仙侠题材。"
+  ],
+  "lockedFields": [
+    "ending"
+  ],
+  "characters": [
+    {
+      "id": "sister",
+      "name": "姐姐",
+      "goal": "把弟弟送上车",
+      "need": "承认自己舍不得",
+      "opposition": "不愿把自己的牵挂变成弟弟的负担",
+      "change": "以行动支持离开",
+      "voice": "短句，关心常藏在提醒里"
+    },
+    {
+      "id": "brother",
+      "name": "弟弟",
+      "goal": "确认姐姐真心支持他离开",
+      "need": "带着愧疚仍能做选择",
+      "opposition": "担心留下姐姐一个人",
+      "change": "接过车票",
+      "voice": "试探多于直接追问"
+    }
+  ],
+  "beats": [
+    {
+      "id": "ticket",
+      "summary": "弟弟迟疑是否接过车票，姐姐把票放进他的口袋。",
+      "characterIds": [
+        "sister",
+        "brother"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "station",
+      "order": 1,
+      "heading": "外景 县城车站 清晨",
+      "characterIds": [
+        "sister",
+        "brother"
+      ],
+      "goal": "姐弟决定这次是否真的分开",
+      "conflict": "弟弟想听到挽留，姐姐不肯让他为自己留下",
+      "turn": "姐姐把车票放进弟弟的口袋",
+      "action": "姐姐压平车票的折角。弟弟伸出手，又缩回去。姐姐将车票塞进他的外套口袋。",
+      "dialogue": [
+        {
+          "characterId": "brother",
+          "text": "我下个月就回来。"
+        },
+        {
+          "characterId": "sister",
+          "text": "先把今天这班车赶上。"
+        }
+      ],
+      "estimatedSeconds": 90
+    },
+    {
+      "id": "departure",
+      "order": 2,
+      "heading": "外景 车站站台 清晨",
+      "characterIds": [
+        "sister",
+        "brother"
+      ],
+      "goal": "完成离别",
+      "conflict": "舍不得又不愿拖住对方",
+      "turn": "弟弟上车，姐姐松开扶着车门的手",
+      "action": "弟弟踏上车阶，回头。姐姐抬手，示意他往里走。车门关上，她仍留在原地。",
+      "dialogue": [],
+      "estimatedSeconds": 90
+    }
+  ],
+  "openQuestions": [
+    "是否采用站外的空镜收尾，由导演阶段决定。"
+  ],
+  "nextStep": "在不改变结局的前提下扩成逐场剧本。"
+}

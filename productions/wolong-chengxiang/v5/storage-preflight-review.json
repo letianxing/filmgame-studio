@@ -1,0 +1,14 @@
+{
+  "status": "NO_FILES_REMOVED_CACHE_IN_USE",
+  "boundedPartialSearch": {
+    "entries": 326,
+    "maxDepth": 4,
+    "largePartialCandidates": 0
+  },
+  "pipCacheReportedBytesApprox": 959600000,
+  "uvCacheAllocatedKiB": 15065840,
+  "attempt": "uv cache prune --no-python-downloads",
+  "result": "uv reported cache in use; four other uv processes observed. Stopped only own waiting prune process, did not force cleanup or terminate other processes.",
+  "freeBytesObserved": 37973905408,
+  "next": "Use unused-cache pruning after owning processes finish, or choose an explicitly reviewable alternative storage location. Do not delete accepted media or active model weights."
+}

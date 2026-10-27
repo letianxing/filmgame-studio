@@ -1,0 +1,42 @@
+{
+  "status": "ISOLATION_VALIDATED_AMPLITUDE_CONTROL_UNRESOLVED",
+  "host": "User confirmed current Mac",
+  "reason": "Current first-frame WAN jointly animated host and Lu Su; this is a scene-control failure, not proof that local production is impossible.",
+  "layers": [
+    {
+      "id": "hall",
+      "method": "fixed reviewed background plate; no regeneration during actor motion"
+    },
+    {
+      "id": "observers",
+      "method": "retain separately reviewed upright reactions; generate sequentially only where needed"
+    },
+    {
+      "id": "kongming",
+      "method": "isolated full-body WAN take from fixed identity/costume/fan reference; foreground matte and occlusion reviewed before compositing"
+    }
+  ],
+  "firstSample": {
+    "seconds": 3,
+    "camera": "locked",
+    "action": "Kongming alone inclines and returns; right-hand fan retained",
+    "requirements": [
+      "preserve complete body and feet",
+      "no neighboring actor inside moving matte",
+      "no background reconstruction crossing identity edges",
+      "inspect every frame of hand/fan and face",
+      "bow amplitude separately verified; isolation does not guarantee 15 degrees",
+      "no reversing or looping rejected motion to fake a successful bow"
+    ],
+    "failurePolicy": "If isolated amplitude remains unreliable, revise shot staging and validate a supported local motion-control implementation; do not declare success from masking alone."
+  },
+  "currentOcclusionConcern": "In side-view B, bowing Kongming overlaps Lu Su. Rectangular frame replacement is unsafe; requires a time-varying character matte and clean background, or a new camera/blocking arrangement that separates silhouettes without changing story.",
+  "notAuthorizedByThisPlan": [
+    "claiming static image edits are pixel-preserving without measurement",
+    "accepting failed takes",
+    "paid video fallback"
+  ],
+  "nextAction": "Prepare single-character separated-silhouette staging before spending on a new WAN sample.",
+  "firstSampleResult": "artifacts/wolong-local-film/kongming-isolated-side-v1/review.json",
+  "rejectedPostprocess": "artifacts/wolong-local-film/kongming-isolated-side-v1/attenuation-review.json"
+}

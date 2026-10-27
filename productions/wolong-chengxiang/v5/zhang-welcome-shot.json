@@ -1,0 +1,55 @@
+{
+  "id": "opening-welcome-zhang-01",
+  "sourceScript": "../debate-full/v4.json",
+  "sourceScene": "opening-welcome",
+  "lineId": "opening-welcome-line-02",
+  "text": "张昭，字子布。先生远来，未及出迎，尚乞见谅。",
+  "audio": "artifacts/wolong-local-film/dialogue-zhang-zhao-01/zhang-zhao-001.wav",
+  "audioSeconds": 6.92,
+  "frame": "assets/zhang-zhao-welcome-closeup-a.png",
+  "frameSha256": "5a9de7c83c40f66a283e95d9b0217d3be72d3a173b8357fbe86fb4b96244ac51",
+  "firstFrameReview": "accepted for bounded test: matches older identity, beard, hat and north-screen materials; right light and rightward gaze suit reverse angle",
+  "status": "ASSEMBLED_CONTINUITY_PREVIEW",
+  "editPlan": {
+    "continuousDialogue": true,
+    "zhangOpeningAudio": [
+      0,
+      2.375
+    ],
+    "guestReactionAudio": [
+      2.375,
+      5.25
+    ],
+    "zhangClosingAudio": [
+      5.25,
+      6.92
+    ],
+    "zhangSourceFrames": [
+      [
+        0,
+        38
+      ],
+      [
+        38,
+        65
+      ]
+    ],
+    "guestReactionNeededFrames": 46,
+    "noOverlappingSourceFrames": true
+  },
+  "blockingGaps": [
+    "full-body host rise and welcoming bows still need picture coverage"
+  ],
+  "approvedForFinal": false,
+  "baseVideo": "artifacts/wolong-local-film/zhang-welcome-v1/base.mp4",
+  "baseReview": {
+    "status": "PROVISIONAL_FOR_DIALOGUE_TEST",
+    "observed": "courteous small inclination and recovery; recognizable face, beard and cap; stable screen backdrop in sampled frames",
+    "approvedForFinal": false
+  },
+  "openingVideo": "artifacts/wolong-local-film/zhang-welcome-v1/self-introduction-clean.mp4",
+  "endingVideo": "artifacts/wolong-local-film/zhang-welcome-v1/courtesy-ending-clean.mp4",
+  "review": "artifacts/wolong-local-film/zhang-welcome-v1/review.json",
+  "reactionVideo": "artifacts/wolong-local-film/kongming-listens-welcome-v1/reaction.mp4",
+  "preview": "artifacts/wolong-local-film/opening-continuity-v2/opening-preview-levelled.mp4"
+}

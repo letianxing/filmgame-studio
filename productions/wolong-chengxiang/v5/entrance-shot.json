@@ -1,0 +1,71 @@
+{
+  "id": "opening-welcome-entrance-01",
+  "sourceScene": "opening-welcome",
+  "sourceScript": "../debate-full/v4.json",
+  "status": "PROVISIONAL_FOR_EDIT_PREVIEW",
+  "purpose": "鲁肃接引孔明入堂，建立接引者与来客关系",
+  "frame": "assets/entrance-two-person-fan-b.png",
+  "cast": [
+    "lu-su",
+    "kongming"
+  ],
+  "camera": {
+    "position": "hall interior facing south entrance",
+    "framing": "two-person full body, visible shoes and clear floor",
+    "motion": "locked"
+  },
+  "startState": {
+    "lu-su": "screen left half-step forward, hands at waist",
+    "kongming": "screen right half-step behind; right hand holds fixed feather fan at abdomen; left hand lightly supports right wrist",
+    "mouths": "both closed"
+  },
+  "mainAction": "Lu Su lifts anatomical right forearm (screen-left hand) a short distance, palm open toward offscreen host; left hand remains at waist. Both heads retain their initial orientation.",
+  "endState": "Lu Su holds open-palm indication; Kongming retains position and eye line",
+  "continuity": [
+    "No seated crowd shown in reverse entrance crop; crowd remains offscreen",
+    "Neither man moves onto tables or mats",
+    "No duplicate bodies or changing face/beard",
+    "Full shoes retained throughout; clear floor margin",
+    "Right-hand fan persists with unchanged feather pattern and handle",
+    "Fan never intersects beard, sleeves or fingers"
+  ],
+  "sound": "Future Lu Su announcement must be separately voiced and synchronized; first test silent",
+  "durationIntentSeconds": 3,
+  "reviewRequired": [
+    "same two identities",
+    "hands anatomically plausible",
+    "no camera drift",
+    "ground contact",
+    "reverse angle compatible with north-facing hall master"
+  ],
+  "generationEvidence": "2026-10-14 staged imagegen succeeded: text-only prop 22.4s, one-reference Kongming edit 36.0s, two-reference entrance 42.0s. No proxy settings changed.",
+  "firstFrameReview": {
+    "status": "APPROVE_FOR_TEST_ONLY",
+    "method": "assistant visual comparison with source frame and character references",
+    "passes": [
+      "both eyelines now toward screen-left host",
+      "two distinct faces and beard shapes",
+      "same hall doorway, pillars and light direction",
+      "same blue and ivory robes",
+      "right-hand feather fan preserved",
+      "full shoes on clear floor"
+    ],
+    "issues": [],
+    "approvedForVideo": true,
+    "scope": "bounded silent motion evaluation only; not final cast or scene approval"
+  },
+  "frameSha256": "1a5e86842d9d8159accc620ea337b9ca7fa6228c98192b4c10d386c3f72a302b",
+  "motionTest": {
+    "output": "artifacts/wolong-local-film/entrance-gesture-causal-v5/gesture.mp4",
+    "produced": true,
+    "review": "artifacts/wolong-local-film/entrance-gesture-causal-v5/review.json",
+    "approvedForFilm": false
+  },
+  "memoryProbe": "artifacts/wolong-local-film/entrance-memory-probe-v3/review.json",
+  "gestureHand": "lu-su anatomical right, screen-left hand",
+  "stagingRevision": {
+    "reason": "Host is offscreen left. Right-hand indication opens toward host without crossing the torso or Kongming. Screenplay does not lock Lu Su hand; Kongming right-hand fan remains locked.",
+    "previousPromptHand": "left",
+    "previousTakeAcceptance": "still REVISE; this staging choice does not retroactively approve previous take"
+  }
+}

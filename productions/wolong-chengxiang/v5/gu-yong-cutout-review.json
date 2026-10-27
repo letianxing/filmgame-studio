@@ -1,0 +1,20 @@
+{
+  "status": "REJECT_NOT_IDENTITY_PRESERVING_CUTOUT",
+  "image": "assets/gu-yong-cutout-a.png",
+  "technical": {
+    "mode": "RGBA",
+    "size": [
+      1024,
+      1536
+    ],
+    "alphaExtrema": [
+      0,
+      254
+    ]
+  },
+  "visualFindings": [
+    "原衣料纹理被重绘并显著增强，人物明暗也发生改变。",
+    "可见人物周围大范围渐变背景残留，不是可直接合成的干净人物边缘。"
+  ],
+  "decision": "停止此生图抠图路线，不用于场景或视频；保留原始人物参考。"
+}

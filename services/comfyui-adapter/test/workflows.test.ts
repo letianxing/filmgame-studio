@@ -25,7 +25,7 @@ test('Wan2.2 workflow is deterministic and duration maps to a 4n+1 frame count',
       vae: ['vae', 0],
       width: 640,
       height: 384,
-      length: 29,
+      length: 33,
       batch_size: 1,
     },
   });
@@ -67,6 +67,7 @@ test('Wan2.2 workflow connects an imported first frame to the latent node', asyn
 
 test('ComfyUI client interrupts a job before local RAM exhaustion', async () => {
   let interrupted = false;
+  let statsCount = 0;
   const server = createServer((request, response) => {
     response.setHeader('content-type', 'application/json');
     if (request.url === '/prompt' && request.method === 'POST') {
@@ -82,9 +83,10 @@ test('ComfyUI client interrupts a job before local RAM exhaustion', async () => 
       return;
     }
     if (request.url === '/system_stats') {
-      response.end(JSON.stringify({ system: { ram_free: 99 } }));
+      response.end(JSON.stringify({ system: { ram_free: statsCount++ === 0 ? 101 : 99 } }));
       return;
     }
+    if (request.url === '/queue') { response.end(JSON.stringify({ queue_running: [[0, 'memory-guard-test']] })); return; }
     if (request.url === '/interrupt' && request.method === 'POST') {
       interrupted = true;
       response.end('{}');
@@ -124,4 +126,72 @@ test('ComfyUI client interrupts a job before local RAM exhaustion', async () => 
       server.close((error) => (error ? reject(error) : resolve())),
     );
   }
+});
+
+
+test('Wan safe profile tiles decode and rejects unsupported native audio or video references', async () => {
+  const registry = new FilmGameComfyWorkflowRegistry({ videoWidth: 512, videoHeight: 288, videoFps: 8,
+    wan22TextEncoder: 'umt5_xxl_fp16.safetensors', textEncoderDevice: 'cpu', tiledVideoDecode: true, videoSampler: 'euler' });
+  const base = { prompt: 'A man turns his head', durationSeconds: 2, referenceAssetUris: [] };
+  const flow = await registry.video({ ...base, aspectRatio: '9:16' });
+  assert.equal((flow.sampler as { inputs: { sampler_name: string } }).inputs.sampler_name, 'euler');
+  assert.equal((flow.decode as { class_type: string }).class_type, 'VAEDecodeTiled');
+  assert.equal((flow.latent as { inputs: { width: number } }).inputs.width, 288);
+  assert.equal((flow.clip as { inputs: { device: string } }).inputs.device, 'cpu');
+  await assert.rejects(registry.video({ ...base, generateAudio: true }), /native audio/);
+  await assert.rejects(registry.video({ ...base, referenceVideoUris: ['https:\/\/example.com/a.mp4'] }), /reference videos/);
+});
+
+
+test('low or unknown RAM blocks submission before a model job is queued', async () => {
+  let submitted = false;
+  const server = createServer((request, response) => {
+    response.setHeader('content-type', 'application/json');
+    if (request.url === '/system_stats') { response.end(JSON.stringify({ system: { ram_free: 1 } })); return; }
+    if (request.url === '/prompt') submitted = true;
+    response.end('{}');
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address !== 'string');
+  try {
+    const client = new ComfyUIClient({ baseUrl: `http://127.0.0.1:${address.port}`, clientId: 'test', minimumFreeRamBytes: 100 }, new FilmGameComfyWorkflowRegistry());
+    await assert.rejects(client.runWorkflow({}, { projectId: 'p', storyVersion: 1, requestId: 'r', idempotencyKey: 'i' }), /safety floor/);
+    assert.equal(submitted, false);
+  } finally { server.close(); }
+});
+
+test('timeout deletes owned pending job without interrupting someone else', async () => {
+  let deleted = false; let interrupted = false;
+  const server = createServer((request, response) => {
+    response.setHeader('content-type', 'application/json');
+    if (request.url === '/system_stats') { response.end(JSON.stringify({ system: { ram_free: 1000 } })); return; }
+    if (request.url === '/prompt') { response.end(JSON.stringify({ prompt_id: 'owned' })); return; }
+    if (request.url === '/queue' && request.method === 'GET') { response.end(JSON.stringify({ queue_running: [[0, 'other']] })); return; }
+    if (request.url === '/queue' && request.method === 'POST') deleted = true;
+    if (request.url === '/interrupt') interrupted = true;
+    response.end('{}');
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address !== 'string');
+  try {
+    const client = new ComfyUIClient({ baseUrl: `http://127.0.0.1:${address.port}`, clientId: 'test', minimumFreeRamBytes: 100, timeoutMs: 20, pollIntervalMs: 5 }, new FilmGameComfyWorkflowRegistry());
+    await assert.rejects(client.runWorkflow({}, { projectId: 'p', storyVersion: 1, requestId: 'r', idempotencyKey: 'i' }), /timed out/);
+    assert.equal(deleted, true); assert.equal(interrupted, false);
+  } finally { server.close(); }
+});
+
+
+test('ComfyUI empty successful free response is supported', async () => {
+  let freed = false;
+  const server = createServer((request, response) => {
+    if (request.url === '/queue') { response.end(JSON.stringify({ queue_running: [], queue_pending: [] })); return; }
+    if (request.url === '/free') { freed = true; response.writeHead(200); response.end(); return; }
+    response.writeHead(404); response.end();
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address !== 'string');
+  try {
+    const client = new ComfyUIClient({ baseUrl: `http://127.0.0.1:${address.port}`, clientId: 'test' }, new FilmGameComfyWorkflowRegistry());
+    await client.releaseModels(); assert.equal(freed, true);
+  } finally { server.close(); }
 });

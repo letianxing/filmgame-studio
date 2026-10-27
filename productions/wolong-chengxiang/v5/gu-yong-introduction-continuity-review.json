@@ -1,0 +1,71 @@
+{
+  "status": "HOLD_CONTINUITY_REPAIR_REQUIRED",
+  "character": "gu-yong",
+  "approvedForVideoGeneration": false,
+  "approvedForFinal": false,
+  "references": [
+    {
+      "path": "assets/gu-yong-concept-a.png",
+      "sha256": "dc0a18efd959b940c3d67e1db0b2966267f3df46b49dfee472b242fbe1b52992"
+    },
+    {
+      "path": "assets/gu-yong-introduction-start-a.png",
+      "sha256": "9b5e30f66edae32316d06e2d7bde71314bec5d3eb3b90b82e389c3128264f69d"
+    },
+    {
+      "path": "assets/gu-yong-introduction-start-b.png",
+      "sha256": "e2c33f5643330d0d26cf0d0804cd59b2784eb177e1171b9e880ed7e92b69e626"
+    },
+    {
+      "path": "../v3/lookdev/hall-parallel-seats-v1.json",
+      "sha256": "dacf06c4f4a7e9c8dd34d47c76a94310a80d90edb7844c2511d3afed9a431767"
+    }
+  ],
+  "observations": [
+    "B保留了参考的大致脸型、黑冠与须型，但不能据此认定逐项身份一致性通过。",
+    "B的袍身出现明显连续花纹，与人物参考中低对比织物纹理不同；须修正后重新比较。",
+    "A新增高桌陈设不符合既定低案布局；B已去除该陈设。",
+    "B背景柱窗只有材质相近，尚未完成与权威厅堂布局的机位、窗位和光向核对。"
+  ],
+  "requiredBeforeGeneration": [
+    "从固定人物参考修正服装，保留脸型、年龄、发际、冠形、胡须与衣领。",
+    "用既定厅堂布局确认机位、背景柱窗、低案位置及视线，不把相似中式室内当作同一场景。",
+    "重新审核首帧，合格后才进入本地WAN动作测试。"
+  ],
+  "motionAcceptance": [
+    "对照固定人物与场景参考，检查起始、中间、结束及转头、遮挡、说话等风险帧。",
+    "检查相邻镜头脸型与冠服、站位、背景结构和光向；孔明羽扇始终右手。",
+    "光流与人脸检测仅辅助诊断，不代替人工视觉验收；异常片段不得进入成片。"
+  ],
+  "revisionAudit": [
+    {
+      "variant": "c",
+      "result": "REJECT",
+      "reason": "局部衣料编辑仍保留明显重复纹样。",
+      "image": "assets/gu-yong-introduction-start-c.png",
+      "sha256": "e8e132dd99b9b6240203dc9b1461d15076978b6ca38d1918a6971ba9cc8750c3"
+    },
+    {
+      "variant": "d",
+      "result": "REJECT",
+      "reason": "更强去纹样指令仍未消除纹样；停止沿此衍生链重试。",
+      "image": "assets/gu-yong-introduction-start-d.png",
+      "sha256": "999767f67ed8f972619ca647aaf17ed7c0badc17b7be6a43087668228b08457c"
+    },
+    {
+      "variant": "e",
+      "result": "HOLD",
+      "reason": "重新用原始人物与厅堂双参考，西窗与北屏风方向改善；人物背后多出一张西侧低案。",
+      "image": "assets/gu-yong-introduction-start-e.png",
+      "sha256": "0fb1c67f14c3f5f564fe678e10eea7fbce0583aefcef25419ef320ee20b1d035"
+    },
+    {
+      "variant": "f",
+      "result": "HOLD",
+      "reason": "多余低案已移除，但袍身纹样再次增强；不准用于视频生成或成片。",
+      "image": "assets/gu-yong-introduction-start-f.png",
+      "sha256": "ce1a3e17e3fe134de013d4f66b675e4bd023e60e6749961cf7ed8cf34f7c0782"
+    }
+  ],
+  "nextAction": "停止以文字局部编辑反复修衣纹；后续须采用能保留原始人物区域的制作方式或重新从原始人物参考建立可验收首帧，不放宽一致性标准。"
+}

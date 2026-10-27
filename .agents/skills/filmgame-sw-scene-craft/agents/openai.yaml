@@ -1,0 +1,4 @@
+interface:
+  display_name: "分场与戏剧行动"
+  short_description: "FilmGame 正式影片创作：分场与戏剧行动，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-sw-scene-craft，根据我的影片内容完成分场与戏剧行动，保留已确定的人物和结局。"

@@ -680,3 +680,4 @@ function writeOperation(parent: unknown, key: string, operation: PatchOperation)
     record[key] = structuredClone(operation.value);
   }
 }
+export { dramaContentSchema, validateDrama, dramaContent, reviseDrama, dramaShotInputs, dramaVoiceBlockers } from './drama.js';

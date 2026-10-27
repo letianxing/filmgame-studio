@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "character": "gu-yong",
+  "status": "ACTIVE_SCENE_REFERENCE_FOR_BOUNDED_TESTS_NOT_FINAL_APPROVAL",
+  "image": "assets/gu-yong-scene-reference-v2.png",
+  "sha256": "ce1a3e17e3fe134de013d4f66b675e4bd023e60e6749961cf7ed8cf34f7c0782",
+  "supersedes": "assets/gu-yong-concept-a.png for future scene generation only",
+  "reason": "No Gu Yong footage is in the accepted edit and no final costume has been approved. Deliberately select one revised robe design before production rather than mix incompatible candidates. This does not claim original cloth restoration succeeded.",
+  "lockedForSubsequentTests": [
+    "same long face, cap, hairline and small pointed chin beard",
+    "same gray olive patterned robe, brown collar/cuff edging and waist sash",
+    "west-side window and north screen geometry in this shot"
+  ],
+  "preserveHistory": "Earlier HOLD reviews remain valid relative to version1 costume; do not relabel them as successful repair.",
+  "pending": [
+    "motion identity and costume stability",
+    "final multi-view costume review",
+    "dialogue and scene continuity"
+  ]
+}

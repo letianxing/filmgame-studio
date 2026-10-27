@@ -1,0 +1,48 @@
+{
+  "source": "https://huggingface.co/api/models/N00B0DY/MultiAnimate?blobs=true",
+  "revision": "fbb88ab81f746750265a34101be412ded926987f",
+  "files": [
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00001-of-00008.safetensors",
+      "bytes": 4976043464,
+      "sha256": "0be18b5ba58abefaf18a4782c2fe6192c0eea4fb1b7dfa3ebe41559b95a4a9ac"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00002-of-00008.safetensors",
+      "bytes": 4898554664,
+      "sha256": "48c6a7c8c019c406fda7a718bb78c8d3cc9b44af6f915d66c770931fc26ec590"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00003-of-00008.safetensors",
+      "bytes": 4987670144,
+      "sha256": "374bbcd2f62ed1e7bf05c96ea7bc71fc9aeeecca002508d3cfa8b28ed4b87284"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00004-of-00008.safetensors",
+      "bytes": 4987714280,
+      "sha256": "ad25120a95ead7f37329132a9aeaf5d2e00ffde1e0a6b9367b88e8059c4f7a0b"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00005-of-00008.safetensors",
+      "bytes": 4950963056,
+      "sha256": "5d90d9b80d0d68ac506b80a1035f9ed9a49ec5da67a16af5a68478993b8c11d1"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00006-of-00008.safetensors",
+      "bytes": 4950983768,
+      "sha256": "086d183ccae67ea1f05cf758d3f42a925ca86a54f785e88a4e04c6285d3b62a1"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00007-of-00008.safetensors",
+      "bytes": 4998518952,
+      "sha256": "6edecc6f1a3a954afd0fba69cf88f83ef0ea5a8c645dd75dfa8606f833f56f5c"
+    },
+    {
+      "path": "epoch=39-step=7000.ckpt/output_dir/model-00008-of-00008.safetensors",
+      "bytes": 2014258192,
+      "sha256": "8de1e15ba19f772ff26946506277ad9e965de8e297a9c7a361a9e5e859583063"
+    }
+  ],
+  "totalBytes": 36764706520,
+  "weightsDownloaded": false
+}

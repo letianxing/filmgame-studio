@@ -1,0 +1,54 @@
+{
+  "title": "卧龙*丞相｜舌战群儒",
+  "targetSeconds": null,
+  "scope": "完整舌战群儒；用户取消强制30分钟，故事与表演优先",
+  "videoBackend": "WAN",
+  "runtime": "MLX",
+  "cloudFallbackAllowed": false,
+  "artReference": "lookdev/kongming-user-style-reference.png",
+  "currentCharacterCandidate": "../v5/assets/kongming-fullbody-fan-a.png",
+  "audioPlan": "分角色本地配音 + 音频驱动口型，MuseTalk正在评估，未验收",
+  "nativeLtx": "已有技术测试保留，不继续作为本次正片视频引擎",
+  "diskPolicy": {
+    "minimumFreeGiB": 20,
+    "allowedCleanup": "已核对可重建、非活跃中间文件；重复文件需哈希一致且保留已登记原件",
+    "protected": [
+      "模型权重",
+      "人物参考图",
+      "剧本版本",
+      "原始视频和声音",
+      "审片报告",
+      "最终导出"
+    ]
+  },
+  "status": "PREPRODUCTION_AND_LOCAL_PIPELINE_VALIDATION",
+  "completedEpisodeSeconds": 0,
+  "directorPlan": "导演摄影剪辑执行稿.md",
+  "currentBlockers": [
+    "v4完整事件稿与90条候选音频已绑定；仍有读音、表演、短句切点待验收",
+    "因果解码修复已通过端到端短样；完整动作、人脸和羽扇连续性仍需验收",
+    "口型方案仍需验证胡须、下颌、身份和精确音画同步",
+    "其余角色、多人物场景、礼仪与入席动作尚未完成视觉冻结"
+  ],
+  "screenplayVersion": "../debate-full/v4.json",
+  "screenplayReview": "17场初稿，实际片长由读演与剪辑确定",
+  "localUpgrade": {
+    "wan14b": "14B q4 Lightning adapter supports guarded eager execution, weak model lifetime and causal VAE decode; 17 requested frames now produce17 actual frames without the previous initial corruption. Full motion and face acceptance still pending.",
+    "expression": "LivePortrait 49-frame restrained-expression candidate generated; no precise lip-sync claim",
+    "space": "Blender proxy stage created; 2D table clearance only",
+    "retire5b": "Authorized after 14B replacement verification; shared T5 protected"
+  },
+  "coverageRequirement": {
+    "source": "用户要求整段场面效果，不能一直半身",
+    "required": [
+      "厅堂建立全景",
+      "足部可见的全身行走/礼仪/入席",
+      "多人中景",
+      "对白近景",
+      "差异化反应特写"
+    ],
+    "nextReview": "15–30秒连续动作与剪辑验证，不能以头像拼接代替完整段落"
+  },
+  "referenceStudy": "../v4/research/94版场面与镜头初步观察.md",
+  "kongmingProp": "Fixed feather fan in right hand; scholar silk headcloth; script-specific restrained fanning and smile"
+}

@@ -1,0 +1,322 @@
+{
+  "objective": "完整舌战群儒成片，片长服从故事",
+  "script": "../debate-full/v5.json",
+  "status": "PRODUCTION_IN_PROGRESS",
+  "finishedFilm": false,
+  "visuals": {
+    "hallMaster": "assets/hall-master-b.png",
+    "fullBodyReference": "assets/kongming-fullbody-fan-a.png",
+    "fullBodyMotion": "Zhang Zhao rise provisionally included in opening preview; Kongming return greeting remains under revision",
+    "initialCastCandidatesPresent": 10,
+    "lateCastStillMissing": [],
+    "lateCastCandidatesPresent": 2,
+    "lateCastReview": "cast-candidate-review-02.json",
+    "candidateDoesNotMeanApproved": true,
+    "heldFirstFrames": [
+      "assets/gu-yong-introduction-start-a.png",
+      "assets/gu-yong-introduction-start-b.png",
+      "assets/gu-yong-introduction-start-c.png",
+      "assets/gu-yong-introduction-start-d.png",
+      "assets/gu-yong-introduction-start-e.png",
+      "assets/gu-yong-introduction-start-f.png"
+    ]
+  },
+  "audio": {
+    "provider": "local CosyVoice2-0.5B",
+    "voice": "original generated Kongming candidate, not final approved cast",
+    "openingUtterancesProduced": 4,
+    "remainingKongmingUtterancesSubmitted": 32,
+    "batches": 3,
+    "requestManifest": "../../../artifacts/wolong-local-film/kongming-dialogue-batches.json",
+    "review": "90 candidate bindings to screenplay v5. Corrected 请降者 rerecorded; waveform checked, ASR homophone discrepancies and listening remain pending.",
+    "kongmingUtterancesProduced": 36,
+    "kongmingSeconds": 419.64,
+    "zhangZhaoUtterancesSubmitted": 21,
+    "zhangZhaoUtterancesProduced": 21,
+    "zhangZhaoSeconds": 171.12,
+    "scriptLinesWithAudio": 90,
+    "totalScriptLines": 90,
+    "missingAudioLines": 0,
+    "voiceDesign": {
+      "provider": "Qwen3-TTS-1.7B-VoiceDesign-4bit MLX",
+      "newCharacterCandidates": 10,
+      "modelVerification": "artifacts/wolong-local-film/voices/qwen-lusu-v1/model-verification.json"
+    }
+  },
+  "constraints": [
+    "one heavy job at a time",
+    "no cloud video fallback",
+    "preserve face/beard",
+    "no looped footage to pad runtime"
+  ],
+  "scriptSha256": "2094466658e66dbf8abc8495368e5a1c3da2d71cbb9f2b9fe6f04bfe34f35533",
+  "latestPreview": {
+    "file": "artifacts/wolong-local-film/opening-continuity-v5/opening-preview.mp4",
+    "seconds": 20.8125,
+    "review": "artifacts/wolong-local-film/opening-continuity-v5/review.json",
+    "status": "PARTIAL_OPENING_THROUGH_GU_YONG_NAME"
+  },
+  "latestUnassembledShot": {
+    "file": "artifacts/wolong-local-film/zhang-names-gu-v1/lip-stabilized.mp4",
+    "line": "opening-introductions-line-01",
+    "frames": 27,
+    "fps": 16,
+    "status": "IN_PARTIAL_PREVIEW_NOT_FINAL",
+    "staticMotionEvidence": "artifacts/wolong-local-film/zhang-names-gu-v1/stabilized-motion-review.json"
+  },
+  "dialogueWorktrack": {
+    "file": "artifacts/wolong-local-film/full-dialogue-worktrack-v2/dialogue.wav",
+    "timeline": "artifacts/wolong-local-film/full-dialogue-worktrack-v2/timeline.json",
+    "subtitles": "artifacts/wolong-local-film/full-dialogue-worktrack-v2/canonical-dialogue-draft.srt",
+    "verification": "artifacts/wolong-local-film/full-dialogue-worktrack-v2/verification.json",
+    "seconds": 851.16,
+    "lines": 90,
+    "status": "CANDIDATE_V5_NOT_FINAL_MIX",
+    "mixStatus": "BALANCED_V5_CANDIDATE_AVAILABLE"
+  },
+  "balancedDialogueWorktrack": {
+    "file": "artifacts/wolong-local-film/full-dialogue-balanced-v2/dialogue.wav",
+    "timeline": "artifacts/wolong-local-film/full-dialogue-balanced-v2/timeline.json",
+    "seconds": 851.16,
+    "loudness": "artifacts/wolong-local-film/full-dialogue-balanced-v2/loudness-verification.json",
+    "gainPlan": "artifacts/wolong-local-film/full-dialogue-balanced-v2/gain-plan.json",
+    "sampleVerification": "artifacts/wolong-local-film/full-dialogue-balanced-v2/sample-verification.json",
+    "cutReview": "artifacts/wolong-local-film/full-dialogue-balanced-v2/replacement-cut-review.json",
+    "status": "CANDIDATE_V5_BALANCED_NOT_FINAL_MIX"
+  },
+  "previousBlocker": {
+    "condition": "Current local first-frame WAN route has no validated independent-character motion control; required return-greeting shot fails action assignment and depth.",
+    "consecutiveAudits": [
+      "local adapter and installed generation interface inspection",
+      "upstream supported-mode inspection and target-host question",
+      "current rejected take and unchanged capability revalidated"
+    ],
+    "userInputNeeded": [
+      "Confirm current Mac or provide next host GPU/VRAM so a compatible local controlled-WAN route can be evaluated",
+      "Answer pending non-generative local compositing question for fixed identity assets"
+    ],
+    "additionalCompletionDependency": "Actual listening and audiovisual sync approval cannot be replaced with ASR or frame inspection.",
+    "preserved": "Complete objective, current partial preview, balanced candidate dialogue and original assets; no final approval claimed."
+  },
+  "currentMotionPlan": "mac-layered-motion-plan.json",
+  "currentBlocker": null,
+  "currentTask": "Build complete opening coverage: match the greeting pair editorially and replace missing/failed entrance, rise and three speaking-shot segments with reviewed local-WAN media and lip sync.",
+  "animate2ResourceProbe": "artifacts/wolong-local-film/animate2-resource-probe-layered/review.json",
+  "animate2VaeEvidence": "artifacts/wolong-local-film/animate2-vae-roundtrip/result.json",
+  "animate2LoraEvidence": "artifacts/wolong-local-film/animate2-mps-preflight/lora-loader-result.json",
+  "animate2ResolutionProbe": "artifacts/wolong-local-film/animate2-resolution-probe/review.json",
+  "animate2StagedConditions": {
+    "text": "artifacts/wolong-local-film/animate2-staged-v1/text.receipt.json",
+    "visual": "artifacts/wolong-local-film/animate2-staged-v1/visual.receipt.json",
+    "status": "FOUR_STAGES_COMPLETED_FULL_ACTION_PENDING"
+  },
+  "animate2StagedProbe": "artifacts/wolong-local-film/animate2-staged-v1/review.json",
+  "latestControlledBowRun": "artifacts/wolong-local-film/animate2-controlled-bow-v1/transfer-review.json",
+  "matchedRecoveryCandidate": "artifacts/wolong-local-film/kongming-recovery-v1/review.json",
+  "latestIsolatedDialoguePreview": "artifacts/wolong-local-film/gu-kongming-exchange-v1/review.mp4",
+  "qualityReview": "审查/空间表演与口型-工程修订审查.md",
+  "lipsyncTimingAudit": "artifacts/wolong-local-film/lipsync-timing-audit-v1/result.json",
+  "latestPreviewAcceptance": "REVISE_USER_REPORTED_SPACE_ACTING_LIPSYNC_FAILURE",
+  "lipsyncTimestampExperiment": {
+    "status": "FEATURE_TIMING_CORRECTED_VISUAL_QUALITY_NOT_ACCEPTED",
+    "review": "artifacts/wolong-local-film/lipsync-timing-audit-v1/timestamp-v1-review.json",
+    "productionApproved": false,
+    "adapter": "scripts/lipsync_audio_timing.py"
+  },
+  "lipsyncCropExperiment": {
+    "status": "REVISE_BLEND_SUPPORT_BEFORE_MORE_INFERENCE",
+    "review": "artifacts/wolong-local-film/lipsync-timing-audit-v1/midnose-v1-review.json",
+    "productionApproved": false
+  },
+  "lipsyncBlendProbe": {
+    "status": "REJECT_AS_PRODUCTION_FIX",
+    "review": "artifacts/wolong-local-film/lipsync-blend-probe-v1/review.json",
+    "productionApproved": false
+  },
+  "lipsyncSourceDetailExperiment": {
+    "status": "DETAIL_LOSS_PERSISTS_WITH_NATIVE_REFERENCE",
+    "review": "artifacts/wolong-local-film/lipsync-source-detail-v1/review.json",
+    "productionApproved": false
+  },
+  "lipsyncReconstructionIsolation": {
+    "status": "AUDIO_CONDITIONED_RECONSTRUCTION_DETAIL_LOSS_ISOLATED_ON_SAMPLE",
+    "review": "artifacts/wolong-local-film/lipsync-vae-detail-v1/review.json",
+    "productionApproved": false
+  },
+  "lipsyncBackendParity": {
+    "status": "BACKEND_MATH_CLOSE_ON_REAL_FACE_DETAIL_LOSS_SHARED",
+    "review": "artifacts/wolong-local-film/lipsync-real-parity-v1/review.json",
+    "productionApproved": false
+  },
+  "lipsyncAlternative": {
+    "candidate": "LatentSync 1.6",
+    "status": "FULL_REAL_SPEECH_PIPELINE_COMPLETE_QUALITY_REVISE",
+    "review": "artifacts/wolong-local-film/latentsync-kongming-v1/quality-review.json",
+    "preview": "artifacts/wolong-local-film/latentsync-kongming-v1/review.mp4",
+    "productionApproved": false
+  },
+  "sharedSceneBlocking": {
+    "status": "NATIVE_DETAIL_IMPROVED_CONTINUITY_REVISE",
+    "contract": "productions/wolong-chengxiang/v5/greeting-spatial-contract-v12.json",
+    "review": "artifacts/wolong-local-film/greeting-spatial-contract-v1/depth-v6-review.json",
+    "productionApproved": false,
+    "candidateImage": "productions/wolong-chengxiang/v5/assets/greeting-shared-start-b.png",
+    "firstFrameReview": "artifacts/wolong-local-film/greeting-spatial-contract-v1/firstframe-b-review.json",
+    "controlRoute": "productions/wolong-chengxiang/v5/wan-fun-control-evaluation.json",
+    "controlTrial": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/request.json",
+    "controlReview": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/quality-review.json",
+    "fanRegistrationReview": "artifacts/wolong-local-film/greeting-spatial-contract-v1/fan-registration-v7-review.json",
+    "headRegistrationReview": "artifacts/wolong-local-film/greeting-spatial-contract-v1/head-control-v12-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-greeting-native-v1/review.mp4",
+    "rejectedGuidanceTrial": "artifacts/wolong-local-film/wan-fun-greeting-native-cfg3/quality-review.json"
+  },
+  "sceneDialogueStems": {
+    "manifest": "artifacts/wolong-local-film/scene-dialogue-v2/manifest.json",
+    "scenes": 17,
+    "audioScenes": 16,
+    "actionOnlyScenes": 1,
+    "lines": 90,
+    "canonicalTextVerified": true,
+    "sampleExactPcmVerified": true,
+    "listeningApproved": false,
+    "finalSubtitleTiming": false
+  },
+  "executionPolicy": {
+    "selectedVideoRoute": "Wan2.2-Fun-5B-Control Q8, CFG6, shared scene depth, 768x448 padded to 768x432 content, tiled CPU decode",
+    "stopRepeatedCfgTrials": true,
+    "nextDeliverable": "Complete opening-welcome scene with its three dialogue lines and scripted actions",
+    "acceptance": "No identity/fan/space drift; full speech, reviewed lip sync and acting. Candidate footage does not count as final.",
+    "stopDepthOnlyHostGreetingTrials": true
+  },
+  "hostGreetingControl": {
+    "contract": "productions/wolong-chengxiang/v5/host-greeting-spatial-contract-v1.json",
+    "storyboard": "productions/wolong-chengxiang/v5/张昭迎礼补镜.md",
+    "review": "artifacts/wolong-local-film/host-greeting-control-v1/control-review.json",
+    "depth": "artifacts/wolong-local-film/host-greeting-control-v1/depth/manifest.json",
+    "frames": 49,
+    "status": "REVISE_HOST_GAZE_AND_IDENTITY",
+    "productionApproved": false,
+    "videoRun": "artifacts/wolong-local-film/wan-fun-host-greeting-v1/run.json",
+    "storagePolicy": "All decoded PNG frames retained with SHA256; omit redundant float-frame tensor in new run only.",
+    "preview": "artifacts/wolong-local-film/wan-fun-host-greeting-v1/review.mp4",
+    "videoReview": "artifacts/wolong-local-film/wan-fun-host-greeting-v1/quality-review.json"
+  },
+  "hostGreetingDirectionRepair": {
+    "contract": "productions/wolong-chengxiang/v5/host-greeting-spatial-contract-v2.json",
+    "review": "artifacts/wolong-local-film/host-greeting-control-v2/direction-review.json",
+    "regression": "artifacts/wolong-local-film/host-greeting-control-v1/direction-regression.json",
+    "status": "REJECT_DIRECTION_CONTROL_INSUFFICIENT_FOR_GAZE_IDENTITY",
+    "productionApproved": false,
+    "videoRun": "artifacts/wolong-local-film/wan-fun-host-greeting-v2/run.json",
+    "failureEvidence": "artifacts/wolong-local-film/wan-fun-host-greeting-v2/sample.resources.json",
+    "recoveryRun": "artifacts/wolong-local-film/wan-fun-host-greeting-v2-recovery/run.json",
+    "videoReview": "artifacts/wolong-local-film/wan-fun-host-greeting-v2-recovery/quality-review.json",
+    "preview": "artifacts/wolong-local-film/wan-fun-host-greeting-v2-recovery/review.mp4"
+  },
+  "dialogueRevision": {
+    "lineId": "debate-yu-line-06",
+    "request": "artifacts/wolong-local-film/dialogue-kongming-wording-v5-request.json",
+    "status": "RECORDING_BALANCED_TRACK_AND_SCENE_STEMS_UPDATED_LISTENING_PENDING",
+    "previousScript": "../debate-full/v4.json",
+    "onlyOneLineChanged": true,
+    "sceneActionsUnchanged": true,
+    "queue": "artifacts/wolong-local-film/wording-v5-queue/queue-run.json",
+    "launch": "artifacts/wolong-local-film/dialogue-kongming-wording-v5/launch.json"
+  },
+  "modelStorageArchive": ".local/model-archives/wan2.2_ti2v_5B_fp16.safetensors.archive.json",
+  "inactiveModelCacheRemoved": {
+    "receipt": ".local/model-archives/wan-animate2-eviction.json",
+    "model": "wan_animate_2_int8_convrot.safetensors",
+    "restoreRequiredForAnimate2": true,
+    "currentFunControlUnaffected": true
+  },
+  "identityConditioningResearch": {
+    "audit": "productions/wolong-chengxiang/v5/multi-character-reference-audit.json",
+    "candidate": "MultiAnimate",
+    "status": "REAL_SAMPLING_CHECKPOINT_5_OF_50_SAVED_ACCELERATION_REVIEW",
+    "modelDownloaded": false,
+    "productionApproved": false,
+    "selectiveWeightAudit": "productions/wolong-chengxiang/v5/multianimate-selective-weight-audit.json",
+    "fullCheckpointGiB": 34.23980113118887,
+    "selectedTensorGiB": 2.2879523187875748,
+    "adapterPreflight": "productions/wolong-chengxiang/v5/multianimate-adapter-preflight.json",
+    "baseCandidate": "productions/wolong-chengxiang/v5/multianimate-base-candidate.json",
+    "realEncoderPreflight": "artifacts/wolong-local-film/multianimate-control-preflight/result.json",
+    "loraShapeAudit": "productions/wolong-chengxiang/v5/multianimate-lora-shape-audit.json",
+    "controlWeightsBytes": 3002256,
+    "baseModelDownloaded": true,
+    "loraNumericalEvidence": "artifacts/wolong-local-film/multianimate-lora-preflight/result.json",
+    "nonzeroEvidence": "artifacts/wolong-local-film/multianimate-lora-preflight/nonzero-update-check.json",
+    "downloadLaunch": "artifacts/wolong-local-film/multianimate-download/launch.json",
+    "adapterDownloadLaunch": "artifacts/wolong-local-film/multianimate-download/adapter-launch.json",
+    "adapterRangeTests": "scripts/test_multianimate_download_plan.py",
+    "bundleValidator": "productions/wolong-chengxiang/v5/multianimate-bundle-validation-plan.json",
+    "adapterWeights": ".local/multianimate/models/adapter-f32.safetensors",
+    "adapterVerification": "artifacts/wolong-local-film/multianimate-bundle-verification/result.json",
+    "adapterModelDownloaded": true,
+    "integrationEvidence": "artifacts/wolong-local-film/multianimate-meta-integration/result.json",
+    "adapter": "scripts/multianimate_adapter.py",
+    "baseVerificationLog": "artifacts/wolong-local-film/multianimate-download/download.log",
+    "freeDiskGiBAfterDownload": 22.98328399658203,
+    "quantizedIntegrationEvidence": "artifacts/wolong-local-film/multianimate-gguf-preflight-v2/result.json",
+    "resolvedAdapterIssue": "Use real parameter logical tensor_shape, not GGUF state_dict packed storage shape.",
+    "fullForwardEvidence": "artifacts/wolong-local-film/multianimate-full-forward-preflight/result.json",
+    "shotInputs": {
+      "directory": "artifacts/wolong-local-film/multianimate-greeting-controls-v2",
+      "controls": "artifacts/wolong-local-film/multianimate-greeting-controls-v2/controls/actor-controls.json",
+      "verification": "artifacts/wolong-local-film/multianimate-greeting-controls-v2/controls/verification.json",
+      "review": "artifacts/wolong-local-film/multianimate-greeting-controls-v2/quality-review.json",
+      "status": "POSE_MASK_INPUT_PACK_READY_FOR_BOUNDED_EVALUATION",
+      "productionApproved": false,
+      "poseManifest": "artifacts/wolong-local-film/multianimate-greeting-controls-v2/pose/manifest.json",
+      "inputPack": "artifacts/wolong-local-film/multianimate-greeting-controls-v2/input-pack.json"
+    },
+    "shotConditioning": "artifacts/wolong-local-film/multianimate-greeting-v1/conditioning-review.json",
+    "scheduleVerification": "artifacts/wolong-local-film/multianimate-greeting-v1/schedule-verification.json",
+    "referenceResidualAdapter": "scripts/multianimate_conditioning.py",
+    "samplingCheckpoint": "artifacts/wolong-local-film/multianimate-greeting-v1/sample-005.pt",
+    "samplingReceipt": "artifacts/wolong-local-film/multianimate-greeting-v1/sample-005.receipt.json",
+    "samplingResources": "artifacts/wolong-local-film/multianimate-greeting-v1/sample-005.resources.json",
+    "baselineEstimatedSamplingMinutes": 89.152599125,
+    "accelerationEvaluation": {
+      "request": "artifacts/wolong-local-film/multianimate-greeting-fast-v1/request.json",
+      "compatibility": "artifacts/wolong-local-film/multianimate-acceleration-preflight/result.json",
+      "sampling": "artifacts/wolong-local-film/multianimate-greeting-fast-v1/sample-004.receipt.json",
+      "status": "REJECT_GUEST_FACE_AND_GAZE_DRIFT_ACCELERATION_EXECUTES",
+      "productionApproved": false,
+      "preview": "artifacts/wolong-local-film/multianimate-greeting-fast-v1/review.mp4",
+      "review": "artifacts/wolong-local-film/multianimate-greeting-fast-v1/quality-review.json"
+    },
+    "facialControlEvaluation": {
+      "status": "GAZE_DRIFT_REDUCED_CANDIDATE_FOR_OPENING_ASSEMBLY",
+      "preview": "artifacts/wolong-local-film/multianimate-greeting-face-fast-v1/review.mp4",
+      "review": "artifacts/wolong-local-film/multianimate-greeting-face-fast-v1/quality-review.json",
+      "productionApproved": false,
+      "roughCutCandidate": true
+    }
+  },
+  "guestReturnCandidate": {
+    "status": "GUEST_RETURN_CANDIDATE_FOR_OPENING_ASSEMBLY",
+    "preview": "artifacts/wolong-local-film/multianimate-guest-return-fast-v1/review.mp4",
+    "review": "artifacts/wolong-local-film/multianimate-guest-return-fast-v1/quality-review.json",
+    "roughCutCandidate": true,
+    "productionApproved": false
+  },
+  "activeLocalVideoRoute": {
+    "status": "TWO_GREETING_ROUGH_CUT_CANDIDATES_NOT_GENERAL_PRODUCTION_APPROVAL",
+    "engine": "Local Wan2.1 I2V14B Q4_K_M + MultiAnimate + Lightx2v",
+    "steps": 4,
+    "cfg": 1.0,
+    "shift": 5.0,
+    "size": [
+      512,
+      288
+    ],
+    "frames": 49,
+    "fps": 16,
+    "controls": "Reference-derived actor masks, Body18, reference facial curves; no hand21.",
+    "exampleRequest": "artifacts/wolong-local-film/multianimate-guest-return-fast-v1/request.json",
+    "serialWorker": "scripts/sample-multianimate-chunk.py",
+    "productionApproved": false
+  }
+}

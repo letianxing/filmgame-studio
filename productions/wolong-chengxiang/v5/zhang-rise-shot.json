@@ -1,0 +1,36 @@
+{
+  "id": "opening-welcome-zhang-rise-01",
+  "sourceScript": "../debate-full/v4.json",
+  "sourceScene": "opening-welcome",
+  "sourceAction": "张昭抬眼，压住尚未收起的简册，整袖起身。",
+  "frame": "assets/zhang-rise-start-c.png",
+  "frameSha256": "d2932035fe86c588db27bfeed068f96196e5e500eff2df13c0e5c3c9a65af6bb",
+  "spatialReference": "artifacts/wolong-local-film/zhang-rise-blockout-v2/zhang-rise-blockout.png",
+  "status": "PROVISIONAL_FULL_BODY_RISE_FOR_EDIT",
+  "start": "half-kneeling at north central mat edge, supporting foot clear of desk, hand lightly on raised thigh",
+  "action": "rise smoothly to standing on same clear floor; no step through desk",
+  "end": "upright beside own low desk, cap and shoes inside frame",
+  "durationIntentSeconds": 3.5,
+  "firstFrameReview": {
+    "status": "APPROVED_FOR_BOUNDED_TEST",
+    "passes": [
+      "north screens immediately behind host",
+      "desk outside leg path",
+      "support foot and trailing leg readable",
+      "generous standing headroom",
+      "older identity, rust-brown robe and rectangular cap retained"
+    ],
+    "limits": [
+      "dynamic cloth/feet collision still untested",
+      "historical footwear details not certified",
+      "earlier pressing-book/sleeve beat not yet covered"
+    ]
+  },
+  "rejectedFrames": {
+    "assets/zhang-rise-start-a.png": "wrong foreground location and insufficient headroom",
+    "assets/zhang-rise-start-b.png": "location improved but standing headroom inadequate"
+  },
+  "approvedForFinal": false,
+  "video": "artifacts/wolong-local-film/zhang-rise-v1/rise.mp4",
+  "review": "artifacts/wolong-local-film/zhang-rise-v1/review.json"
+}

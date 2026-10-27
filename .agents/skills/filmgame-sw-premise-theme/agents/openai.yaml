@@ -1,0 +1,4 @@
+interface:
+  display_name: "故事前提与主题"
+  short_description: "FilmGame 正式影片创作：故事前提与主题，按实际片长和已定设定工作"
+  default_prompt: "使用 $filmgame-sw-premise-theme，根据我的影片内容完成故事前提与主题，保留已确定的人物和结局。"

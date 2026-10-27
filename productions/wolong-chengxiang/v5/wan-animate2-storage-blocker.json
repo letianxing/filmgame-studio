@@ -1,0 +1,31 @@
+{
+  "status": "RESOLVED_DISK_ADMISSION",
+  "freeBytes": 37186920448,
+  "newWeightBytes": 18909206946,
+  "reserveBytes": 21474836480,
+  "shortfallBytes": 3197122978,
+  "completed": [
+    "small MPS operators",
+    "real quantized layer loading",
+    "model-sized linear test",
+    "23 node parameter checks",
+    "33 port type/index checks",
+    "reused T5 SHA verification"
+  ],
+  "notCompleted": [
+    "new weight download",
+    "controlled driving-video and final input validation",
+    "full model execution",
+    "film production and acceptance"
+  ],
+  "audit": "Same disk constraint persisted across storage inventory, workflow dependency check, parameter check, port check and current recheck. No external storage or cleanup instruction received.",
+  "preservation": "No accepted media or active weights deleted; occupied uv cache not forced.",
+  "recheck": {
+    "date": "2026-10-16",
+    "freeBytes": 55897022464,
+    "newWeightBytes": 18909206946,
+    "reserveBytes": 21474836480,
+    "surplusBytes": 15512979038,
+    "admitted": true
+  }
+}

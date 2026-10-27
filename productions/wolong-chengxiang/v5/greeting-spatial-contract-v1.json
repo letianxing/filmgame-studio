@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "opening-welcome-return-master-v1",
+  "status": "GEOMETRIC_CALIBRATION_PROPOSAL_NOT_FINAL_SHOT",
+  "productionApproved": false,
+  "sourceScreenplay": "productions/wolong-chengxiang/debate-full/v4.json",
+  "sourceScreenplaySha256": "c0697db08777940d3c69c94e413f9a29c4e7ba7ed7f30ebdab8884cd4b2417e2",
+  "sourceScene": "opening-welcome",
+  "sourceAction": "张昭代表诸士迎前一礼，孔明还礼。",
+  "layoutSource": "productions/wolong-chengxiang/v3/lookdev/hall-parallel-seats-v1.json",
+  "layoutSha256": "dacf06c4f4a7e9c8dd34d47c76a94310a80d90edb7844c2511d3afed9a431767",
+  "coordinates": {
+    "unit": "meter",
+    "x": "east",
+    "y": "south",
+    "z": "up",
+    "toBlender": [
+      1,
+      -1,
+      1
+    ]
+  },
+  "frames": 49,
+  "fps": 16,
+  "camera": {
+    "positionStart": [
+      0.8,
+      8,
+      1.25
+    ],
+    "positionEnd": [
+      0.95,
+      8,
+      1.25
+    ],
+    "target": [
+      4.7,
+      7.75,
+      1.0
+    ],
+    "focalLengthMm": 32,
+    "sensorWidthMm": 36,
+    "aspect": [
+      16,
+      9
+    ],
+    "purpose": "小幅推进强调还礼与接纳；以同一几何机位提供视差，保持人物全身及脚底可见。"
+  },
+  "actors": [
+    {
+      "id": "zhang-zhao",
+      "root": [
+        4.6,
+        6.6,
+        0
+      ],
+      "height": 1.72,
+      "facing": [
+        0,
+        1,
+        0
+      ],
+      "bodyRadius": 0.35,
+      "feetLocked": true,
+      "action": "站立受礼，目光跟随孔明；不重复孔明的躬身。",
+      "torsoBowDegrees": 0,
+      "gazeTarget": "kongming.head"
+    },
+    {
+      "id": "kongming",
+      "root": [
+        4.6,
+        8.7,
+        0
+      ],
+      "height": 1.78,
+      "facing": [
+        0,
+        -1,
+        0
+      ],
+      "bodyRadius": 0.35,
+      "feetLocked": true,
+      "action": "左掌扶握柄右手外，浅揖后完整回正；羽扇不离右手。",
+      "gazeTarget": "zhang-zhao.head",
+      "bowKeys": [
+        {
+          "frame": 0,
+          "degrees": 0
+        },
+        {
+          "frame": 6,
+          "degrees": 0
+        },
+        {
+          "frame": 24,
+          "degrees": 15
+        },
+        {
+          "frame": 40,
+          "degrees": 0
+        },
+        {
+          "frame": 48,
+          "degrees": 0
+        }
+      ]
+    }
+  ],
+  "prop": {
+    "id": "feather-fan",
+    "owner": "kongming",
+    "parent": "anatomical-right-hand",
+    "leftHandRole": "support outside right grip",
+    "count": 1,
+    "handleLocalOffset": [
+      0,
+      0,
+      0
+    ],
+    "invariants": [
+      "no transfer",
+      "no detached fan",
+      "fan below chest and clear of beard"
+    ]
+  },
+  "lighting": {
+    "keyDirection": "from west windows",
+    "contactShadowsRequired": true,
+    "sameSceneForAllActors": true
+  },
+  "visibleScope": "Two foreground actors are the geometric calibration scope. Lu Su and seated scholars remain in story space; the production framing must verify their visibility/occlusion before approval.",
+  "visualReferences": [
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/kongming-fullbody-fan-a.png",
+      "use": "identity, costume and fan only; not scene layout or existing facing"
+    },
+    {
+      "path": "productions/wolong-chengxiang/v5/assets/zhang-zhao-welcome-closeup-a.png",
+      "use": "identity and upper costume only; full-body reference still needed"
+    }
+  ],
+  "boundaries": {
+    "start": "张昭已还原直立，孔明直立相对；双方脚底接地，孔明右手握扇。",
+    "end": "孔明完成一次浅揖并回正；张昭仍在原位受礼，孔明右手仍握扇。"
+  },
+  "limitations": [
+    "Not historical seating certification.",
+    "No accepted shared full-body first frame yet.",
+    "Body clearance/projection tests do not certify cloth, hand articulation or generated-media continuity.",
+    "No final reference binding for missing full-body host or complete shared scene."
+  ]
+}

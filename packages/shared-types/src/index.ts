@@ -467,3 +467,4 @@ export interface ProductionJob {
   cost?: { currency: string; amount: number };
   error?: string;
 }
+export type { DramaCharacter, DramaShot, DramaContent, DramaDocument, DramaVideoBackend } from './drama.js';

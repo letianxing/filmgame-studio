@@ -1,0 +1,120 @@
+{
+  "status": "CURRENT_LOCAL_RUNTIME_CONTROL_GAP_VERIFIED",
+  "runtime": "configured MLX Wan I2V 14B Lightning evaluation",
+  "supported": [
+    "text prompt",
+    "one composed first frame"
+  ],
+  "notExposedInCurrentAdapter": [
+    "pose video",
+    "per-character motion mask",
+    "last frame",
+    "reference driving video"
+  ],
+  "evidence": [
+    {
+      "path": "services/wan-mlx-adapter/src/index.ts",
+      "sha256": "2c0ec4a13d6b74c3ce1b543add1f1eb02ec40892cdb29f937391d1eaa6e9ec40"
+    },
+    {
+      "path": ".local/wan-mlx/.venv/lib/python3.12/site-packages/mlx_video/models/wan_2/generate.py",
+      "sha256": "41e47adf52920c9ac0c00e0e8687ce96ae88b1b6e9b99641237db79941947c5f"
+    }
+  ],
+  "observedFailure": "artifacts/wolong-local-film/kongming-return-side-v1/review.json",
+  "officialAlternative": {
+    "name": "Wan2.2 Animate",
+    "source": "https://github.com/Wan-Video/Wan2.2/blob/main/wan/modules/animate/preprocess/UserGuider.md",
+    "documented": "animation/replacement driven by pose and face preprocessing; replacement additionally uses background and mask video",
+    "restriction": "default mask extraction is for single-person videos, not an automatic multi-person solution",
+    "localStatus": "not integrated or sample-validated; no model download or runtime migration performed"
+  },
+  "decision": "Do not retry the rejected multi-person bow with unchanged first-frame-only control. A future controlled route requires an adapter boundary, actual local memory admission and single-character masking/pose validation before production. No paid fallback.",
+  "pending": [
+    "determine a supported local controlled-WAN runtime on target host",
+    "validate a bounded single-character driving sample",
+    "verify composite identity and occlusion before attempting group scene",
+    "preserve original accepted media"
+  ],
+  "upstreamCheck": {
+    "installedDistribution": "mlx-video",
+    "installedVersion": "0.0.1",
+    "upstream": "https://github.com/Blaizzy/mlx-video",
+    "documentedWanModes": [
+      "Wan2.1 T2V",
+      "Wan2.2 T2V-14B",
+      "Wan2.2 TI2V-5B",
+      "Wan2.2 I2V-14B",
+      "Lightning LoRA"
+    ],
+    "animateListedInReadme": false,
+    "conclusion": "No documented drop-in MLX Animate upgrade was established; do not claim upgrading this package supplies pose or multi-person control.",
+    "notPerformed": [
+      "package upgrade",
+      "new weight download",
+      "runtime replacement"
+    ],
+    "pendingUserInformation": "Resolved: user confirmed current Mac"
+  },
+  "localAlternative": "mac-layered-motion-plan.json",
+  "comfyReadOnlyPreflight": {
+    "status": "CONTROL_CODE_PRESENT_WEIGHTS_AND_MPS_UNVALIDATED",
+    "configuredHome": "COMFYUI_HOME",
+    "nativeNodes": [
+      "WanAnimateToVideo",
+      "WanAnimate2ToVideo",
+      "Wan22FunControlToVideo"
+    ],
+    "modelImplementationPresent": "comfy/ldm/wan/model_animate2.py",
+    "currentDiffusionWeightsObserved": [
+      "wan2.2_ti2v_5B_fp16.safetensors"
+    ],
+    "inventoryScope": "bounded immediate entries in configured base and application diffusion_models folders; not an exhaustive search of all host storage",
+    "candidate": "Wan Animate 2 distilled int8 convrot",
+    "weightInventory": "wan-animate2-weight-inventory.json",
+    "officialSources": [
+      "https://github.com/Wan-Video/Wan-Animate-2",
+      "https://blog.comfy.org/p/wan-animate-2-is-now-available-in"
+    ],
+    "remainingChecks": [
+      "int8 convrot operator support on MPS",
+      "memory admission including dequantization, text encoder, VAE and pose branch",
+      "one guarded short sample before production; preserve resource limits",
+      "identity, fan hand and shallow-angle fidelity"
+    ],
+    "notPerformed": [
+      "starting ComfyUI",
+      "downloading model weights",
+      "modifying upstream code",
+      "switching accepted production engine"
+    ],
+    "mpsOperatorEvidence": {
+      "directInt8": "artifacts/wolong-local-film/animate2-mps-preflight/result.json",
+      "perLayerDequant": "artifacts/wolong-local-film/animate2-mps-preflight/dequant-result.json",
+      "result": "Direct INT8 fails because aten::_int_mm unavailable on MPS; per-layer ConvRot inverse/dequantization followed by FP16/BF16 linear succeeds at small shape with relative L2 errors 0.00706/0.00842.",
+      "remaining": "Validate real ComfyUI loader dispatch and bounded model-scale memory; small probe does not approve production."
+    },
+    "mpsLoaderEvidence": {
+      "result": "artifacts/wolong-local-film/animate2-mps-preflight/loader-result.json",
+      "resources": "artifacts/wolong-local-film/animate2-mps-preflight/loader-resources-fixed.json",
+      "conclusion": "Actual Comfy mixed_precision_ops.Linear loads int8 ConvRot state, retains QuantizedTensor storage, sets fullPrecisionMatmul true on MPS and completes FP16/BF16 small-layer forward without CPU fallback. No upstream modification needed for this tested path.",
+      "relativeL2Error": [
+        0.006874193903058767,
+        0.008278420194983482
+      ],
+      "watermarks": {
+        "high": 0.45,
+        "low": 0.35
+      },
+      "remaining": "Model-sized layers, dequantization peak memory, complete Animate2 runtime and output fidelity."
+    }
+  },
+  "memoryFollowup": {
+    "observed": "Comfy MPS overrides requested lowvram with SHARED and initially places UNet on MPS. This is a verified contributor candidate, not an exhaustive proof of all peak-memory causes.",
+    "adapter": "scripts/comfy-mps-layer-offload.py",
+    "activation": "WAN_MPS_LAYER_OFFLOAD=true",
+    "preflight": "artifacts/wolong-local-film/animate2-mps-preflight/layer-offload-preflight.json",
+    "status": "PROCESS_STATE_PREFLIGHT_ONLY_FULL_MODEL_UNTESTED",
+    "guardsUnchanged": true
+  }
+}

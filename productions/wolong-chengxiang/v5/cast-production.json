@@ -1,0 +1,439 @@
+{
+  "scriptVersion": 4,
+  "characters": [
+    {
+      "id": "kongming",
+      "name": "诸葛亮",
+      "voiceIntent": "清朗、从容，礼辞简洁；核心辩词用演义原文",
+      "voiceReference": "artifacts/local-video-evaluation/ltx-clean.wav",
+      "voiceStatus": "CANDIDATE",
+      "visualStatus": "CANDIDATE",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "visualCandidate": "assets/kongming-introduction-closeup-a.png",
+      "visualReferences": {
+        "identity": "assets/kongming-introduction-closeup-a.png",
+        "fullBodyCostume": "assets/kongming-fullbody-fan-a.png"
+      }
+    },
+    {
+      "id": "zhang-zhao",
+      "name": "张昭",
+      "voiceIntent": "稳健、有分寸；并非逢客即怒的丑角",
+      "voiceReference": "artifacts/wolong-local-film/voices/zhang-zhao-reference.wav",
+      "voiceStatus": "CANDIDATE",
+      "visualStatus": "CANDIDATE",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "visualCandidate": "assets/zhang-zhao-welcome-closeup-a.png",
+      "visualReferences": {
+        "identity": "assets/zhang-zhao-welcome-closeup-a.png",
+        "riseStartCandidate": "assets/zhang-rise-start-c.png"
+      }
+    },
+    {
+      "id": "lu-su",
+      "name": "鲁肃",
+      "voiceIntent": "坦率稳重，有胆识；不怯懦讨好",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-lusu-v2/lu-su.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "visualCandidate": "assets/lusu-concept-b.png",
+      "issues": [
+        "identity and costume must still be checked in composed shots"
+      ],
+      "revisionEvidence": "Headwrap now consistent across views; shorter round beard and broader face distinguish from Zhang Zhao",
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-lusu-v2/asr/lu-su.json"
+    },
+    {
+      "id": "gu-yong",
+      "name": "顾雍",
+      "voiceIntent": "寡言克制，表情小而明确",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-diction-v2/gu-yong.wav",
+      "voiceStatus": "DICTION_REPAIR_CANDIDATE_NOT_FINAL",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-diction-v2/asr/gu-yong.json",
+      "visualPlan": {
+        "visualAge": "约四十余岁造型",
+        "face": "瘦长椭圆脸、高额、眼距中等、目光沉静，避免鲁肃的宽方脸",
+        "beard": "细整髭须与短窄颏须，下缘微尖；鬓角略灰",
+        "costume": "低饱和灰橄榄色交领袍、深褐窄缘、低式黑布冠",
+        "firstReaction": "先完整转移目光，再缓缓揖礼",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/gu-yong-scene-reference-v2.png",
+      "visualSha256": "ce1a3e17e3fe134de013d4f66b675e4bd023e60e6749961cf7ed8cf34f7c0782",
+      "visualReview": {
+        "status": "REVISED_SCENE_LOOK_NOT_FINAL",
+        "reference": "gu-yong-scene-look-v2.json",
+        "note": "Intentional preproduction costume revision. Use this one reference for subsequent shots; do not mix with version1 costume."
+      },
+      "visualPrompt": "assets/gu-yong-introduction-start-f.prompt.txt",
+      "visualGenerationTool": "built-in imagegen",
+      "previousVisualCandidate": "assets/gu-yong-concept-a.png",
+      "activeSceneReference": "assets/gu-yong-scene-reference-v2.png",
+      "activeSceneLookVersion": 2,
+      "activeSceneLookReview": "gu-yong-scene-look-v2.json",
+      "previousVisualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "瘦长脸、高额、细髭与短窄颏须，灰橄榄袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      }
+    },
+    {
+      "id": "yu-fan",
+      "name": "虞翻",
+      "voiceIntent": "直接、清峻；不写成只会怪笑的人",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-yufan-complete-v3/yu-fan.wav",
+      "voiceStatus": "DICTION_REPAIR_CANDIDATE_NOT_FINAL",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-yufan-complete-v3/asr/yu-fan.json",
+      "visualPlan": {
+        "visualAge": "约四十余岁造型",
+        "face": "较宽矩形脸、宽鼻、较小深眼窝，直接而不狞厉",
+        "beard": "平直短髭须与稀疏灰黑胡茬，不留独立颏须尖簇",
+        "costume": "低饱和深墨绿色袍、素色窄缘、简洁角形布冠",
+        "firstReaction": "正身相揖，辨认来客后停半拍",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/yu-fan-concept-b.png",
+      "visualSha256": "a2a2e9581388162d4bbfe14673562fe3bd2ea7e29ef67de3a8ac06ab5f400a43",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "较宽矩形脸、宽鼻、短髭与灰黑胡茬，深墨绿袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "rejectedVisualCandidates": [
+        {
+          "file": "assets/yu-fan-concept-a.png",
+          "reason": "facial structure too similar to Gu Yong candidate"
+        }
+      ],
+      "visualPrompt": "assets/yu-fan-concept-b.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "bu-zhi",
+      "name": "步骘",
+      "voiceIntent": "宽雅而沉稳，话少有实意",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/bu-zhi.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/bu-zhi.json",
+      "visualPlan": {
+        "visualAge": "约三十至四十岁造型",
+        "face": "较丰满的椭圆脸、鼻翼略宽、舒展眉眼，气质宽雅",
+        "beard": "短髭须与略宽颏须，下缘收尖，不连鬓",
+        "costume": "温灰褐色袍、深褐素缘、低式深褐布冠",
+        "firstReaction": "先让出通道，再不急不缓施礼",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/bu-zhi-concept-a.png",
+      "visualSha256": "0c2790ca07f708c6bb9fbc258d7c54edf8b27e57972ac0fa97ec2dd3040d9e4c",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "较圆润椭圆脸、温和眉眼、独立颏须，温灰褐袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "visualPrompt": "assets/bu-zhi-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "xue-zong",
+      "name": "薛综",
+      "voiceIntent": "敏捷明晰；同席按演义文学安排",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/xue-zong.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/xue-zong.json",
+      "visualPlan": {
+        "visualAge": "约三十余岁造型",
+        "face": "较窄下颌、清瘦面颊、敏捷眼神，与青年陆绩区分",
+        "beard": "细髭须、颏部短须稀疏，不复制其他角色的整片胡须",
+        "costume": "中明度灰蓝袍、素黑窄缘、黑色软冠",
+        "firstReaction": "收住同邻席的话，再转向孔明",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/xue-zong-concept-a.png",
+      "visualSha256": "4076c3a473b95767c3490f1575a465905c181adcd43b952113fbf095eb66fc44",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "较窄下颌、细髭稀疏颏须、灰蓝袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "visualPrompt": "assets/xue-zong-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "lu-ji",
+      "name": "陆绩",
+      "voiceIntent": "青年人的清劲，不稚幼",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/lu-ji.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/lu-ji.json",
+      "visualPlan": {
+        "visualAge": "成年青年造型，不幼态",
+        "face": "年轻清瘦脸、较平顺的面颊、明亮而克制的眼神",
+        "beard": "无长须，极短髭须或干净下颌，与孔明明确不同",
+        "costume": "低饱和浅麦褐袍、深灰窄缘、简单束巾",
+        "firstReaction": "应礼稍快，随即稳住肩手",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/lu-ji-concept-a.png",
+      "visualSha256": "fdbbc3b13917e29f8b2fd00b4563f61002d08c99f197e29f55d4cdb2526b0098",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "成年青年面貌、干净下颌、浅麦褐袍、低束巾",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "visualPrompt": "assets/lu-ji-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "yan-jun",
+      "name": "严畯",
+      "voiceIntent": "端厚、从容",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/yan-jun.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/yan-jun.json",
+      "visualPlan": {
+        "visualAge": "约四十余岁造型",
+        "face": "矩形但柔和的下颌、略宽眼距、平和眉线，端厚从容",
+        "beard": "中等长度灰黑须，颏部下缘略收尖",
+        "costume": "深暖灰袍、褐色窄缘、中低式折布冠",
+        "firstReaction": "揖礼端正，舒眉后等对方还礼",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/yan-jun-concept-a.png",
+      "visualSha256": "cb44afc68e765aae86f65bc1d3e51bd807994661663fff1bd85fcc7e28dbf3d8",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "成熟端厚面貌、灰黑中须、深暖灰袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "visualPrompt": "assets/yan-jun-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "cheng-bing",
+      "name": "程秉",
+      "voiceIntent": "简古有节制",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/cheng-bing.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_FOR_SHOT_TEST",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/cheng-bing.json",
+      "visualPlan": {
+        "visualAge": "约五十余岁造型",
+        "face": "较长窄脸、灰眉、细眼纹，沉静而不衰弱",
+        "beard": "较细长的灰白须，轮廓与张昭的浓髭长须区分",
+        "costume": "低饱和炭灰袍、素缘、窄式黑布冠",
+        "firstReaction": "收袖施礼，目光平静，给足还礼时间",
+        "status": "CANDIDATE_GENERATED_REVIEW_PENDING",
+        "note": "视觉年龄是造型方向，不等同208年确切年龄；须用独立图片验收，不可复制同一脸换衣。"
+      },
+      "visualCandidate": "assets/cheng-bing-concept-a.png",
+      "visualSha256": "9c173a979c22c404b97eceb302e297809fc6a34c5d3f34d77fd90ea764c7f96e",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "method": "assistant visual comparison across the cast candidates",
+        "observed": "较长窄脸、灰眉与细长灰白须、炭灰蓝袍",
+        "pending": [
+          "同场光向与材质匹配",
+          "三分之四、背面与坐姿连续性",
+          "动作中身份保持",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "visualPrompt": "assets/cheng-bing-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen"
+    },
+    {
+      "id": "huang-gai",
+      "name": "黄盖",
+      "voiceIntent": "武人沉着有力，不以吼叫代替威严",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-diction-v2/huang-gai.wav",
+      "voiceStatus": "DICTION_REPAIR_CANDIDATE_NOT_FINAL",
+      "visualStatus": "CANDIDATE_REVIEW_PENDING",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-diction-v2/asr/huang-gai.json",
+      "visualCandidate": "assets/huang-gai-concept-a.png",
+      "visualSha256": "08b3417adf67abfaa153dab95ca08581cd38c8b0bc25c5eb44f5577fed46f6c6",
+      "visualPrompt": "assets/huang-gai-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "observed": "宽厚体态、较宽颧颌、连髭短灰须，赭褐交领袍、深色布巾和皮带；神情沉着。",
+        "pending": [
+          "与全部角色同尺度比对脸型和年龄感",
+          "同场光向与服装材质",
+          "侧背面、坐姿与动作中的身份一致性",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      }
+    },
+    {
+      "id": "zhuge-jin",
+      "name": "诸葛瑾",
+      "voiceIntent": "温厚克制，亲近中仍守使者礼数",
+      "voiceReference": "artifacts/wolong-local-film/voices/qwen-cast-v1/zhuge-jin.wav",
+      "voiceStatus": "CANDIDATE_REQUIRES_LISTENING",
+      "visualStatus": "CANDIDATE_REVIEW_PENDING",
+      "requiredViews": [
+        "front",
+        "three-quarter",
+        "full-body",
+        "seated"
+      ],
+      "approvedForFinal": false,
+      "voiceEvidence": "artifacts/wolong-local-film/voices/qwen-cast-v1/asr/zhuge-jin.json",
+      "visualCandidate": "assets/zhuge-jin-concept-a.png",
+      "visualSha256": "39e6ee4ee40afe7b02317dd9d9f4295c1bb394acb65baad8f9d16cba90cff526",
+      "visualPrompt": "assets/zhuge-jin-concept-a.prompt.txt",
+      "visualGenerationTool": "built-in imagegen",
+      "visualReview": {
+        "status": "CANDIDATE_NOT_FINAL",
+        "observed": "修长体态、较长脸、细髭颏须，蓝灰交领袍、深色布带；年龄感偏年轻，兄长成熟感待复核。",
+        "pending": [
+          "与全部角色同尺度比对脸型和年龄感",
+          "同场光向与服装材质",
+          "侧背面、坐姿与动作中的身份一致性",
+          "衣冠史料边界复核"
+        ],
+        "historicalPortraitClaim": false
+      },
+      "maturityCandidate": "assets/zhuge-jin-concept-b.png",
+      "maturityReview": {
+        "status": "PARTIAL_IMPROVEMENT_NOT_FINAL",
+        "observed": "眼下与面颊成熟度增加，主要脸型、须型、冠形和姿态保持接近；袍身纹理相较A变得更明显。",
+        "decision": "B仅作面部成熟度候选，不替换A服装参考，不自动用于场景生图。",
+        "pending": "在同尺度近景与孔明比较，并在后续首帧同时检查脸部成熟度及A版衣料。"
+      }
+    }
+  ],
+  "rule": "Do not duplicate a face or voice and rename it to fill missing characters",
+  "script": "../debate-full/v4.json"
+}
