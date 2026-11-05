@@ -1,5 +1,15 @@
 # FilmGame Studio first-party rules
 
+## 2026-11-05 User direction: controlled production, separate runtime
+
+- Latest delivery instruction: after completing and testing this FilmGame upgrade, inspect changes and secrets, then git add, commit and push; report the commit and push result. Do not resume sandbox-game node work without the user's next instruction. Keep GPU available for the user's game; no UE, model generation or GPU encoding during this upgrade.
+
+- FilmGame Studio owns concept/storyboard/media production, basic review, human review, cost/quota/time/attempt controls, adopted asset versions and visible production progress. The sandbox-game agent primarily owns UE5 runtime integration and playable acceptance.
+- Follow the production control contract in `docs/ARCHITECTURE.md` (2026-11-05 section). This is a required target, not a claim that all controls are implemented.
+- Do not let a single asset enter unbounded autonomous repair. Escalate at configured spend/time/attempt limits with concrete candidates, evidence and tradeoffs; continue independent runtime tasks where possible. User cancellation of the historical two-round rule remains valid; do not silently reinstate it.
+- Concept and video adoption require explicit human review of the exact revision. Basic automated review is advisory and cannot manufacture aesthetic approval. Waiting, notification delivery and approval are distinct states.
+- Supply reviewed, versioned manifests to UE; runtime defect reports return to Studio rather than spawning an unmanaged generation loop in the game repository. Existing accepted media should be reused.
+
 This directory is the commercial, first-party source of truth.
 
 - Treat sibling repositories and local installations as upstream dependencies or research references.

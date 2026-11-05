@@ -43,7 +43,7 @@ export async function POST(
   if (
     existing &&
     existing.story_version === storyVersion.version &&
-    ['PLANNING', 'PLANNED', 'RUNNING'].includes(existing.status)
+    ['PLANNING', 'PLANNED', 'RUNNING', 'AWAITING_REVIEW', 'PAUSED'].includes(existing.status)
   ) {
     return NextResponse.json({ run: existing, reused: true }, { status: 200 });
   }
@@ -128,6 +128,8 @@ export async function PUT(
         ? 'COMPLETED'
         : job.executionStatus === 'FAILED'
           ? 'FAILED'
+          : job.executionStatus === 'AWAITING_REVIEW'
+            ? 'AWAITING_REVIEW'
           : job.executionStatus === 'PAUSED_BUDGET'
             ? 'PAUSED'
           : 'RUNNING';
@@ -142,13 +144,14 @@ export async function PUT(
   const updated = await getLatestProductionRun(projectId, user.userId);
   return NextResponse.json({
     status: 'PLANNED',
+    reviewJobs: job.result.jobs.filter((task) => task.humanReview?.decision === 'PENDING'),
     run: updated,
     jobs: await listProductionJobs(run.id, projectId, user.userId),
   });
 }
 
 export async function PATCH(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ projectId: string }> },
 ) {
   const user = await getChatGPTUser();
@@ -156,7 +159,14 @@ export async function PATCH(
   const { projectId } = await context.params;
   const run = await getLatestProductionRun(projectId, user.userId);
   if (!run) return NextResponse.json({ error: 'PRODUCTION_RUN_NOT_FOUND' }, { status: 404 });
-  if (run.status !== 'PLANNED' && run.status !== 'FAILED') {
+  const action = await request.json().catch(() => ({})) as { action?: string; jobId?: string; digest?: string; approve?: boolean; reason?: string };
+  if (action.action === 'review') {
+    const response = await orchestratorFetch(`/v1/production/plans/${encodeURIComponent(run.orchestrator_job_id)}/review`, {
+      method: 'POST', body: JSON.stringify({ jobId: action.jobId, digest: action.digest, approve: action.approve, reason: action.reason }),
+    });
+    return NextResponse.json(await response.json(), { status: response.status });
+  }
+  if (!['PLANNED', 'FAILED', 'AWAITING_REVIEW'].includes(run.status)) {
     return NextResponse.json({ error: 'PRODUCTION_RUN_NOT_READY', status: run.status }, { status: 409 });
   }
   const response = await orchestratorFetch(
@@ -215,5 +225,6 @@ interface ProductionJobPayload {
   maxAttempts: number;
   input?: unknown;
   output?: unknown;
+  humanReview?: { digest: string; decision: string };
   error?: string;
 }

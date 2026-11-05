@@ -10,6 +10,7 @@ export type ProductionRunExecutionStatus =
   | 'QUEUED'
   | 'RUNNING'
   | 'PAUSED_BUDGET'
+  | 'AWAITING_REVIEW'
   | 'SUCCEEDED'
   | 'FAILED'
   | 'CANCELLED';

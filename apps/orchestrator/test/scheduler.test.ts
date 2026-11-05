@@ -51,7 +51,7 @@ test('local generative GPU work is serialized even when global concurrency is hi
 
   assert.equal(maximumActive, 1);
   assert.equal(audit.list().filter((event) => event.status === 'SUCCEEDED').length, 3);
-  assert.deepEqual(settled, { completed: 3, failed: 0, blocked: 0, cancelled: 0, paused: 0, total: 3 });
+  assert.deepEqual(settled, { completed: 3, failed: 0, blocked: 0, cancelled: 0, paused: 0, awaitingReview: 0, total: 3 });
 });
 
 test('budget guard pauses work before a provider call exceeds the limit', async () => {

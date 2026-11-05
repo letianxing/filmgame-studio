@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json';
+import { readFileSync } from 'node:fs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -35,6 +36,13 @@ const localBindingConfig = {
 };
 
 export default defineConfig(async () => {
+  // Local workstation bridge; secrets stay in the Vite server, never in browser bundles.
+  const localEnv: Record<string, string> = {};
+  try {
+    for (const line of readFileSync(new URL('../../.env.local', import.meta.url), 'utf8').split(/\r?\n/)) {
+      const match = line.match(/^([A-Z_]+)=(.*)$/); if (match) localEnv[match[1]!] = match[2]!.replace(/^['"]|['"]$/g, '');
+    }
+  } catch { /* remote hosting has no workstation environment */ }
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -46,9 +54,14 @@ export default defineConfig(async () => {
 
   return {
     css: { postcss: { plugins: [tailwindcss()] } },
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server: {
+      host: '127.0.0.1', port: 3000, strictPort: true,
+      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+      proxy: { '/api/comic': { target: localEnv.ORCHESTRATOR_BASE_URL || 'http://127.0.0.1:4100',
+        rewrite: (p: string) => p.replace(/^\/api\/comic/, '/v1/comic'),
+        headers: localEnv.ORCHESTRATOR_API_TOKEN ? { authorization: `Bearer ${localEnv.ORCHESTRATOR_API_TOKEN}` } : {},
+      } },
+    },
     plugins: [
       vinext(),
       sites(),

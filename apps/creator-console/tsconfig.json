@@ -15,7 +15,9 @@
     "jsx": "react-jsx",
     "incremental": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@filmgame/shared-types": ["../../packages/shared-types/src/index.ts"],
+      "@filmgame/provider-sdk": ["../../packages/provider-sdk/src/index.ts"]
     }
   },
   "include": [

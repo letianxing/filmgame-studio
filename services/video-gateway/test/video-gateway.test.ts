@@ -55,6 +55,8 @@ test('RemoteVideoProvider reaches Ark through authenticated idempotent gateway',
       resolution: '1080p' as const, referenceVideoUris: ['https://example.test/reference.mp4'], referenceAudioUris: ['https://example.test/voice.wav'] };
     const first = await provider.generateVideo(request, context);
     const second = await provider.generateVideo(request, context);
+    assert.ok(await provider.lookup(context.idempotencyKey));
+    assert.equal(await provider.lookup('never-submitted'), null);
     assert.equal(first.data.temporaryUri, 'https://assets.example.test/shot.mp4');
     assert.equal(first.data.durationSeconds, 8);
     assert.equal(second.data.temporaryUri, first.data.temporaryUri);

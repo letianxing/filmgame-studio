@@ -20,7 +20,7 @@ interface GatewayRequest {
   model?: string;
   request?: {
     prompt?: string;
-    aspectRatio?: '16:9' | '9:16' | 'adaptive';
+    aspectRatio?: '16:9' | '9:16' | '1:1' | 'adaptive';
     resolution?: '480p' | '720p' | '1080p';
     negativePrompt?: string;
     durationSeconds?: number;
@@ -106,6 +106,12 @@ export function createArkVideoGatewayServer(
         return sendJson(response, 202, { generationId: task.generationId });
       }
 
+      const operation = /^\/v1\/video\/operations\/([^/]+)$/u.exec(url.pathname);
+      if (request.method === 'GET' && operation?.[1]) {
+        await store.load();
+        const task = store.byIdempotency(decodeURIComponent(operation[1]));
+        return sendJson(response, 200, { generationId: task?.generationId ?? null });
+      }
       const match = /^\/v1\/video\/generations\/([^/]+)$/u.exec(url.pathname);
       if (request.method === 'GET' && match?.[1]) {
         await store.load();
@@ -210,6 +216,9 @@ function validateGeneration(body: GatewayRequest, publicModel: string) {
     throw new HttpError(400, 'durationSeconds must be positive, or -1 to keep the source length');
   }
   const taskType = request.omniReferenceTaskType;
+  if (request.aspectRatio !== undefined && !['16:9', '9:16', '1:1', 'adaptive'].includes(request.aspectRatio)) throw new HttpError(400, 'Unsupported aspect ratio');
+  if (request.resolution !== undefined && !['480p', '720p', '1080p'].includes(request.resolution)) throw new HttpError(400, 'Unsupported resolution');
+  if (request.generateAudio !== undefined && typeof request.generateAudio !== 'boolean') throw new HttpError(400, 'generateAudio must be boolean');
   if (taskType !== undefined && !['auto', 'reference', 'edit', 'extend'].includes(taskType)) {
     throw new HttpError(400, 'omniReferenceTaskType must be auto, reference, edit or extend');
   }
