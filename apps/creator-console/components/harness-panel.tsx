@@ -100,6 +100,7 @@ export function HarnessPanel({ progress, asset, action, disabled }: {
           ? <img src={asset(r.file)} alt={`${r.shotId} 待审参考`} style={{ maxWidth: '100%', maxHeight: 400 }} />
           : <video controls preload="none" src={asset(r.file)} style={{ width: '100%', maxHeight: 400 }} />)}
         <p>版本 SHA：{r.sha256 ?? '缺失，不能确认'}</p>
+        {r.imported && <p>复用历史候选：{r.imported.sourceLabel}。历史费用保留在来源账本，本次导入不产生生成费用；尚未经你的采纳。</p>}
         <p>{r.basicReview ? `基础检查：${r.basicReview.checkedAt}（仅技术项）` : '尚无可追溯的基础审核报告，请勿把旧状态当作完整检查。'}</p>
         {r.kind !== 'CONCEPT' && !r.basicReview?.signals && <p>黑场/静音分析未完成，请人工核对。</p>}{r.basicReview && <ul>{[...r.basicReview.technical.issues, ...(r.basicReview.signals?.issues ?? [])].map((issue, i) => <li key={`${issue.code}-${i}`}>{issue.severity} · {issue.message}</li>)}</ul>}
         <ul>{r.manualChecks.map(check => <li key={check}>{check}</li>)}</ul>

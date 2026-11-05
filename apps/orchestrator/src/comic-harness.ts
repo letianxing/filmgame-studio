@@ -23,6 +23,7 @@ export function validateHarnessPolicy(value: HarnessPolicy): HarnessPolicy {
 
 const active = new Set(['SUBMITTING', 'RUNNING', 'UNCERTAIN']);
 function attempted(run: ShotRun): boolean {
+  if (run.imported) return false; // Reuse is not a newly submitted paid attempt.
   return Boolean(run.submittedAt) || !['DRAFT', 'QUOTED'].includes(run.status);
 }
 
@@ -50,6 +51,7 @@ export function harnessProgress(project: ComicProject, current: (run: ShotRun) =
     runId: r.id, shotId: r.shotId, sha256: r.sha256 ?? null,
     kind: r.kind === 'REFERENCE' ? 'CONCEPT' : 'VIDEO',
     file: r.file ?? null,
+    imported: r.imported ?? null,
     acknowledged: r.reviewAcknowledgedSha === r.sha256 && Boolean(r.sha256),
     basicReview: r.basicReview?.sha256 === r.sha256 ? r.basicReview : null,
     manualChecks: r.kind === 'REFERENCE'

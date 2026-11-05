@@ -56,6 +56,7 @@ export interface ShotRun {
   durationSeconds?: number;
   error?: string;
   createdAt: string;
+  imported?: { sourceSha256: string; sourceLabel: string; importedAt: string; billing: 'HISTORICAL_EXTERNAL_LEDGER'; ledger: string };
   submittedAt?: string;
   completedAt?: string;
   reviewAcknowledgedSha?: string;

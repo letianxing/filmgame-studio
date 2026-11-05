@@ -25,6 +25,7 @@ export function addBillingReceipt(project: ComicProject, input: Omit<BillingRece
     throw new Error('需要唯一账单编号和可核对的账单凭据说明');
   const amount = minor(input.amount);
   const run = project.runs.find(r => r.id === input.runId);
+  if (run?.imported) throw new Error('历史导入费用留在来源账本，不在当前钱包重复结算');
   if (!run || input.unit !== (run.provider === 'dreamina' ? 'DREAMINA_CREDIT' : 'CNY'))
     throw new Error('任务或费用单位不匹配，人民币和积分不可混账');
   const receipts = project.billingReceipts ?? [];
@@ -52,7 +53,7 @@ export function billingSummary(project: ComicProject, unit: BillingUnit, excludi
   let reserved = unit === 'DREAMINA_CREDIT' ? minor(project.creditBudget?.auxiliaryReserved ?? 0) : 0;
   let unknownReservations = 0;
   for (const r of project.runs) {
-    if (r.id === excludingRunId || (r.provider === 'dreamina' ? 'DREAMINA_CREDIT' : 'CNY') !== unit
+    if (r.imported || r.id === excludingRunId || (r.provider === 'dreamina' ? 'DREAMINA_CREDIT' : 'CNY') !== unit
       || ['DRAFT', 'QUOTED'].includes(r.status)) continue;
     if (receipts.some(receipt => receipt.runId === r.id && receipt.kind === 'FINAL_CHARGE')) continue;
     const ceiling = unit === 'DREAMINA_CREDIT' ? r.creditCeiling ?? r.credits : r.currencyCeiling;
