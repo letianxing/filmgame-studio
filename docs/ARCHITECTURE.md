@@ -56,6 +56,8 @@ to an already available scene or deterministic fallback. Runtime generation is o
 
 # 2026-11-05 制作 Harness 与 UE Runtime 分工合同
 
+2026-11-06 补充执行入口：[节点连续性与减少返工](NODE-CONTINUITY-WORKFLOW.md)。付费前核对实际人物和场景参考绑定、前后状态、分支汇合及空间/光线/道具连续性；此为必执行检查，不宣称已具备全自动语义验收。
+
 用户报告首节点 goal 已持续 3 天 16 小时 32 分钟，要求制作可控、进度可见。此节是最新执行要求；下述未接线能力不得宣称已实现。不得为建设大型平台再延误当前节点交付。
 
 ## 职责和交付边界

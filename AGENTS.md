@@ -12,6 +12,13 @@
 
 This directory is the commercial, first-party source of truth.
 
+## 2026-11-06 Node continuity before paid generation
+
+- Follow `docs/NODE-CONTINUITY-WORKFLOW.md` for every node, including branches and cross-node transitions.
+- Before paying for video, verify actual character AND scene reference bindings against adopted versions, incoming/outgoing states, geography, lighting, props and dialogue. Written scene descriptions alone are not a scene reference.
+- Reuse established environments and identities. For new environments review a low-cost spatial keyframe first. Produce one representative shot before batching dependent shots.
+- Diagnose the user's rejected dimension, preserve approved inputs, and record what changed before retrying. Technical playback is not continuity approval. Do not claim the full semantic gate is automated.
+
 - Treat sibling repositories and local installations as upstream dependencies or research references.
 - Never copy implementation code from `../filmgame`; its README prohibits commercial use without written authorization.
 - Natural language is the primary authoring interface, but structured, validated and versioned domain data is authoritative.
