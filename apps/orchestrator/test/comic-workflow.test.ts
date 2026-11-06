@@ -25,6 +25,28 @@ test('comic domain rejects unknown roles, duplicate IDs and overlapping dialogue
   bad = structuredClone(story); bad.episodes[0]!.shots[1]!.id = 's1'; assert.throws(() => validateComic(bad));
   bad = structuredClone(story); bad.episodes[0]!.shots[0]!.dialogue.push({ characterId: 'hero', text: 'Overlap', startSeconds: 2, endSeconds: 4 }); assert.throws(() => validateComic(bad));
 });
+
+test('reference preparation respects project style and child identity instead of hardcoded adult watercolor', async () => {
+  let prompt = '';
+  let node = '';
+  const dreamina = {
+    auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_title: string, projectId: string) => ({ projectId, webUrl: 'https://example.test/canvas' }),
+    saveCharacter: async (input: { prompt: string; nodeId: string }) => { prompt = input.prompt; node = input.nodeId; return 'seedream_4.0'; },
+    quote: async () => ({ confirmable: true, items: [{ nodeId: node, maxCredits: 2 }], totalMaxCredits: 2 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, dreamina);
+  const edited = structuredClone(story);
+  edited.visualStyle = 'cinematic stylized realism';
+  edited.characters[0]!.appearance = 'eight-year-old child, plain linen tunic';
+  const current = await service.apply(project.id, edited, project.revision);
+  const prepared = await service.prepareReference(current.id, 'hero');
+  assert.ok(prompt.includes(edited.visualStyle));
+  assert.ok(prompt.includes(edited.characters[0]!.appearance));
+  assert.ok(!prompt.includes('只画一个成年人物'));
+  assert.ok(!prompt.includes('东方二维手绘动画'));
+  assert.equal(prepared.runs.at(-1)?.status, 'QUOTED');
+});
 test('story revisions are immutable; changes invalidate only affected shots and exports', async () => {
   const { service, project } = await setup();
   const before = ['s1','s2'].map(s => service.hash(project,s));

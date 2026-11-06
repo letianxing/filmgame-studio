@@ -265,7 +265,7 @@ export class ComicService {
       const character = p.story?.characters.find((c) => c.id === shotId.slice(10));
       if (!character) throw new Error("角色不存在");
       return createHash("sha256")
-        .update(JSON.stringify({ character, style: p.story!.visualStyle, referencePromptVersion: 2 }))
+        .update(JSON.stringify({ character, style: p.story!.visualStyle, referencePromptVersion: 3 }))
         .digest("hex");
     }
     const { story, shot } = this.shot(p, shotId);
@@ -435,7 +435,7 @@ export class ComicService {
         nodeId: run.nodeId!,
         updateId: run.updateId!,
         title: character.name,
-        prompt: `角色造型设定单人立绘，浅灰纯色背景，只画一个成年人物，没有其他人物，没有场景，没有文字。东方二维手绘动画，细腻线稿与水彩质感，低饱和灰蓝褐色。${character.name}：${character.appearance}。全身正面站姿，头到鞋完整，脸部五官清晰，嘴自然闭合，表情平静，双手自然下垂。衣物干燥洁净但洗旧。补丁必须是缝在指定位置的小块同色系旧布，不是臂章或袖标。严格遵守发型，发际线和发髻清楚。人物占画面高度85%，不要海报构图。`,
+        prompt: `角色造型设定单人立绘，中性纯色背景，只画设定中的一个角色，没有其他人物、场景、文字或海报装饰。项目画风：${p.story!.visualStyle}。角色设定：${character.name}：${character.appearance}。严格保留设定的年龄、体型、物种、服饰、发型、装备与神态，不擅自改为成年人或添加补丁。全身站姿，头到足完整，面部与服装结构清楚，人物占画面高度85%。姿态与光照服务于角色设定和项目画风。`,
       });
       const quote = await cli.quote(p.canvas.projectId, run.nodeId!);
       if (
