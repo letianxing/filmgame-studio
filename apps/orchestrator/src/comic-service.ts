@@ -332,6 +332,7 @@ export class ComicService {
         run.model = model ?? "seedance_2.5";
         await this.save(p);
         const refs: string[] = [];
+        const bindings: string[] = [];
         run.referenceUploads = shot.characterIds
           .filter((c) => p.references[c] && p.referenceNodes?.[c]?.file !== p.references[c])
           .map((characterId) => ({
@@ -354,13 +355,14 @@ export class ComicService {
             reference.resourceId,
           ]);
           refs.push(`res:${uploaded.resourceId}`);
+          bindings.push(`${story.characters.find(c => c.id === reference.characterId)?.name}的外观严格使用 {{res:${uploaded.resourceId}}}，按角色设定识别参考中的对应人物，服装和面部不改变。`);
         }
         for (const c of shot.characterIds)
           if (p.referenceNodes?.[c] && p.referenceNodes[c]!.file === p.references[c])
             refs.push(`node:${p.referenceNodes[c]!.nodeId}`);
         const referenceTypes: Array<'image' | 'audio' | 'video'> = refs.map(() => 'image');
-        const bindings = shot.characterIds.flatMap(c => p.referenceNodes?.[c]?.file === p.references[c] && p.referenceNodes?.[c]
-          ? [`${story.characters.find(x => x.id === c)?.name}的外观严格使用 {{node:${p.referenceNodes[c]!.nodeId}}}，服装和面部不改变。`] : []);
+        bindings.push(...shot.characterIds.flatMap(c => p.referenceNodes?.[c]?.file === p.references[c] && p.referenceNodes?.[c]
+          ? [`${story.characters.find(x => x.id === c)?.name}的外观严格使用 {{node:${p.referenceNodes[c]!.nodeId}}}，服装和面部不改变。`] : []));
         for (const reference of p.shotReferences?.[shotId] ?? []) {
           refs.push(`node:${reference.nodeId}`);
           referenceTypes.push(reference.mediaType);

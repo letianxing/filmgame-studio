@@ -106,6 +106,34 @@ test('Jimeng records operation IDs before side effects and requires explicit cre
   await assert.rejects(service.run(projectId,p.runs[0]!.id)); await assert.rejects(service.run(projectId,p.runs[0]!.id,19)); assert.equal(submitted,0);
   await service.run(projectId,p.runs[0]!.id,20); await assert.rejects(service.run(projectId,p.runs[0]!.id,20)); assert.equal(submitted,1);
 });
+test('uploaded and generated references bind the correct role to returned provider identities', async () => {
+  const returnedId = '11111111-1111-4111-8111-111111111111';
+  const nodeId = dreaminaNodeId();
+  let saved: {prompt:string; refs:string[]} | undefined;
+  let uploads = 0;
+  const cli = {
+    auth: async () => ({loggedIn:true}),
+    createCanvas: async (_name:string,id:string) => ({projectId:id,webUrl:'https://example.test/canvas'}),
+    call: async (args:string[]) => { assert.deepEqual(args.slice(0,2),['resource','upload']); uploads++; return {resourceId:returnedId}; },
+    saveVideo: async (input:{prompt:string;refs:string[]}) => { saved=input; },
+    quote: async (_canvas:string,nodeId:string) => ({totalMaxCredits:20,confirmable:true,items:[{nodeId,maxCredits:20}]}),
+  } as unknown as DreaminaAdapter;
+  const {service,project}=await setup(null,cli);
+  const revised=structuredClone(story);
+  revised.characters.push({id:'elder',name:'Elder',appearance:'elder on the left',voice:'low'});
+  revised.episodes[0]!.shots[0]!.characterIds.push('elder');
+  const p=await service.apply(project.id,revised,project.revision);
+  p.references={hero:'hero.jpg',elder:'elder.jpg'};
+  p.referenceNodes={elder:{file:'elder.jpg',nodeId}};
+  await service.save(p);
+  await service.prepare(p.id,'s1','dreamina');
+  assert.equal(uploads,1);
+  assert.deepEqual(saved!.refs,[`res:${returnedId}`,`node:${nodeId}`]);
+  assert.ok(saved!.prompt.includes(`Hero的外观严格使用 {{res:${returnedId}}}`));
+  assert.ok(saved!.prompt.includes(`Elder的外观严格使用 {{node:${nodeId}}}`));
+  assert.ok(!saved!.prompt.includes(`Elder的外观严格使用 {{res:${returnedId}}}`));
+});
+
 test('a passed video requires human approval and a matching current dependency hash', async () => {
   const { service, project } = await setup();
   await assert.rejects(service.exportEpisode(project.id,'ep1'));
