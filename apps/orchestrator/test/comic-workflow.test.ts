@@ -11,6 +11,33 @@ import { MediaPipeline } from '../../../services/media-pipeline/src/index.js';
 import { RemoteVideoProvider } from '../../../services/remote-video-adapter/src/index.js';
 
 const story: ComicStory = { title: 'Test story', logline: 'A letter arrives.', visualStyle: 'ink animation', characters: [{ id: 'hero', name: 'Hero', appearance: 'red coat', voice: 'calm' }], episodes: [{ id: 'ep1', title: 'Arrival', synopsis: 'The hero opens a letter.', shots: [{ id: 's1', scene: 'Room', description: 'Open letter', camera: 'Close up', durationSeconds: 4, characterIds: ['hero'], dialogue: [{ characterId: 'hero', text: 'Who sent this?', startSeconds: 1, endSeconds: 3 }] }, { id: 's2', scene: 'Window', description: 'Looks out', camera: 'Wide', durationSeconds: 4, characterIds: [], dialogue: [] }] }] };
+
+test('scene concept uses image references, exact revision review and no character adoption', async () => {
+  let saved: any;
+  const cli = { auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_name: string, id: string) => ({ projectId: id, webUrl: 'https://example.test' }),
+    saveCharacter: async (input: any) => { saved = input; return 'seedream_4.0'; },
+    quote: async (_id: string, nodeId: string) => ({ confirmable: true, items: [{ nodeId, maxCredits: 1 }], totalMaxCredits: 1 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, cli);
+  const before = service.hash(project, 'character:hero');
+  let p = await service.prepareSceneReference(project.id, 'gate', 'Village gate at dusk, west light.', ['node:node_123456789a']);
+  assert.equal(saved.ratio, '16:9');
+  assert.deepEqual(saved.refs, ['node:node_123456789a']);
+  await assert.rejects(service.prepareSceneReference(project.id, 'gate', 'Different', []), /待处理/);
+  const r = p.runs.at(-1)!;
+  const bytes = Buffer.from('scene fixture');
+  r.file = `${r.id}.jpg`; r.sha256 = createHash('sha256').update(bytes).digest('hex'); r.status = 'REVIEW';
+  await writeFile(path.join(service.directory(p.id), r.file), bytes);
+  await service.save(p);
+  await assert.rejects(service.approve(p.id, r.id, 'wrong'), /版本/);
+  p = await service.approve(p.id, r.id, r.sha256);
+  assert.equal(p.runs.at(-1)!.status, 'APPROVED');
+  assert.deepEqual(p.references, {});
+  assert.equal(service.hash(p, 'character:hero'), before);
+  p.sceneConcepts!.gate!.prompt += ' Different lighting';
+  assert.notEqual(service.hash(p, r.shotId), r.inputHash);
+});
 async function setup(video: RemoteVideoProvider | null = null, dreamina: DreaminaAdapter | null = null) {
   const root = await mkdtemp(path.join(os.tmpdir(), 'filmgame-comic-test-'));
   const service = new ComicService({ root, video, dreamina, llm: null, media: new MediaPipeline({ ffmpegPath: 'ffmpeg', ffprobePath: 'ffprobe' }) });

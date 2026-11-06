@@ -85,6 +85,7 @@ export interface ComicProject {
   proposal?: ComicStory;
   runs: ShotRun[];
   references: Record<string, string>;
+  sceneConcepts?: Record<string, { prompt: string; refs: string[] }>;
   referenceNodes?: Record<string, { file: string; nodeId: string }>;
   shotReferences?: Record<string, Array<{ nodeId: string; file: string; mediaType: 'image' | 'audio' | 'video'; role: string }>>;
   creditBudget?: { ceiling: number; auxiliaryReserved: number };
@@ -261,6 +262,11 @@ export class ComicService {
     return { story: p.story, shot };
   }
   hash(p: ComicProject, shotId: string) {
+    if (shotId.startsWith('scene:')) {
+      const concept = p.sceneConcepts?.[shotId.slice(6)];
+      if (!concept) throw new Error('场景构图不存在');
+      return createHash('sha256').update(JSON.stringify({ concept, version: 1 })).digest('hex');
+    }
     if (shotId.startsWith("character:")) {
       const character = p.story?.characters.find((c) => c.id === shotId.slice(10));
       if (!character) throw new Error("角色不存在");
@@ -394,6 +400,38 @@ export class ComicService {
         run.credits = quote.totalMaxCredits;
       }
       run.status = "QUOTED";
+      await this.save(p);
+      return p;
+    });
+  }
+  async prepareSceneReference(id: string, sceneId: string, prompt: string, refs: string[]) {
+    if (!/^[a-z0-9_-]+$/.test(sceneId) || !prompt.trim() || prompt.length > 2000 || refs.length > 6)
+      throw new Error('场景参考参数无效');
+    return this.exclusive(id, async p => {
+      this.assertIdle(p);
+      const shotId = `scene:${sceneId}`;
+      if (p.runs.some(r => r.shotId === shotId && ['DRAFT', 'QUOTED', 'REVIEW'].includes(r.status)))
+        throw new Error('场景已有待处理任务，请先处理原任务');
+      const cli = this.requireDreamina();
+      if (!(await cli.auth()).loggedIn) throw new Error('请先完成即梦登录');
+      p.sceneConcepts ??= {};
+      p.sceneConcepts[sceneId] = { prompt, refs: [...refs] };
+      p.canvas ??= { projectId: randomUUID() };
+      await this.save(p);
+      if (!p.canvas.webUrl) p.canvas = await cli.createCanvas(p.title, p.canvas.projectId);
+      const run: ShotRun = { id: randomUUID(), shotId, kind: 'REFERENCE', provider: 'dreamina',
+        status: 'DRAFT', storyVersion: p.storyVersion, inputHash: this.hash(p, shotId),
+        createdAt: new Date().toISOString(), nodeId: dreaminaNodeId(), updateId: randomUUID(), submitId: randomUUID() };
+      p.runs.push(run);
+      await this.save(p);
+      run.model = await cli.saveCharacter({ canvasId: p.canvas.projectId, nodeId: run.nodeId!,
+        updateId: run.updateId!, title: `场景构图 ${sceneId}`, prompt, ratio: '16:9', refs });
+      const quote = await cli.quote(p.canvas.projectId, run.nodeId!);
+      if (!quote.confirmable || quote.items.length !== 1 || quote.items[0]?.nodeId !== run.nodeId
+        || quote.items.some(i => i.error || i.maxCredits === undefined)
+        || !Number.isFinite(quote.totalMaxCredits) || quote.totalMaxCredits < 0) throw new Error('即梦无法完整报价');
+      run.credits = quote.totalMaxCredits;
+      run.status = 'QUOTED';
       await this.save(p);
       return p;
     });
@@ -672,7 +710,7 @@ export class ComicService {
       r.status = "APPROVED";
       r.reviewDecision = { decision: 'APPROVED', sha256: expectedSha, inputHash: r.inputHash,
         at: new Date().toISOString(), actor: 'LOCAL_CREATOR', reason: 'Creator adopted this exact revision' };
-      if (r.kind === "REFERENCE") {
+      if (r.kind === "REFERENCE" && r.shotId.startsWith('character:')) {
         this.assertIdle(p);
         const characterId = r.shotId.slice(10);
         p.references[characterId] = r.file;

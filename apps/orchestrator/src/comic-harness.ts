@@ -54,7 +54,9 @@ export function harnessProgress(project: ComicProject, current: (run: ShotRun) =
     imported: r.imported ?? null,
     acknowledged: r.reviewAcknowledgedSha === r.sha256 && Boolean(r.sha256),
     basicReview: r.basicReview?.sha256 === r.sha256 ? r.basicReview : null,
-    manualChecks: r.kind === 'REFERENCE'
+    manualChecks: r.shotId.startsWith('scene:')
+      ? ['大场景与子场景正确，道路、出入口和遮挡关系可读', '时间、世界光源方向、人物投影与机位一致', '群演站位、身份、视线和情绪符合剧情']
+      : r.kind === 'REFERENCE'
       ? ['人物身份、服饰、时代与既有定妆一致', '确认正侧面、体型及道具，可作为后续镜头真源']
       : ['原速看完整动作：支撑、接触、惯用手和起止姿态', '对照上下镜：人物、场景、光向和空间关系', '核对配音读音、情绪、口型、音乐与音效', '确认叙事信息和节奏，不把技术通过当作审美通过'],
   }));

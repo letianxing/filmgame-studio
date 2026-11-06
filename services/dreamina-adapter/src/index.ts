@@ -94,6 +94,8 @@ export class DreaminaAdapter {
     updateId: string;
     title: string;
     prompt: string;
+    ratio?: '3:4' | '16:9';
+    refs?: string[];
   }) {
     const catalog = await this.call<{ items: DreaminaModel[] }>([
       "model",
@@ -102,10 +104,12 @@ export class DreaminaAdapter {
       "image",
     ]);
     const model = catalog.items.find((m) => m.model === "seedream_4.0");
-    const spec = model?.modes.find((m) => m.name === "t2i");
+    const mode = input.refs?.length ? 'i2i' : 't2i';
+    const ratio = input.ratio ?? '3:4';
+    const spec = model?.modes.find((m) => m.name === mode);
     if (
       !spec?.flags?.find((f) => f.flag === "--resolution")?.values?.includes("2K") ||
-      !spec.flags.find((f) => f.flag === "--ratio")?.values?.includes("3:4")
+      !spec.flags.find((f) => f.flag === "--ratio")?.values?.includes(ratio)
     )
       throw new Error("当前即梦目录未提供角色参考图规格");
     await this.call([
@@ -121,17 +125,18 @@ export class DreaminaAdapter {
       "--title",
       input.title,
       "--mode",
-      "t2i",
+      mode,
       "--prompt",
       input.prompt,
       "--model",
       model!.model,
       "--ratio",
-      "3:4",
+      ratio,
       "--resolution",
       "2K",
       "--count",
       "1",
+      ...(input.refs ?? []).flatMap(ref => ['--ref', ref]),
     ]);
     const result = await this.call<{
       nodes: Array<{ node?: { nodeId: string; generation?: { model?: string; prompt?: string } } }>;
