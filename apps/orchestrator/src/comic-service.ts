@@ -23,6 +23,7 @@ import { ComicWorkflow } from "./comic-workflow.js";
 import { submissionGate, validateHarnessPolicy, type HarnessPolicy } from './comic-harness.js';
 import { addBillingReceipt, billingSummary, type BillingReceipt } from './comic-cost-ledger.js';
 import { cleanupRejected, type CleanupReceipt } from './comic-cleanup.js';
+import type { LocalRepairPlan } from './comic-local-repair.js';
 import { assertTextIntegrity } from './comic-text-integrity.js';
 
 export interface ShotRun {
@@ -69,6 +70,7 @@ export interface ShotRun {
   editorialTrim?: { startSeconds: number; endSeconds: number; reason: string };
 }
 export interface ComicProject {
+  localRepairPlans?: LocalRepairPlan[];
   id: string;
   title: string;
   idea: string;

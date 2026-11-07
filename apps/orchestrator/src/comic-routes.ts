@@ -8,6 +8,7 @@ import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
 import { importReferenceCandidate, bindReferenceCandidate } from './comic-reference-import.js';
 import { bindVoiceReference } from './comic-voice-reference.js';
+import { localRepairCapabilities, planLocalRepair, type LocalRepairInput } from './comic-local-repair.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
 import { harnessProgress, type HarnessPolicy } from './comic-harness.js';
 import type { BillingReceipt } from './comic-cost-ledger.js';
@@ -161,8 +162,14 @@ export async function comicRoute(
     if (request.method === "GET" && !action) return send({ project: view(await service.get(id)) });
     if (request.method === 'GET' && action === 'reviewed-manifest')
       return send(await service.reviewedManifest(id));
+    if (request.method === 'GET' && action === 'local-repair-capabilities')
+      return send({ capabilities: localRepairCapabilities });
     if (request.method !== "POST") return send({ error: "不支持此操作" }, 405);
     const body = await readBody(request, ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    if (action === 'plan-local-repair') {
+      const result=await planLocalRepair(service,id,body as unknown as LocalRepairInput);
+      return send({project:view(result.project),plan:result.plan});
+    }
     if (action === 'bind-voice-reference')
       return send({ project: view(await bindVoiceReference(service, id, {
         revision: Number(body.revision), shotId: String(body.shotId ?? ''), characterId: String(body.characterId ?? ''),

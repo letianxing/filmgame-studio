@@ -27,6 +27,12 @@ test('HTTP controls persist budgets, expose progress and reject stale approvals 
     assert.equal(created.status, 201);
     const initial = await created.json() as { project: { id: string } };
     const url = `${base}/${initial.project.id}`;
+    const repairResponse=await fetch(`${url}/local-repair-capabilities`);
+    assert.equal(repairResponse.status,200);
+    const repairTools=await repairResponse.json() as {capabilities:Array<{automatedExecution:boolean}>};
+    assert.equal(repairTools.capabilities.length,3);
+    assert.ok(repairTools.capabilities.every(c=>!c.automatedExecution));
+    assert.equal((await post(`${url}/plan-local-repair`,{})).status,400);
     assert.equal((await post(`${url}/budgets`, { credits: 40, auxiliaryReserved: 5, cny: 8.5 })).status, 200);
     const response = await fetch(url);
     const view = await response.json() as { project: { harness: { budget: { ceiling: number; cnyCeiling: number }; review: unknown[] } } };
