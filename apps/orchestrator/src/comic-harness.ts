@@ -44,8 +44,8 @@ export function harnessProgress(project: ComicProject, current: (run: ShotRun) =
   const policy = project.harnessPolicy ?? defaultHarnessPolicy;
   const shotIds = project.story?.episodes.flatMap(e => e.shots.map(s => s.id)) ?? [];
   const valid = project.runs.filter(current);
-  const approved = shotIds.filter(id => valid.some(r => r.shotId === id && r.status === 'APPROVED'));
-  const generated = shotIds.filter(id => valid.some(r => r.shotId === id && ['REVIEW', 'APPROVED'].includes(r.status)));
+  const approved = shotIds.filter(id => valid.some(r => r.kind !== 'REFERENCE' && r.shotId === id && r.status === 'APPROVED'));
+  const generated = shotIds.filter(id => valid.some(r => r.kind !== 'REFERENCE' && r.shotId === id && ['REVIEW', 'APPROVED'].includes(r.status)));
   const review = valid.filter(r => r.status === 'REVIEW').map(r => ({
     key: `${r.id}:${r.sha256 ?? 'unverified'}`,
     runId: r.id, shotId: r.shotId, sha256: r.sha256 ?? null,

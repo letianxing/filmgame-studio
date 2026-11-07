@@ -28,7 +28,7 @@ export interface ShotRun {
   id: string;
   shotId: string;
   kind?: "REFERENCE";
-  provider: "seedance" | "dreamina";
+  provider: "seedance" | "dreamina" | "external";
   status:
     | "DRAFT"
     | "QUOTED"
@@ -786,7 +786,7 @@ export class ComicService {
       if (!shots.length) throw new Error('没有可交付镜头');
       const assets = [];
       for (const shot of shots) {
-        const r = [...p.runs].reverse().find(run => run.shotId === shot.id && run.status === 'APPROVED'
+        const r = [...p.runs].reverse().find(run => run.kind !== 'REFERENCE' && run.shotId === shot.id && run.status === 'APPROVED'
           && run.inputHash === this.hash(p, shot.id) && run.reviewDecision?.decision === 'APPROVED'
           && run.reviewDecision.sha256 === run.sha256 && run.reviewDecision.inputHash === run.inputHash);
         if (!r?.file || !r.sha256) throw new Error(`镜头 ${shot.id} 缺少当前版本的人工采纳`);
@@ -840,7 +840,7 @@ export class ComicService {
           .reverse()
           .find(
             (r) =>
-              r.shotId === s.id &&
+              r.kind !== 'REFERENCE' && r.shotId === s.id &&
               r.status === "APPROVED" &&
               r.file &&
               r.inputHash === this.hash(p, s.id),

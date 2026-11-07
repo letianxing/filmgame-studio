@@ -1011,7 +1011,9 @@ export function ComicStudio() {
                       className="comic-preview"
                       style={{ aspectRatio: project!.ratio.replace(':', '/') }}
                     >
-                      {run?.file ? (
+                      {run?.file && run.kind === 'REFERENCE' ? (
+                        <Image src={asset(run.file)} alt="待审核的镜头构图" width={1920} height={1080} unoptimized style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      ) : run?.file ? (
                         <video
                           key={run.file}
                           src={asset(run.file)}

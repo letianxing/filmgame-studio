@@ -6,6 +6,7 @@ import { RemoteVideoProvider } from "../../../services/remote-video-adapter/src/
 import { DreaminaAdapter } from "../../../services/dreamina-adapter/src/index.js";
 import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
+import { importReferenceCandidate } from './comic-reference-import.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
 import { harnessProgress, type HarnessPolicy } from './comic-harness.js';
 import type { BillingReceipt } from './comic-cost-ledger.js';
@@ -160,7 +161,13 @@ export async function comicRoute(
     if (request.method === 'GET' && action === 'reviewed-manifest')
       return send(await service.reviewedManifest(id));
     if (request.method !== "POST") return send({ error: "不支持此操作" }, 405);
-    const body = await readBody(request);
+    const body = await readBody(request, action === 'import-reference-candidate' ? 7_000_000 : 2_000_000);
+    if (action === 'import-reference-candidate')
+      return send({ project: view(await importReferenceCandidate(service, id, {
+        revision: Number(body.revision), shotId: String(body.shotId ?? ''),
+        data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
+        sourceLabel: String(body.sourceLabel ?? ''), ledger: String(body.ledger ?? ''),
+      })) });
     if (action === 'cleanup-rejected') return send({ project: view(await service.cleanupRejectedMedia(id)) });
     if (action === 'budgets')
       return send({ project: view(await service.configureBudgets(id, { credits: Number(body.credits), auxiliaryReserved: Number(body.auxiliaryReserved), cny: Number(body.cny) })) });
@@ -249,12 +256,12 @@ export async function comicRoute(
     return send({ error: message(e) }, 400);
   }
 }
-async function readBody(request: IncomingMessage): Promise<Record<string, unknown>> {
+async function readBody(request: IncomingMessage, limit = 2_000_000): Promise<Record<string, unknown>> {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const c of request) {
     size += c.length;
-    if (size > 2_000_000) throw new Error("请求过大");
+    if (size > limit) throw new Error("请求过大");
     chunks.push(Buffer.from(c));
   }
   return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}") as Record<string, unknown>;
