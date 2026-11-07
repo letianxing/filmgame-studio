@@ -87,7 +87,7 @@ export interface ComicProject {
   references: Record<string, string>;
   sceneConcepts?: Record<string, { prompt: string; refs: string[] }>;
   referenceNodes?: Record<string, { file: string; nodeId: string }>;
-  shotReferences?: Record<string, Array<{ nodeId: string; file: string; mediaType: 'image' | 'audio' | 'video'; role: string }>>;
+  shotReferences?: Record<string, Array<{ nodeId: string; file: string; sha256?: string; mediaType: 'image' | 'audio' | 'video'; role: string }>>;
   /** Explicit per-shot opt-in: staging already contains cast identity; omit global image references. */
   shotReferenceOnly?: Record<string, boolean>;
   creditBudget?: { ceiling: number; auxiliaryReserved: number };
@@ -383,9 +383,21 @@ export class ComicService {
         bindings.push(...referenceCharacterIds.flatMap(c => p.referenceNodes?.[c]?.file === p.references[c] && p.referenceNodes?.[c]
           ? [`${story.characters.find(x => x.id === c)?.name}的外观严格使用 {{node:${p.referenceNodes[c]!.nodeId}}}，服装和面部不改变。`] : []));
         for (const reference of p.shotReferences?.[shotId] ?? []) {
-          refs.push(`node:${reference.nodeId}`);
+          let refId = `node:${reference.nodeId}`;
+          if (!reference.nodeId) {
+            const local = path.join(this.directory(id), reference.file);
+            if (!reference.sha256 || await checksum(local) !== reference.sha256)
+              throw new Error('Adopted shot reference SHA changed');
+            const upload = { characterId: `shot:${shotId}`, file: reference.file, resourceId: randomUUID() };
+            run.referenceUploads.push(upload);
+            await this.save(p);
+            const uploaded = await cli.call<{ resourceId: string }>(['resource', 'upload', '--file', local,
+              '--type', reference.mediaType, '--project-id', p.canvas.projectId, '--resource-id', upload.resourceId]);
+            refId = `res:${uploaded.resourceId}`;
+          }
+          refs.push(refId);
           referenceTypes.push(reference.mediaType);
-          bindings.push(`${reference.role}：{{node:${reference.nodeId}}}。${reference.mediaType === 'audio' ? '仅作为指定角色音色参考，台词严格使用本镜头对白，不复述参考音频内容。' : '保持构图要求下的空间与物品特征。'}`);
+          bindings.push(`${reference.role}：{{${refId}}}。${reference.mediaType === 'audio' ? '仅作为指定角色音色参考，台词严格使用本镜头对白，不复述参考音频内容。' : '保持构图要求下的空间与物品特征。'}`);
         }
         await cli.saveVideo({
           canvasId: p.canvas.projectId,

@@ -6,7 +6,7 @@ import { RemoteVideoProvider } from "../../../services/remote-video-adapter/src/
 import { DreaminaAdapter } from "../../../services/dreamina-adapter/src/index.js";
 import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
-import { importReferenceCandidate } from './comic-reference-import.js';
+import { importReferenceCandidate, bindReferenceCandidate } from './comic-reference-import.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
 import { harnessProgress, type HarnessPolicy } from './comic-harness.js';
 import type { BillingReceipt } from './comic-cost-ledger.js';
@@ -168,6 +168,8 @@ export async function comicRoute(
         data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
         sourceLabel: String(body.sourceLabel ?? ''), ledger: String(body.ledger ?? ''),
       })) });
+    if (action === 'bind-reference-candidate')
+      return send({ project: view(await bindReferenceCandidate(service, id, String(body.runId), String(body.sha256 ?? ''))) });
     if (action === 'cleanup-rejected') return send({ project: view(await service.cleanupRejectedMedia(id)) });
     if (action === 'budgets')
       return send({ project: view(await service.configureBudgets(id, { credits: Number(body.credits), auxiliaryReserved: Number(body.auxiliaryReserved), cny: Number(body.cny) })) });

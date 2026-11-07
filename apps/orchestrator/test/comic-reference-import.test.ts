@@ -5,7 +5,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { ComicService } from '../src/comic-service.js';
-import { importReferenceCandidate } from '../src/comic-reference-import.js';
+import { importReferenceCandidate, bindReferenceCandidate } from '../src/comic-reference-import.js';
 import { billingSummary } from '../src/comic-cost-ledger.js';
 import { MediaPipeline } from '../../../services/media-pipeline/src/index.js';
 
@@ -24,14 +24,19 @@ test('external reference requires exact bytes, remains human-reviewed, and canno
     p = await importReferenceCandidate(service, p.id, input);
     assert.equal(p.runs[0]!.status, 'REVIEW');
     assert.equal(p.runs[0]!.reviewDecision, undefined);
+    await assert.rejects(bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256));
     assert.equal(billingSummary(p, 'DREAMINA_CREDIT').committed, 0);
     p = await importReferenceCandidate(service, p.id, { ...input, revision: p.revision });
     assert.equal(p.runs.length, 1);
     await service.approve(p.id, p.runs[0]!.id, input.sha256);
+    p = await bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256);
+    assert.equal(p.shotReferences?.s1?.[0]?.sha256, input.sha256);
+    assert.equal(p.shotReferences?.s1?.[0]?.file, p.runs[0]!.file);
+    await bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256);
     await assert.rejects(service.reviewedManifest(p.id));
     p = await service.get(p.id);
     await writeFile(path.join(service.directory(p.id), p.runs[0]!.file!), 'corrupt');
-    await assert.rejects(importReferenceCandidate(service, p.id, { ...input, revision: p.revision }), /SHA/);
+    await assert.rejects(bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256), /SHA/);
   } finally {
     assert.equal(path.dirname(path.resolve(root)), path.resolve(os.tmpdir()));
     assert.ok(path.basename(root).startsWith('filmgame-reference-'));

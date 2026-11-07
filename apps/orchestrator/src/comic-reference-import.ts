@@ -3,6 +3,28 @@ import { writeFile, readFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import type { ComicService } from './comic-service.js';
 
+/** Bind only the exact human-adopted bytes; upload is performed by prepare. */
+export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string) {
+  return service.exclusive(id, async p => {
+    service.assertIdle(p);
+    const r = p.runs.find(r => r.id === runId);
+    if (!r || r.kind !== 'REFERENCE' || r.status !== 'APPROVED' || !r.file ||
+        r.sha256 !== sha256 || r.reviewDecision?.sha256 !== sha256 ||
+        r.reviewDecision.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR')
+      throw new Error('Exact human-adopted reference required');
+    if (createHash('sha256').update(await readFile(path.join(service.directory(id), r.file))).digest('hex') !== sha256)
+      throw new Error('Reference SHA changed');
+    const current = p.shotReferences?.[r.shotId];
+    if (current?.length === 1 && current[0]?.file === r.file) return p;
+    if (r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
+    p.shotReferences ??= {};
+    p.shotReferences[r.shotId] = [{ nodeId: '', file: r.file, sha256, mediaType: 'image',
+      role: 'Exact human-adopted composition, character identities, anatomical pose and lighting; preserve these in motion.' }];
+    await service.save(p);
+    return p;
+  });
+}
+
 /** Exact-byte external keyframe review. Never binds or approves the reference automatically. */
 export async function importReferenceCandidate(service: ComicService, id: string, input: {
   revision: number; shotId: string; data: Buffer; sha256: string; sourceLabel: string; ledger: string;
