@@ -7,6 +7,7 @@ import { DreaminaAdapter } from "../../../services/dreamina-adapter/src/index.js
 import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
 import { importReferenceCandidate, bindReferenceCandidate } from './comic-reference-import.js';
+import { bindVoiceReference } from './comic-voice-reference.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
 import { harnessProgress, type HarnessPolicy } from './comic-harness.js';
 import type { BillingReceipt } from './comic-cost-ledger.js';
@@ -161,7 +162,14 @@ export async function comicRoute(
     if (request.method === 'GET' && action === 'reviewed-manifest')
       return send(await service.reviewedManifest(id));
     if (request.method !== "POST") return send({ error: "不支持此操作" }, 405);
-    const body = await readBody(request, action === 'import-reference-candidate' ? 7_000_000 : 2_000_000);
+    const body = await readBody(request, ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    if (action === 'bind-voice-reference')
+      return send({ project: view(await bindVoiceReference(service, id, {
+        revision: Number(body.revision), shotId: String(body.shotId ?? ''), characterId: String(body.characterId ?? ''),
+        data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
+        userFeedback: String(body.userFeedback ?? ''), performanceDirection: String(body.performanceDirection ?? ''),
+        ledger: String(body.ledger ?? ''),
+      })) });
     if (action === 'import-reference-candidate')
       return send({ project: view(await importReferenceCandidate(service, id, {
         revision: Number(body.revision), shotId: String(body.shotId ?? ''),

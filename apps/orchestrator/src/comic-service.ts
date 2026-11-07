@@ -88,7 +88,8 @@ export interface ComicProject {
   references: Record<string, string>;
   sceneConcepts?: Record<string, { prompt: string; refs: string[] }>;
   referenceNodes?: Record<string, { file: string; nodeId: string }>;
-  shotReferences?: Record<string, Array<{ nodeId: string; file: string; sha256?: string; mediaType: 'image' | 'audio' | 'video'; role: string }>>;
+  shotReferences?: Record<string, Array<{ nodeId: string; file: string; sha256?: string; mediaType: 'image' | 'audio' | 'video'; role: string;
+    voiceReview?: { characterId: string; userFeedback: string; performanceDirection: string; ledger: string; scope: 'TIMBRE_DIRECTION_ONLY'; finalPerformanceApproved: false } }>>;
   /** Explicit per-shot opt-in: staging already contains cast identity; omit global image references. */
   shotReferenceOnly?: Record<string, boolean>;
   creditBudget?: { ceiling: number; auxiliaryReserved: number };
