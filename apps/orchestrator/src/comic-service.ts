@@ -318,6 +318,7 @@ export class ComicService {
       if (!["seedance", "dreamina"].includes(provider)) throw new Error("未知制作服务");
       const { story, shot } = this.shot(p, shotId);
       assertTextIntegrity(shot);
+      assertTextIntegrity(nativePrompt(story, shot, { appearanceFromReference: !!p.shotReferenceOnly?.[shotId] }), 'compiledPrompt');
       const referenceCharacterIds = this.referenceCharacterIds(p, shotId);
       if (p.shotReferenceOnly?.[shotId] && provider !== 'dreamina')
         throw new Error('当前制作服务不支持仅使用本镜参考');
@@ -406,7 +407,7 @@ export class ComicService {
           nodeId: run.nodeId,
           updateId: run.updateId,
           title: shot.id,
-          prompt: [nativePrompt(story, shot), ...bindings].join('\n'),
+          prompt: [nativePrompt(story, shot, { appearanceFromReference: !!p.shotReferenceOnly?.[shotId] }), ...bindings].join('\n'),
           model: run.model,
           ratio: p.ratio,
           resolution: "720p",
@@ -526,6 +527,9 @@ export class ComicService {
       const r = p.runs.find((r) => r.id === runId);
       if (!r || r.status !== "QUOTED") throw new Error("请先准备镜头并确认制作");
       assertTextIntegrity(this.shot(p, r.shotId).shot);
+      const currentShot = this.shot(p, r.shotId);
+      assertTextIntegrity(nativePrompt(currentShot.story, currentShot.shot,
+        { appearanceFromReference: !!p.shotReferenceOnly?.[r.shotId] }), 'compiledPrompt');
       const gate = submissionGate(p, r);
       if (gate.length) throw new Error(gate.join('; '));
       if (r.inputHash !== this.hash(p, r.shotId)) throw new Error("镜头或角色已变化，请重新准备");

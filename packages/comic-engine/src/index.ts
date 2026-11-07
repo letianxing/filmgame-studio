@@ -130,12 +130,14 @@ export function validateComic(value: unknown): ComicStory {
   }
   return value;
 }
-export function nativePrompt(story: ComicStory, shot: ComicShot): string {
+export function nativePrompt(story: ComicStory, shot: ComicShot, options: { appearanceFromReference?: boolean } = {}): string {
   return [
     `制作动态漫剧镜头，保持真实连续动作，禁止静态幻灯片。风格：${story.visualStyle}`,
     ...story.characters
       .filter((c) => shot.characterIds.includes(c.id))
-      .map((c) => `${c.id} / ${c.name}：${c.appearance}；声音：${c.voice}`),
+      .map((c) => options.appearanceFromReference
+        ? `${c.id} / ${c.name}：外观、服饰、持物与人数严格依照本镜已采纳参考和本镜表演指令；声音：${c.voice}`
+        : `${c.id} / ${c.name}：${c.appearance}；声音：${c.voice}`),
     `场景：${shot.scene}`,
     `表演：${shot.description}`,
     `镜头：${shot.camera}`,
