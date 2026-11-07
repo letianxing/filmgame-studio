@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { ComicService } from './comic-service.js';
 
 /** Bind only the exact human-adopted bytes; upload is performed by prepare. */
-export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string) {
+export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string) {
   return service.exclusive(id, async p => {
     service.assertIdle(p);
     const r = p.runs.find(r => r.id === runId);
@@ -14,11 +14,18 @@ export async function bindReferenceCandidate(service: ComicService, id: string, 
       throw new Error('Exact human-adopted reference required');
     if (createHash('sha256').update(await readFile(path.join(service.directory(id), r.file))).digest('hex') !== sha256)
       throw new Error('Reference SHA changed');
-    const current = p.shotReferences?.[r.shotId];
+    const shotId = targetShotId ?? r.shotId;
+    if (!p.story?.episodes.some(e => e.shots.some(s => s.id === shotId)))
+      throw new Error('Target shot does not exist');
+    if (shotId !== r.shotId && !r.shotId.startsWith('scene:'))
+      throw new Error('Only a scene reference can be bound to another shot');
+    if (r.shotId.startsWith('scene:') && r.inputHash !== service.hash(p, r.shotId))
+      throw new Error('Reference context changed before binding');
+    const current = p.shotReferences?.[shotId];
     if (current?.length === 1 && current[0]?.file === r.file) return p;
     if (r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
     p.shotReferences ??= {};
-    p.shotReferences[r.shotId] = [{ nodeId: '', file: r.file, sha256, mediaType: 'image',
+    p.shotReferences[shotId] = [{ nodeId: '', file: r.file, sha256, mediaType: 'image',
       role: 'Exact human-adopted composition, character identities, anatomical pose and lighting; preserve these in motion.' }];
     await service.save(p);
     return p;

@@ -169,7 +169,8 @@ export async function comicRoute(
         sourceLabel: String(body.sourceLabel ?? ''), ledger: String(body.ledger ?? ''),
       })) });
     if (action === 'bind-reference-candidate')
-      return send({ project: view(await bindReferenceCandidate(service, id, String(body.runId), String(body.sha256 ?? ''))) });
+      return send({ project: view(await bindReferenceCandidate(service, id, String(body.runId), String(body.sha256 ?? ''),
+        typeof body.shotId === 'string' ? body.shotId : undefined)) });
     if (action === 'cleanup-rejected') return send({ project: view(await service.cleanupRejectedMedia(id)) });
     if (action === 'budgets')
       return send({ project: view(await service.configureBudgets(id, { credits: Number(body.credits), auxiliaryReserved: Number(body.auxiliaryReserved), cny: Number(body.cny) })) });

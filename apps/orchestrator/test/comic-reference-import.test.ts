@@ -35,6 +35,18 @@ test('external reference requires exact bytes, remains human-reviewed, and canno
     await bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256);
     await assert.rejects(service.reviewedManifest(p.id));
     p = await service.get(p.id);
+    p.sceneConcepts = { village: { prompt: 'Adopted village layout', refs: [] } };
+    const sceneHash = service.hash(p, 'scene:village');
+    const sceneRun = { ...p.runs[0]!, id: 'scene-reference', shotId: 'scene:village', inputHash: sceneHash,
+      reviewDecision: { ...p.runs[0]!.reviewDecision!, inputHash: sceneHash } };
+    p.runs.push(sceneRun);
+    await service.save(p);
+    await assert.rejects(bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 'missing'), /Target shot/);
+    await bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1');
+    p = await service.get(p.id);
+    p.sceneConcepts!.village!.prompt = 'Changed layout after approval';
+    await service.save(p);
+    await assert.rejects(bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1'), /context changed/);
     await writeFile(path.join(service.directory(p.id), p.runs[0]!.file!), 'corrupt');
     await assert.rejects(bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256), /SHA/);
   } finally {
