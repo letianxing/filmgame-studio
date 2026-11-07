@@ -142,6 +142,10 @@
 
 ## 2026-11-07 Crowd staging and encoding integrity
 
+### Secondary cast hands and facing are acceptance criteria
+
+Human review rejected the corrected standoff because the guard on the captain's screen-right turned incorrectly and held his pole behind his back; other aspects were acceptable. Count and lighting checks missed this. Check each visible guard's head, shoulders, pelvis, knees and feet together, then trace the weapon hand from shoulder through elbow to wrist. A correct-looking pole position does not prove a correct grip. Inspect motion at full resolution, especially hands lowering or reaching; sparse wide contact sheets are insufficient. Remove unnecessary secondary-cast movement from dialogue shots. Keep torch retrieval in its authored later shot. Preserve accepted dialogue, composition, light and cast count when repairing this specific fault.
+
 Lock the adopted wide frame and count roles separately: nine ordinary guards (four left, five right), excluding the captain. Do not add foreground guards beside the headman. Check counts, occlusions, identity and world lighting throughout the clip. Preserve dialogue already accepted by the creator when only staging was rejected. Scene-only binding reduces conflicting inputs but does not guarantee continuity.
 
 Confirmed failure: Windows PowerShell piped Chinese Python source as question marks, destroying direction before a paid submission. Write Unicode scripts as UTF-8 files, never through an unconfigured shell pipe. Read the Studio text back and compare exact strings before quote and payment. Prepare and run now reject replacement characters and repeated ASCII question marks. Technical media validation cannot detect missing authoring intent. Do not attribute this confirmed transport failure solely to the generation model. No automatic paid retries.
