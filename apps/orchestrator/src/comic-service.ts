@@ -23,6 +23,7 @@ import { ComicWorkflow } from "./comic-workflow.js";
 import { submissionGate, validateHarnessPolicy, type HarnessPolicy } from './comic-harness.js';
 import { addBillingReceipt, billingSummary, type BillingReceipt } from './comic-cost-ledger.js';
 import { cleanupRejected, type CleanupReceipt } from './comic-cleanup.js';
+import { assertTextIntegrity } from './comic-text-integrity.js';
 
 export interface ShotRun {
   id: string;
@@ -316,6 +317,7 @@ export class ComicService {
     return this.exclusive(id, async (p) => {
       if (!["seedance", "dreamina"].includes(provider)) throw new Error("未知制作服务");
       const { story, shot } = this.shot(p, shotId);
+      assertTextIntegrity(shot);
       const referenceCharacterIds = this.referenceCharacterIds(p, shotId);
       if (p.shotReferenceOnly?.[shotId] && provider !== 'dreamina')
         throw new Error('当前制作服务不支持仅使用本镜参考');
@@ -523,6 +525,7 @@ export class ComicService {
     return this.exclusive(id, async (p) => {
       const r = p.runs.find((r) => r.id === runId);
       if (!r || r.status !== "QUOTED") throw new Error("请先准备镜头并确认制作");
+      assertTextIntegrity(this.shot(p, r.shotId).shot);
       const gate = submissionGate(p, r);
       if (gate.length) throw new Error(gate.join('; '));
       if (r.inputHash !== this.hash(p, r.shotId)) throw new Error("镜头或角色已变化，请重新准备");
