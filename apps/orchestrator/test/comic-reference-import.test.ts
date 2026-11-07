@@ -43,6 +43,10 @@ test('external reference requires exact bytes, remains human-reviewed, and canno
     await service.save(p);
     await assert.rejects(bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 'missing'), /Target shot/);
     await bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1');
+    p = await bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1', true);
+    assert.equal(p.shotReferenceOnly?.s1, true);
+    await bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1');
+    assert.equal((await service.get(p.id)).shotReferenceOnly?.s1, true);
     p = await service.get(p.id);
     p.sceneConcepts!.village!.prompt = 'Changed layout after approval';
     await service.save(p);

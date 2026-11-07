@@ -4,7 +4,7 @@ import path from 'node:path';
 import type { ComicService } from './comic-service.js';
 
 /** Bind only the exact human-adopted bytes; upload is performed by prepare. */
-export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string) {
+export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string, referenceOnly?: boolean) {
   return service.exclusive(id, async p => {
     service.assertIdle(p);
     const r = p.runs.find(r => r.id === runId);
@@ -22,11 +22,16 @@ export async function bindReferenceCandidate(service: ComicService, id: string, 
     if (r.shotId.startsWith('scene:') && r.inputHash !== service.hash(p, r.shotId))
       throw new Error('Reference context changed before binding');
     const current = p.shotReferences?.[shotId];
-    if (current?.length === 1 && current[0]?.file === r.file) return p;
-    if (r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
+    const alreadyBound = current?.length === 1 && current[0]?.file === r.file;
+    if (alreadyBound && (referenceOnly === undefined || Boolean(p.shotReferenceOnly?.[shotId]) === referenceOnly)) return p;
+    if (!alreadyBound && r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
     p.shotReferences ??= {};
     p.shotReferences[shotId] = [{ nodeId: '', file: r.file, sha256, mediaType: 'image',
       role: 'Exact human-adopted composition, character identities, anatomical pose and lighting; preserve these in motion.' }];
+    if (referenceOnly !== undefined) {
+      p.shotReferenceOnly ??= {};
+      p.shotReferenceOnly[shotId] = referenceOnly;
+    }
     await service.save(p);
     return p;
   });
