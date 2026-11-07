@@ -12,6 +12,55 @@ import { RemoteVideoProvider } from '../../../services/remote-video-adapter/src/
 
 const story: ComicStory = { title: 'Test story', logline: 'A letter arrives.', visualStyle: 'ink animation', characters: [{ id: 'hero', name: 'Hero', appearance: 'red coat', voice: 'calm' }], episodes: [{ id: 'ep1', title: 'Arrival', synopsis: 'The hero opens a letter.', shots: [{ id: 's1', scene: 'Room', description: 'Open letter', camera: 'Close up', durationSeconds: 4, characterIds: ['hero'], dialogue: [{ characterId: 'hero', text: 'Who sent this?', startSeconds: 1, endSeconds: 3 }] }, { id: 's2', scene: 'Window', description: 'Looks out', camera: 'Wide', durationSeconds: 4, characterIds: [], dialogue: [] }] }] };
 
+test('shot-only references omit conflicting global images and bindings without changing cast or other hashes', async () => {
+  let saved: any;
+  let uploads = 0;
+  const cli = { auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_name: string, id: string) => ({ projectId: id, webUrl: 'https://example.test' }),
+    call: async () => { uploads++; throw Error('Unexpected global upload'); },
+    saveVideo: async (input: unknown) => { saved = input; },
+    quote: async () => ({ confirmable: true, items: [{ nodeId: saved.nodeId, maxCredits: 10 }], totalMaxCredits: 10 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, cli);
+  project.references.hero = 'morning.jpg';
+  project.shotReferences = { s1: [{ nodeId: 'node_123456789a', file: 'dusk.png', mediaType: 'image', role: 'Approved dusk staging with hero identity' }] };
+  const oldHash = service.hash(project, 's1'), otherHash = service.hash(project, 's2');
+  project.shotReferenceOnly = { s1: true };
+  assert.notEqual(service.hash(project, 's1'), oldHash);
+  assert.equal(service.hash(project, 's2'), otherHash);
+  await service.save(project);
+  const prepared = await service.prepare(project.id, 's1', 'dreamina');
+  assert.equal(uploads, 0);
+  assert.deepEqual(saved.refs, ['node:node_123456789a']);
+  assert.ok(!saved.prompt.includes('morning.jpg'));
+  assert.ok(saved.prompt.includes('red coat'));
+  assert.deepEqual(prepared.story!.episodes[0]!.shots[0]!.characterIds, ['hero']);
+  assert.deepEqual(prepared.runs.at(-1)!.referenceUploads, []);
+  const h = service.hash(prepared, 's1');
+  prepared.references.hero = 'other-morning.jpg';
+  assert.equal(service.hash(prepared, 's1'), h);
+});
+
+test('shot-only mode refuses absent visual staging before saving a run or contacting provider', async () => {
+  const { service, project } = await setup();
+  project.shotReferenceOnly = { s1: true };
+  project.shotReferences = { s1: [{ nodeId: 'node_123456789a', file: 'voice.wav', mediaType: 'audio', role: 'voice' }] };
+  await service.save(project);
+  await assert.rejects(service.prepare(project.id, 's1', 'dreamina'), /构图图片/);
+  assert.equal((await service.get(project.id)).runs.length, 0);
+});
+
+test('default reference hashing stays compatible with previous adopted clips', async () => {
+  const { service, project } = await setup();
+  const s = project.story!.episodes[0]!.shots[0]!;
+  const legacy = createHash('sha256').update(JSON.stringify({shot:s, style:project.story!.visualStyle,
+    ratio:project.ratio, characters:project.story!.characters.filter(c=>s.characterIds.includes(c.id)),
+    references:s.characterIds.map(c=>project.references[c]??null), shotReferences:[]})).digest('hex');
+  assert.equal(service.hash(project, 's1'), legacy);
+  project.shotReferenceOnly = { s1: false };
+  assert.equal(service.hash(project, 's1'), legacy);
+});
+
 test('scene concept uses image references, exact revision review and no character adoption', async () => {
   let saved: any;
   const cli = { auth: async () => ({ loggedIn: true }),

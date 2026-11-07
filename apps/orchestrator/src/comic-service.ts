@@ -88,6 +88,8 @@ export interface ComicProject {
   sceneConcepts?: Record<string, { prompt: string; refs: string[] }>;
   referenceNodes?: Record<string, { file: string; nodeId: string }>;
   shotReferences?: Record<string, Array<{ nodeId: string; file: string; mediaType: 'image' | 'audio' | 'video'; role: string }>>;
+  /** Explicit per-shot opt-in: staging already contains cast identity; omit global image references. */
+  shotReferenceOnly?: Record<string, boolean>;
   creditBudget?: { ceiling: number; auxiliaryReserved: number };
   currencyBudget?: { ceiling: number };
   harnessPolicy?: HarnessPolicy;
@@ -282,11 +284,19 @@ export class ComicService {
           style: story.visualStyle,
           ratio: p.ratio,
           characters: story.characters.filter((c) => shot.characterIds.includes(c.id)),
-          references: shot.characterIds.map((c) => p.references[c] ?? null),
+          references: this.referenceCharacterIds(p, shotId).map((c) => p.references[c] ?? null),
           shotReferences: p.shotReferences?.[shotId] ?? [],
+          ...(p.shotReferenceOnly?.[shotId] ? { shotReferenceOnly: true } : {}),
         }),
       )
       .digest("hex");
+  }
+  referenceCharacterIds(p: ComicProject, shotId: string): string[] {
+    const { shot } = this.shot(p, shotId);
+    if (!p.shotReferenceOnly?.[shotId]) return shot.characterIds;
+    if (!p.shotReferences?.[shotId]?.some(r => r.mediaType === 'image'))
+      throw new Error('仅使用本镜参考时必须提供包含人物身份的构图图片');
+    return [];
   }
   exportIsCurrent(p: ComicProject, output: ComicProject["exports"][number]) {
     const episode = p.story?.episodes.find((e) => e.id === output.episodeId);
@@ -306,6 +316,9 @@ export class ComicService {
     return this.exclusive(id, async (p) => {
       if (!["seedance", "dreamina"].includes(provider)) throw new Error("未知制作服务");
       const { story, shot } = this.shot(p, shotId);
+      const referenceCharacterIds = this.referenceCharacterIds(p, shotId);
+      if (p.shotReferenceOnly?.[shotId] && provider !== 'dreamina')
+        throw new Error('当前制作服务不支持仅使用本镜参考');
       if (
         p.runs.some(
           (r) => r.shotId === shotId && ["SUBMITTING", "RUNNING", "UNCERTAIN"].includes(r.status),
@@ -339,7 +352,7 @@ export class ComicService {
         await this.save(p);
         const refs: string[] = [];
         const bindings: string[] = [];
-        run.referenceUploads = shot.characterIds
+        run.referenceUploads = referenceCharacterIds
           .filter((c) => p.references[c] && p.referenceNodes?.[c]?.file !== p.references[c])
           .map((characterId) => ({
             characterId,
@@ -363,11 +376,11 @@ export class ComicService {
           refs.push(`res:${uploaded.resourceId}`);
           bindings.push(`${story.characters.find(c => c.id === reference.characterId)?.name}的外观严格使用 {{res:${uploaded.resourceId}}}，按角色设定识别参考中的对应人物，服装和面部不改变。`);
         }
-        for (const c of shot.characterIds)
+        for (const c of referenceCharacterIds)
           if (p.referenceNodes?.[c] && p.referenceNodes[c]!.file === p.references[c])
             refs.push(`node:${p.referenceNodes[c]!.nodeId}`);
         const referenceTypes: Array<'image' | 'audio' | 'video'> = refs.map(() => 'image');
-        bindings.push(...shot.characterIds.flatMap(c => p.referenceNodes?.[c]?.file === p.references[c] && p.referenceNodes?.[c]
+        bindings.push(...referenceCharacterIds.flatMap(c => p.referenceNodes?.[c]?.file === p.references[c] && p.referenceNodes?.[c]
           ? [`${story.characters.find(x => x.id === c)?.name}的外观严格使用 {{node:${p.referenceNodes[c]!.nodeId}}}，服装和面部不改变。`] : []));
         for (const reference of p.shotReferences?.[shotId] ?? []) {
           refs.push(`node:${reference.nodeId}`);
