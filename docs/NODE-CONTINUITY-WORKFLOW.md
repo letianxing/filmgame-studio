@@ -1,3 +1,9 @@
+## 2026-11-08 人物互动与逃离动机：三孩会合拒收经验
+
+依据用户对run 2cb0b914的拒收：只有转身同行不能表达相识、保密和逃离。此类镜头生成前逐项确认「触发—对方反应—制止/回应—判断环境—下一行动」，不能用导演提示中的“紧张”代替可见表演。多人对白应明确谁开口、何时被打断、谁收声；前导者先启动，后随者看懂再跟，不得同时滑行。把辨认、噤声、回望、催促及起跑塞进5秒会丢失因果，本次规划10秒，实时报价后才提交。
+
+保留已采纳的身份、地理、光照与构图；原构图首态回望必须先自然收回视线才能与同伴互动，不能无视首帧重演入场。局部坏脸可定点修复，但本次整段行为与声音缺失，需要重制短片，不把旧片简单加速当修复。此经验为制作自检，图片与成片仍按最新用户要求分别人审；不重新增加提示词人审门。
+
 ## 2026-11-08 Reference containers and retired shot generation
 
 Set the optional shot `generationHold` to a concrete reason when an old shot remains only as an approved-reference container, or when its causal/continuity plan must be replaced. ComicService blocks both preparation and submission (including an already quoted run) before provider calls and credit reservation. Existing references and review history remain available. Removing the hold is an explicit story revision; it does not approve new imagery. Older stories without this field keep their hashes and normal behavior. The n03 fire parent now holds the old 12-second clip; its six reviewed child shots must be authored separately.
