@@ -786,9 +786,14 @@ export class ComicService {
   async rejectReview(id: string, runId: string, sha: string, reason: string) {
     return this.exclusive(id, async p => {
       const r = p.runs.find(run => run.id === runId);
-      if (!r || r.status !== 'REVIEW' || !sha || r.sha256 !== sha || r.inputHash !== this.hash(p, r.shotId))
+      if (!r || !['REVIEW', 'APPROVED'].includes(r.status) || !sha || r.sha256 !== sha || r.inputHash !== this.hash(p, r.shotId))
         throw new Error('待审版本已变化，请刷新');
       if (!reason.trim() || reason.length > 2000) throw new Error('请填写具体问题、时间码和期望改善（2000字以内）');
+      if (r.status === 'APPROVED' && r.file && (Object.values(p.references).includes(r.file)
+        || Object.values(p.shotReferences ?? {}).some(refs => refs.some(ref => ref.file === r.file))
+        || p.runs.some(other => other.id !== r.id && other.referenceUploads?.some(ref => ref.file === r.file))
+        || p.exports.some(output => output.runIds.includes(r.id))))
+        throw new Error('Approved media has downstream dependencies; detach or retire them before rejection');
       r.status = 'REJECTED';
       r.reviewDecision = { decision: 'REJECTED', sha256: sha, inputHash: r.inputHash,
         at: new Date().toISOString(), actor: 'LOCAL_CREATOR', reason: reason.trim() };

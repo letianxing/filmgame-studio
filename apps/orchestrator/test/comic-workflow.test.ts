@@ -320,3 +320,36 @@ test('authoring hold blocks prepare and previously quoted video without provider
   assert.equal(after.runs[0]!.submittedAt, undefined);
   assert.throws(() => validateComic({...held, episodes: [{...held.episodes[0], shots: [{...held.episodes[0]!.shots[0], generationHold: 123}]}]}));
 });
+
+
+test('creator can correct accidental approval only for exact revision without adopted dependencies', async () => {
+  const { service, project } = await setup();
+  const hash = service.hash(project, 's1');
+  project.runs.push({ id: 'mistake', shotId: 's1', provider: 'external', kind: 'REFERENCE', status: 'APPROVED',
+    storyVersion: project.storyVersion, inputHash: hash, createdAt: new Date().toISOString(), sha256: 'a'.repeat(64) });
+  await service.save(project);
+  await assert.rejects(service.rejectReview(project.id, 'mistake', 'b'.repeat(64), 'extra hand'));
+  const fixed = await service.rejectReview(project.id, 'mistake', 'a'.repeat(64), 'Creator corrects accidental click: extra hand');
+  assert.equal(fixed.runs[0]!.status, 'REJECTED');
+  assert.equal(fixed.runs[0]!.reviewDecision!.decision, 'REJECTED');
+  fixed.runs[0]!.status = 'APPROVED'; fixed.runs[0]!.file = 'adopted.png';
+  fixed.references.hero = 'adopted.png'; fixed.runs[0]!.inputHash = service.hash(fixed, 's1'); await service.save(fixed);
+  await assert.rejects(service.rejectReview(project.id, 'mistake', 'a'.repeat(64), 'extra hand'), /dependencies/);
+});
+
+
+test('missing historical rejected media does not prevent cleanup of later rejected media', async () => {
+  const {service, project} = await setup();
+  const bytes = Buffer.from('rejected test media');
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  for (const id of ['missing-old', 'present-new']) project.runs.push({id, shotId:'s1', provider:'external', kind:'REFERENCE',
+    status:'REJECTED', storyVersion:project.storyVersion, inputHash:service.hash(project,'s1'),
+    createdAt:new Date().toISOString(), file:id+'.png', sha256:sha});
+  await writeFile(path.join(service.directory(project.id),'present-new.png'), bytes);
+  await service.save(project);
+  const cleaned=await service.cleanupRejectedMedia(project.id);
+  assert.equal(cleaned.runs[0]!.cleanup!.status,'MISSING');
+  assert.equal(cleaned.runs[1]!.cleanup!.status,'DELETED');
+  assert.equal(cleaned.runs[0]!.file,undefined);
+  await assert.rejects(readFile(path.join(service.directory(project.id),'present-new.png')));
+});

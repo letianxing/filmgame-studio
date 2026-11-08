@@ -29,7 +29,13 @@ export async function cleanupRejected(project: ComicProject, directory: string, 
       await save();
       await unlink(candidate);
     } catch (cause) {
-      if ((cause as NodeJS.ErrnoException).code !== 'ENOENT' || run.cleanup?.status !== 'DELETE_PLANNED') throw cause;
+      if ((cause as NodeJS.ErrnoException).code !== 'ENOENT') throw cause;
+      if (run.cleanup?.status !== 'DELETE_PLANNED') {
+        run.cleanup = { status: 'MISSING', file: name, sha256: run.sha256, at: new Date().toISOString() };
+        delete run.file;
+        await save();
+        continue;
+      }
     }
     run.cleanup = { status: 'DELETED', file: name, sha256: run.sha256, at: new Date().toISOString() };
     delete run.file;
@@ -39,7 +45,7 @@ export async function cleanupRejected(project: ComicProject, directory: string, 
 }
 
 export type CleanupReceipt = {
-  status: 'DELETE_PLANNED' | 'DELETED' | 'RETAINED_DEPENDENCY';
+  status: 'DELETE_PLANNED' | 'DELETED' | 'MISSING' | 'RETAINED_DEPENDENCY';
   file: string;
   sha256: string;
   at?: string;
