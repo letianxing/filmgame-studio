@@ -1,3 +1,7 @@
+## 2026-11-08 最新用户要求：剧情背景和提示词也须人审
+
+每节点生成图片前先审剧情/分镜说明与完整图片提示词；图生成后连同背景故事和实际提示词审图；概念图与完整视频提示词均明确通过后才生视频，成片再审。审核必须注明前因后果、人物动机、场景站位/光照、首尾状态、分支影响、参考版本和预计费用。实质改动须重审受影响项，不自动沿用旧批准。详细执行规则见 G:/filmGame/filmgame-studio/docs/NODE-CONTINUITY-WORKFLOW.md 顶部。此为 agent 执行门，勿声称新增服务端硬门禁。
+
 # FilmGame Studio first-party rules
 
 ## 2026-11-05 User direction: controlled production, separate runtime
