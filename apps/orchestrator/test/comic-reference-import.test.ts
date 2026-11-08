@@ -5,7 +5,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { ComicService } from '../src/comic-service.js';
-import { importReferenceCandidate, bindReferenceCandidate } from '../src/comic-reference-import.js';
+import { importReferenceCandidate, bindReferenceCandidate, bindReferenceSet } from '../src/comic-reference-import.js';
 import { billingSummary } from '../src/comic-cost-ledger.js';
 import { MediaPipeline } from '../../../services/media-pipeline/src/index.js';
 
@@ -64,6 +64,36 @@ test('external reference requires exact bytes, remains human-reviewed, and canno
     p = await bindReferenceCandidate(service, p.id, source.id, input.sha256, 's2', true, reuse);
     assert.equal(p.shotReferences?.s2?.[0]?.sha256, input.sha256);
     assert.match(p.shotReferences!.s2![0]!.role!, /different response/);
+    assert.equal(JSON.stringify(p.runs[0]!.reviewDecision), approval);
+    await assert.rejects(service.reviewedManifest(p.id));
+
+    // Preserve an approved starting composition and add an approved contact pose.
+    const poseData = Buffer.from([137,80,78,71,13,10,26,10,2]);
+    const poseSha = createHash('sha256').update(poseData).digest('hex');
+    p = await importReferenceCandidate(service, p.id, { ...input, revision: p.revision,
+      shotId: 's2', data: poseData, sha256: poseSha });
+    const pose = p.runs.at(-1)!;
+    const set = () => ({ revision: p.revision, shotId: 's2', targetInputHash: service.hash(p, 's2'), referenceOnly: true,
+      references: [
+        { runId: source.id, sha256: input.sha256, sourceInputHash: source.inputHash, role: 'Starting composition; preserve identity and light.' },
+        { runId: pose.id, sha256: poseSha, sourceInputHash: pose.inputHash, role: 'Contact pose guidance; do not start already touching.' },
+      ] });
+    const before = JSON.stringify(p.shotReferences);
+    await assert.rejects(bindReferenceSet(service, p.id, set()), /adopted reference/);
+    assert.equal(JSON.stringify((await service.get(p.id)).shotReferences), before);
+    p = await service.approve(p.id, pose.id, poseSha);
+    await assert.rejects(bindReferenceSet(service, p.id, { ...set(), revision: -1 }), /revision/);
+    await assert.rejects(bindReferenceSet(service, p.id, { ...set(), targetInputHash: 'stale' }), /Target input/);
+    await assert.rejects(bindReferenceSet(service, p.id, { ...set(), references: [set().references[0]!, set().references[0]!] }), /Duplicate/);
+    await assert.rejects(bindReferenceSet(service, p.id, { ...set(), references: [{ ...set().references[1]!, role: '' }] }), /role/);
+    await writeFile(path.join(service.directory(p.id), pose.file!), 'bad pose bytes');
+    await assert.rejects(bindReferenceSet(service, p.id, set()), /SHA/);
+    assert.equal(JSON.stringify((await service.get(p.id)).shotReferences), before);
+    await writeFile(path.join(service.directory(p.id), pose.file!), poseData);
+    p = await bindReferenceSet(service, p.id, set());
+    assert.deepEqual(p.shotReferences!.s2!.map(r => r.sha256), [input.sha256, poseSha]);
+    assert.match(p.shotReferences!.s2![1]!.role, /do not start already touching/);
+    assert.equal(p.shotReferenceOnly!.s2, true);
     assert.equal(JSON.stringify(p.runs[0]!.reviewDecision), approval);
     await assert.rejects(service.reviewedManifest(p.id));
     await writeFile(path.join(service.directory(p.id), p.runs[0]!.file!), 'corrupt');

@@ -42,6 +42,7 @@ test('HTTP controls persist budgets, expose progress and reject stale approvals 
     assert.equal((await post(`${url}/budgets`, { credits: 999, auxiliaryReserved: 0, cny: 999 }, 'http://wrong-origin')).status, 403);
     assert.equal((await service.get(initial.project.id)).creditBudget?.ceiling, 40);
     assert.equal((await post(`${url}/approve`, { runId: 'missing', sha256: 'old' })).status, 400);
+    assert.equal((await post(`${url}/bind-reference-set`, { revision: -1 })).status, 400);
     assert.equal((await fetch(`${url}/reviewed-manifest`)).status, 400);
     assert.equal((await post(`${url}/harness-policy`, { policy: { maxAttemptsPerShot: 5, maxElapsedMinutesPerShot: 120, providerWaitMinutes: 30 } })).status, 200);
     assert.equal((await new ComicService(service.config).get(initial.project.id)).harnessPolicy?.maxAttemptsPerShot, 5);

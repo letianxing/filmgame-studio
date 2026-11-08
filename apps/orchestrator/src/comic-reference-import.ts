@@ -5,6 +5,54 @@ import type { ComicService } from './comic-service.js';
 
 export interface ReferenceReuse { sourceInputHash: string; targetInputHash: string; reason: string; }
 
+export interface ReferenceSetInput {
+  revision: number; shotId: string; targetInputHash: string; referenceOnly: boolean;
+  references: Array<{ runId: string; sha256: string; sourceInputHash: string; role: string }>;
+}
+
+/** Atomically bind an ordered set of reviewed references with explicit roles.
+ * Roles describe guidance, not a provider guarantee of exact first/last frames. */
+export async function bindReferenceSet(service: ComicService, id: string, input: ReferenceSetInput) {
+  return service.exclusive(id, async p => {
+    service.assertIdle(p);
+    if (p.revision !== input.revision) throw new Error('Project revision changed');
+    service.shot(p, input.shotId);
+    if (input.targetInputHash !== service.hash(p, input.shotId)) throw new Error('Target input changed');
+    if (typeof input.referenceOnly !== 'boolean' || !Array.isArray(input.references) ||
+        input.references.length < 1 || input.references.length > 8)
+      throw new Error('Provide 1–8 ordered references and explicit referenceOnly');
+    const seen = new Set<string>();
+    const refs = [];
+    for (const item of input.references) {
+      if (!item || typeof item.role !== 'string' || !item.role.trim() || item.role.length > 2000)
+        throw new Error('Each reference needs a concise continuity role');
+      const r = p.runs.find(r => r.id === item.runId);
+      if (!r || r.kind !== 'REFERENCE' || r.status !== 'APPROVED' || !r.file ||
+          r.sha256 !== item.sha256 || r.inputHash !== item.sourceInputHash ||
+          r.reviewDecision?.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR' ||
+          r.reviewDecision.sha256 !== item.sha256 || r.reviewDecision.inputHash !== item.sourceInputHash)
+        throw new Error('Exact adopted reference required');
+      if (seen.has(item.sha256)) throw new Error('Duplicate reference bytes');
+      if (r.shotId.startsWith('scene:') && r.inputHash !== service.hash(p, r.shotId))
+        throw new Error('Reference context changed before binding');
+      seen.add(item.sha256);
+      const file = path.resolve(service.directory(id), r.file);
+      if (path.dirname(file) !== path.resolve(service.directory(id)) ||
+          createHash('sha256').update(await readFile(file)).digest('hex') !== item.sha256)
+        throw new Error('Reference path or SHA changed');
+      refs.push({ nodeId: '', file: r.file, sha256: item.sha256, mediaType: 'image' as const,
+        role: `${item.role.trim()} Source=${r.id}; approvedInput=${item.sourceInputHash}; targetInput=${input.targetInputHash}.` });
+    }
+    // All inputs have passed before changing any binding; one save, no partial set.
+    p.shotReferences ??= {};
+    p.shotReferences[input.shotId] = refs;
+    p.shotReferenceOnly ??= {};
+    p.shotReferenceOnly[input.shotId] = input.referenceOnly;
+    await service.save(p);
+    return p;
+  });
+}
+
 /** Bind only the exact human-adopted bytes; upload is performed by prepare. */
 export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string, referenceOnly?: boolean, reuse?: ReferenceReuse) {
   return service.exclusive(id, async p => {

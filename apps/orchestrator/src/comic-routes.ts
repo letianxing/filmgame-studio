@@ -6,7 +6,7 @@ import { RemoteVideoProvider } from "../../../services/remote-video-adapter/src/
 import { DreaminaAdapter } from "../../../services/dreamina-adapter/src/index.js";
 import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
-import { importReferenceCandidate, bindReferenceCandidate } from './comic-reference-import.js';
+import { importReferenceCandidate, bindReferenceCandidate, bindReferenceSet, type ReferenceSetInput } from './comic-reference-import.js';
 import { bindVoiceReference } from './comic-voice-reference.js';
 import { localRepairCapabilities, planLocalRepair, type LocalRepairInput } from './comic-local-repair.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
@@ -183,6 +183,8 @@ export async function comicRoute(
         data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
         sourceLabel: String(body.sourceLabel ?? ''), ledger: String(body.ledger ?? ''),
       })) });
+    if (action === 'bind-reference-set')
+      return send({ project: view(await bindReferenceSet(service, id, body as unknown as ReferenceSetInput)) });
     if (action === 'bind-reference-candidate')
       return send({ project: view(await bindReferenceCandidate(service, id, String(body.runId), String(body.sha256 ?? ''),
         typeof body.shotId === 'string' ? body.shotId : undefined,
