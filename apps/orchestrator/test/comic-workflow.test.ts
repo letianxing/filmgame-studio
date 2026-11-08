@@ -33,7 +33,7 @@ test('shot-only references omit conflicting global images and bindings without c
   assert.equal(uploads, 0);
   assert.deepEqual(saved.refs, ['node:node_123456789a']);
   assert.ok(!saved.prompt.includes('morning.jpg'));
-  assert.ok(saved.prompt.includes('red coat'));
+  assert.ok(!saved.prompt.includes('red coat')); // Shot-only staging must not inherit conflicting global costume.
   assert.deepEqual(prepared.story!.episodes[0]!.shots[0]!.characterIds, ['hero']);
   assert.deepEqual(prepared.runs.at(-1)!.referenceUploads, []);
   const h = service.hash(prepared, 's1');
@@ -298,4 +298,25 @@ test('project credit cap includes uncertain submissions and auxiliary assets', a
   await service.save(project);
   await assert.rejects(service.run(project.id,'new',20),/额度不足/);
   assert.equal(submissions,0);
+});
+
+
+test('authoring hold blocks prepare and previously quoted video without provider calls or reservation', async () => {
+  const { service, project } = await setup();
+  const held = structuredClone(story);
+  held.episodes[0]!.shots[0]!.generationHold = 'Reference container: generate reviewed child shots instead';
+  validateComic(held);
+  project.story = held;
+  project.runs.push({id: 'old-quote', shotId: 's1', provider: 'dreamina', status: 'QUOTED',
+    storyVersion: project.storyVersion, inputHash: service.hash(project, 's1'), createdAt: new Date().toISOString(), credits: 70});
+  await service.save(project);
+  for (const provider of ['dreamina', 'seedance'] as const)
+    await assert.rejects(service.prepare(project.id, 's1', provider), /Reference container/);
+  await assert.rejects(service.run(project.id, 'old-quote', 70), /Reference container/);
+  const after = await service.get(project.id);
+  assert.equal(after.runs.length, 1);
+  assert.equal(after.runs[0]!.status, 'QUOTED');
+  assert.equal(after.runs[0]!.creditCeiling, undefined);
+  assert.equal(after.runs[0]!.submittedAt, undefined);
+  assert.throws(() => validateComic({...held, episodes: [{...held.episodes[0], shots: [{...held.episodes[0]!.shots[0], generationHold: 123}]}]}));
 });

@@ -8,6 +8,8 @@ export interface ComicCharacter {
   voice: string;
 }
 export interface ComicShot {
+  /** Explicit authoring hold: references remain usable, video generation is blocked. */
+  generationHold?: string;
   id: string;
   scene: string;
   description: string;
@@ -57,6 +59,8 @@ export const shotSchema = object({
     }),
   },
 });
+// Optional for compatibility with existing stories and provider structured outputs.
+(shotSchema.properties as Record<string, unknown>).generationHold = text;
 export const outlineSchema = object({
   title: text,
   logline: text,

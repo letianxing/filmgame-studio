@@ -1,3 +1,7 @@
+## 2026-11-08 Reference containers and retired shot generation
+
+Set the optional shot `generationHold` to a concrete reason when an old shot remains only as an approved-reference container, or when its causal/continuity plan must be replaced. ComicService blocks both preparation and submission (including an already quoted run) before provider calls and credit reservation. Existing references and review history remain available. Removing the hold is an explicit story revision; it does not approve new imagery. Older stories without this field keep their hashes and normal behavior. The n03 fire parent now holds the old 12-second clip; its six reviewed child shots must be authored separately.
+
 ## 2026-11-08 最新审核方式：用户只审图与视频
 
 用户已通过n03-rear-crowd-concept-v1的构图及图片提示词，并要求“之后提示词你自我修进吧，我直接根据图和视频判断，回到之前审核方式”。覆盖下方逐次提示词人工审批要求：agent自行校验修进提示词、剧情逻辑与参考绑定；概念图提交用户审核，概念图采纳后才能制作依赖视频，视频采纳后才交runtime。送审仍附清楚的背景故事、前因后果和本次变化。保留提示词版本与成本证据，不把本次方案通过当成尚未生成图片或视频获准。

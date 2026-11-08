@@ -320,6 +320,7 @@ export class ComicService {
     return this.exclusive(id, async (p) => {
       if (!["seedance", "dreamina"].includes(provider)) throw new Error("未知制作服务");
       const { story, shot } = this.shot(p, shotId);
+      if (shot.generationHold) throw new Error(`Video generation on hold: ${shot.generationHold}`);
       assertTextIntegrity(shot);
       assertTextIntegrity(nativePrompt(story, shot, { appearanceFromReference: !!p.shotReferenceOnly?.[shotId] }), 'compiledPrompt');
       const referenceCharacterIds = this.referenceCharacterIds(p, shotId);
@@ -531,6 +532,7 @@ export class ComicService {
       if (!r || r.status !== "QUOTED") throw new Error("请先准备镜头并确认制作");
       assertTextIntegrity(this.shot(p, r.shotId).shot);
       const currentShot = this.shot(p, r.shotId);
+      if (currentShot.shot.generationHold) throw new Error(`Video generation on hold: ${currentShot.shot.generationHold}`);
       assertTextIntegrity(nativePrompt(currentShot.story, currentShot.shot,
         { appearanceFromReference: !!p.shotReferenceOnly?.[r.shotId] }), 'compiledPrompt');
       const gate = submissionGate(p, r);
