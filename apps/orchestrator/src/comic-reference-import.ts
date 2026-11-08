@@ -3,31 +3,37 @@ import { writeFile, readFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import type { ComicService } from './comic-service.js';
 
+export interface ReferenceReuse { sourceInputHash: string; targetInputHash: string; reason: string; }
+
 /** Bind only the exact human-adopted bytes; upload is performed by prepare. */
-export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string, referenceOnly?: boolean) {
+export async function bindReferenceCandidate(service: ComicService, id: string, runId: string, sha256: string, targetShotId?: string, referenceOnly?: boolean, reuse?: ReferenceReuse) {
   return service.exclusive(id, async p => {
     service.assertIdle(p);
     const r = p.runs.find(r => r.id === runId);
     if (!r || r.kind !== 'REFERENCE' || r.status !== 'APPROVED' || !r.file ||
         r.sha256 !== sha256 || r.reviewDecision?.sha256 !== sha256 ||
-        r.reviewDecision.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR')
+        r.reviewDecision.inputHash !== r.inputHash || r.reviewDecision.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR')
       throw new Error('Exact human-adopted reference required');
     if (createHash('sha256').update(await readFile(path.join(service.directory(id), r.file))).digest('hex') !== sha256)
       throw new Error('Reference SHA changed');
     const shotId = targetShotId ?? r.shotId;
     if (!p.story?.episodes.some(e => e.shots.some(s => s.id === shotId)))
       throw new Error('Target shot does not exist');
-    if (shotId !== r.shotId && !r.shotId.startsWith('scene:'))
-      throw new Error('Only a scene reference can be bound to another shot');
+    const crossShot = shotId !== r.shotId && !r.shotId.startsWith('scene:');
+    if (crossShot && (!reuse || typeof reuse.reason !== 'string' || !reuse.reason.trim() || reuse.reason.length > 2000 ||
+        reuse.sourceInputHash !== r.reviewDecision.inputHash || reuse.targetInputHash !== service.hash(p, shotId)))
+      throw new Error('Cross-shot reuse requires exact approved source, current target hash and a continuity rationale');
     if (r.shotId.startsWith('scene:') && r.inputHash !== service.hash(p, r.shotId))
       throw new Error('Reference context changed before binding');
     const current = p.shotReferences?.[shotId];
     const alreadyBound = current?.length === 1 && current[0]?.file === r.file;
     if (alreadyBound && (referenceOnly === undefined || Boolean(p.shotReferenceOnly?.[shotId]) === referenceOnly)) return p;
-    if (!alreadyBound && r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
+    if (!alreadyBound && !crossShot && r.inputHash !== service.hash(p, r.shotId)) throw new Error('Reference context changed before binding');
     p.shotReferences ??= {};
     p.shotReferences[shotId] = [{ nodeId: '', file: r.file, sha256, mediaType: 'image',
-      role: 'Exact human-adopted composition, character identities, anatomical pose and lighting; preserve these in motion.' }];
+      role: 'Exact human-adopted composition, character identities, anatomical pose and lighting; preserve these in motion.' +
+        (crossShot ? ' Reuse source=' + r.id + '; approvedInput=' + r.inputHash +
+          '; targetInput=' + reuse!.targetInputHash + '; rationale=' + reuse!.reason.trim() : '') }];
     if (referenceOnly !== undefined) {
       p.shotReferenceOnly ??= {};
       p.shotReferenceOnly[shotId] = referenceOnly;

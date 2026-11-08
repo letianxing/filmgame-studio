@@ -51,6 +51,21 @@ test('external reference requires exact bytes, remains human-reviewed, and canno
     p.sceneConcepts!.village!.prompt = 'Changed layout after approval';
     await service.save(p);
     await assert.rejects(bindReferenceCandidate(service, p.id, sceneRun.id, input.sha256, 's1'), /context changed/);
+    // Cross-shot reuse preserves the original approval; it does not approve a new video.
+    p = await service.get(p.id);
+    p.story!.episodes[0]!.shots.push({ ...p.story!.episodes[0]!.shots[0]!, id: 's2', description: 'Listen behind crowd' });
+    await service.save(p);
+    const source = p.runs[0]!;
+    const approval = JSON.stringify(source.reviewDecision);
+    await assert.rejects(bindReferenceCandidate(service, p.id, source.id, input.sha256, 's2', true), /Cross-shot/);
+    const reuse = { sourceInputHash: source.inputHash, targetInputHash: service.hash(p, 's2'), reason: 'Same approved rear-crowd layout, different response' };
+    await assert.rejects(bindReferenceCandidate(service, p.id, source.id, input.sha256, 's2', true, { ...reuse, targetInputHash: 'stale' }), /Cross-shot/);
+    await assert.rejects(bindReferenceCandidate(service, p.id, source.id, input.sha256, 's2', true, { ...reuse, sourceInputHash: 'wrong' }), /Cross-shot/);
+    p = await bindReferenceCandidate(service, p.id, source.id, input.sha256, 's2', true, reuse);
+    assert.equal(p.shotReferences?.s2?.[0]?.sha256, input.sha256);
+    assert.match(p.shotReferences!.s2![0]!.role!, /different response/);
+    assert.equal(JSON.stringify(p.runs[0]!.reviewDecision), approval);
+    await assert.rejects(service.reviewedManifest(p.id));
     await writeFile(path.join(service.directory(p.id), p.runs[0]!.file!), 'corrupt');
     await assert.rejects(bindReferenceCandidate(service, p.id, p.runs[0]!.id, input.sha256), /SHA/);
   } finally {
