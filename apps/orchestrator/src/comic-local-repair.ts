@@ -26,6 +26,62 @@ export interface LocalRepairInput {
   limits: LocalRepairPlan['limits'];
 }
 
+/** Bind a defective movie as motion evidence, never as adopted appearance or delivery. */
+export async function bindRepairSource(service: ComicService, id: string, input: {
+  revision: number; planId: string; targetInputHash: string; targetShotId?: string | undefined; clipRunId?: string | undefined;
+}) {
+  return service.exclusive(id, async p => {
+    service.assertIdle(p);
+    if (p.revision !== input.revision) throw new Error('Project revision changed');
+    const plan = p.localRepairPlans?.find(x => x.id === input.planId);
+    if (!plan || plan.method !== 'video-shot-regeneration' || plan.status !== 'PLANNED_NOT_EXECUTED')
+      throw new Error('Video regeneration plan required');
+    const targetShotId = input.targetShotId ?? plan.shotId;
+    const { shot: targetShot } = service.shot(p, targetShotId);
+    if (service.hash(p, targetShotId) !== input.targetInputHash) throw new Error('Target input changed');
+    const source = p.runs.find(r => r.id === plan.sourceRunId);
+    if (!source || source.kind === 'REFERENCE' || source.shotId !== plan.shotId || !source.file ||
+        source.sha256 !== plan.sourceSha256 || !['REVIEW', 'APPROVED'].includes(source.status))
+      throw new Error('Exact available repair source required');
+    const root = path.resolve(service.directory(id)), file = path.resolve(root, source.file);
+    if (path.dirname(file) !== root) throw new Error('Source must be project-local media');
+    if (createHash('sha256').update(await readFile(file)).digest('hex') !== plan.sourceSha256)
+      throw new Error('Source SHA changed');
+    let reference = source;
+    const interval = plan.interval!;
+    const partial = interval.startSeconds > 0 || Math.abs(interval.endSeconds - source.durationSeconds!) > .12;
+    if (partial && !input.clipRunId) throw new Error('Partial repair requires a bounded derivative clip');
+    if (input.clipRunId) {
+      const clip = p.runs.find(r => r.id === input.clipRunId);
+      const t = clip?.derivative?.sourceInterval;
+      if (!clip || clip.kind || !clip.file || !clip.sha256 || !['REVIEW','APPROVED'].includes(clip.status) ||
+          clip.shotId !== source.shotId || clip.derivative?.sourceRunId !== source.id ||
+          clip.derivative?.sourceSha256 !== source.sha256 || !t ||
+          t.startSeconds !== interval.startSeconds || t.endSeconds !== interval.endSeconds ||
+          !clip.durationSeconds || Math.abs(clip.durationSeconds - (t.endSeconds - t.startSeconds)) > .12)
+        throw new Error('Exact interval derivative required');
+      const clipFile = path.resolve(root, clip.file);
+      if (path.dirname(clipFile) !== root || createHash('sha256').update(await readFile(clipFile)).digest('hex') !== clip.sha256)
+        throw new Error('Clip path or SHA changed');
+      if (targetShot.durationSeconds < clip.durationSeconds - .12 || targetShot.durationSeconds > Math.ceil(clip.durationSeconds) + .12)
+        throw new Error('Target duration must match repair clip, not the full source');
+      reference = clip;
+    }
+    const refs = p.shotReferences?.[targetShotId] ?? [];
+    if (!refs.some(r => r.mediaType === 'image')) throw new Error('Bind corrected image references first');
+    // Replace only an earlier repair source; preserve existing image/audio guidance.
+    const kept = refs.filter(r => !r.role.startsWith('REPAIR_SOURCE_NOT_APPROVED:'));
+    p.shotReferences ??= {};
+    p.shotReferences[targetShotId] = [...kept, { nodeId: '', file: reference.file!,
+      sha256: reference.sha256!, mediaType: 'video',
+      role: `REPAIR_SOURCE_NOT_APPROVED: plan=${plan.id}; source=${source.id}; interval=${interval.startSeconds}-${interval.endSeconds}; clip=${reference.id}; motion/camera evidence only. ` +
+        `Correct: ${plan.defect}. Preserve: ${plan.preserve.join('; ')}. ` +
+        'Use corrected image references for identity; do not reproduce the source defect. This is not approved delivery media.' }];
+    await service.save(p);
+    return p;
+  });
+}
+
 export async function planLocalRepair(service: ComicService, id: string, input: LocalRepairInput) {
   const capability=localRepairCapabilities.find(c=>c.id===input.method);
   const nonempty=(s: unknown): s is string=>typeof s==='string' && s.trim().length>0 && s.length<=4000;

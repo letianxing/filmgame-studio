@@ -10,7 +10,7 @@ import { MediaPipeline } from "../../../services/media-pipeline/src/index.js";
 import { ComicService, message, type ComicProject } from "./comic-service.js";
 import { importReferenceCandidate, bindReferenceCandidate, bindReferenceSet, type ReferenceSetInput } from './comic-reference-import.js';
 import { bindVoiceReference } from './comic-voice-reference.js';
-import { localRepairCapabilities, planLocalRepair, type LocalRepairInput } from './comic-local-repair.js';
+import { localRepairCapabilities, planLocalRepair, bindRepairSource, type LocalRepairInput } from './comic-local-repair.js';
 import type { Ratio } from "../../../packages/comic-engine/src/index.js";
 import { harnessProgress, type HarnessPolicy } from './comic-harness.js';
 import type { BillingReceipt } from './comic-cost-ledger.js';
@@ -175,6 +175,13 @@ export async function comicRoute(
         data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
         editDescription: String(body.editDescription ?? ''), ledger: String(body.ledger ?? ''),
         durationSeconds: Number(body.durationSeconds),
+        sourceInterval: body.sourceInterval as { startSeconds: number; endSeconds: number } | undefined,
+      })) });
+    if (action === 'bind-repair-source')
+      return send({ project: view(await bindRepairSource(service, id, {
+        revision: Number(body.revision), planId: String(body.planId ?? ''),
+        targetInputHash: String(body.targetInputHash ?? ''),
+        targetShotId: body.targetShotId as string | undefined, clipRunId: body.clipRunId as string | undefined,
       })) });
     if (action === 'plan-local-repair') {
       const result=await planLocalRepair(service,id,body as unknown as LocalRepairInput);

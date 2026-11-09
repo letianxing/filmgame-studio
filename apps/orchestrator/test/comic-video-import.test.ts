@@ -20,7 +20,7 @@ test('derivative preserves source decision, verifies exact bytes, stays pending 
   p=await service.apply(p.id,{title:'Village',logline:'Morning',visualStyle:'film',characters:[{id:'hero',name:'Hero',appearance:'coat',voice:'silent'}],episodes:[{id:'e',title:'Morning',synopsis:'Arrival',shots:[{id:'s',scene:'Village',description:'Arrival',camera:'Wide',durationSeconds:5,characterIds:[],dialogue:[]}]}]},p.revision);
   const original=Buffer.from('source'),data=Buffer.concat([Buffer.from([0,0,0,24]),Buffer.from('ftypisomDERIVATIVE')]);
   await writeFile(path.join(service.directory(p.id),'source.mp4'),original);
-  p.runs.push({id:'source',shotId:'s',provider:'dreamina',status:'REVIEW',inputHash:service.hash(p,'s'),storyVersion:p.storyVersion,createdAt:new Date().toISOString(),file:'source.mp4',sha256:sha(original)}); await service.save(p);
+  p.runs.push({id:'source',shotId:'s',provider:'dreamina',status:'REVIEW',inputHash:service.hash(p,'s'),storyVersion:p.storyVersion,createdAt:new Date().toISOString(),file:'source.mp4',sha256:sha(original),durationSeconds:9}); await service.save(p);
   const input={revision:p.revision,sourceRunId:'source',sourceSha256:sha(original),targetInputHash:service.hash(p,'s'),data,sha256:sha(data),editDescription:'Shortened occlusion',ledger:'edit.json',durationSeconds:4.125};
   await assert.rejects(importVideoDerivative(service,p.id,{...input,revision:-1}),/revision/);
   await assert.rejects(importVideoDerivative(service,p.id,{...input,sha256:'bad'}),/bounded MP4/);
@@ -28,6 +28,8 @@ test('derivative preserves source decision, verifies exact bytes, stays pending 
   await writeFile(path.join(service.directory(p.id),'source.mp4'),'changed');
   await assert.rejects(importVideoDerivative(service,p.id,input),/bytes changed/);
   await writeFile(path.join(service.directory(p.id),'source.mp4'),original);
+  await assert.rejects(importVideoDerivative(service,p.id,{...input,sourceInterval:{startSeconds:8,endSeconds:12.125}}),/Source interval/);
+  await assert.rejects(importVideoDerivative(service,p.id,{...input,sourceInterval:{startSeconds:2,endSeconds:3}}),/Source interval/);
   const before=await readdir(service.directory(p.id)); valid=false;
   await assert.rejects(importVideoDerivative(service,p.id,input),/technical validation/);
   assert.deepEqual(await readdir(service.directory(p.id)),before); valid=true;
@@ -37,6 +39,7 @@ test('derivative preserves source decision, verifies exact bytes, stays pending 
   assert.equal(r.credits,undefined); assert.equal(r.durationSeconds,4.125);
   assert.equal(r.derivative!.sourceSha256,sha(original));
   p=await importVideoDerivative(service,p.id,{...input,revision:p.revision}); assert.equal(p.runs.length,2);
+  await assert.rejects(importVideoDerivative(service,p.id,{...input,revision:p.revision,sourceInterval:{startSeconds:2,endSeconds:6.125}}),/provenance differs/);
  } finally {await rm(root,{recursive:true,force:true});}
 });
 

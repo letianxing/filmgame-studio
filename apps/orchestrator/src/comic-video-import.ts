@@ -6,6 +6,7 @@ import type { ComicService } from './comic-service.js';
 export interface VideoDerivativeInput {
   revision: number; sourceRunId: string; sourceSha256: string; targetInputHash: string;
   data: Buffer; sha256: string; editDescription: string; ledger: string; durationSeconds: number;
+  sourceInterval?: { startSeconds: number; endSeconds: number } | undefined;
 }
 const digest = (data: Buffer) => createHash('sha256').update(data).digest('hex');
 
@@ -25,6 +26,13 @@ export async function importVideoDerivative(service: ComicService, id: string, i
         source.sha256 !== input.sourceSha256 || source.inputHash !== input.targetInputHash ||
         service.hash(p, source.shotId) !== input.targetInputHash)
       throw new Error('Current non-rejected source video and exact input SHA required');
+    if (input.sourceInterval) {
+      const t = input.sourceInterval;
+      if (!Number.isFinite(t.startSeconds) || !Number.isFinite(t.endSeconds) || t.startSeconds < 0 ||
+          t.endSeconds <= t.startSeconds || !source.durationSeconds || t.endSeconds > source.durationSeconds ||
+          Math.abs(input.durationSeconds - (t.endSeconds - t.startSeconds)) > .12)
+        throw new Error('Source interval must be bounded and match derivative duration');
+    }
     const sourceFile = path.resolve(service.directory(id), source.file);
     if (path.dirname(sourceFile) !== path.resolve(service.directory(id)) ||
         digest(await readFile(sourceFile)) !== input.sourceSha256)
@@ -33,6 +41,8 @@ export async function importVideoDerivative(service: ComicService, id: string, i
     const existing = p.runs.find(r => r.derivative?.sourceRunId === source.id &&
       r.inputHash === input.targetInputHash && r.sha256 === input.sha256);
     if (existing) {
+      if (JSON.stringify(existing.derivative?.sourceInterval) !== JSON.stringify(input.sourceInterval))
+        throw new Error('Existing derivative interval provenance differs');
       if (!existing.file || digest(await readFile(path.join(service.directory(id), existing.file))) !== input.sha256)
         throw new Error('Existing derivative unavailable; do not resurrect rejected candidates');
       return p;
@@ -51,7 +61,7 @@ export async function importVideoDerivative(service: ComicService, id: string, i
         storyVersion: p.storyVersion, inputHash: input.targetInputHash, file, sha256: input.sha256,
         durationSeconds: technical.durationSeconds, createdAt: now, completedAt: now,
         derivative: { sourceRunId: source.id, sourceSha256: input.sourceSha256,
-          editDescription: input.editDescription.trim(), ledger: input.ledger.trim() },
+          editDescription: input.editDescription.trim(), ledger: input.ledger.trim(), ...(input.sourceInterval ? { sourceInterval: { ...input.sourceInterval } } : {}) },
         basicReview: { sha256: input.sha256, checkedAt: now, technical, scope: 'TECHNICAL_ONLY' } });
       p.phase = '本地修整视频待审核';
       await service.save(p);

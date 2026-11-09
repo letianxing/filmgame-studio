@@ -57,7 +57,7 @@ export interface ShotRun {
   file?: string;
   sha256?: string;
   durationSeconds?: number;
-  derivative?: { sourceRunId: string; sourceSha256: string; editDescription: string; ledger: string };
+  derivative?: { sourceRunId: string; sourceSha256: string; editDescription: string; ledger: string; sourceInterval?: { startSeconds: number; endSeconds: number } };
   error?: string;
   createdAt: string;
   imported?: { sourceSha256: string; sourceLabel: string; importedAt: string; billing: 'HISTORICAL_EXTERNAL_LEDGER'; ledger: string };
