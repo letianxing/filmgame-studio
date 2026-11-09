@@ -1,4 +1,5 @@
 import { configureAgentReview, recordAgentReview, type AgentReviewInput } from './comic-agent-review.js';
+import { importVideoDerivative } from './comic-video-import.js';
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { createReadStream } from "node:fs";
 import path from "node:path";
@@ -166,7 +167,15 @@ export async function comicRoute(
     if (request.method === 'GET' && action === 'local-repair-capabilities')
       return send({ capabilities: localRepairCapabilities });
     if (request.method !== "POST") return send({ error: "不支持此操作" }, 405);
-    const body = await readBody(request, ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    const body = await readBody(request, action === 'import-video-derivative' ? 41_000_000 : ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    if (action === 'import-video-derivative')
+      return send({ project: view(await importVideoDerivative(service, id, {
+        revision: Number(body.revision), sourceRunId: String(body.sourceRunId ?? ''),
+        sourceSha256: String(body.sourceSha256 ?? ''), targetInputHash: String(body.targetInputHash ?? ''),
+        data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
+        editDescription: String(body.editDescription ?? ''), ledger: String(body.ledger ?? ''),
+        durationSeconds: Number(body.durationSeconds),
+      })) });
     if (action === 'plan-local-repair') {
       const result=await planLocalRepair(service,id,body as unknown as LocalRepairInput);
       return send({project:view(result.project),plan:result.plan});
