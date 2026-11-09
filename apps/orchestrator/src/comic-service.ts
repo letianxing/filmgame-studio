@@ -1,3 +1,4 @@
+import { acceptedReviewActor, type AgentReviewAuthorization, type AgentReviewEvidence } from './comic-agent-review.js';
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile, rename, readdir, stat, copyFile } from "node:fs/promises";
 import { createReadStream, createWriteStream } from "node:fs";
@@ -62,7 +63,7 @@ export interface ShotRun {
   submittedAt?: string;
   completedAt?: string;
   reviewAcknowledgedSha?: string;
-  reviewDecision?: { decision: 'APPROVED' | 'REJECTED'; sha256: string; inputHash: string; at: string; actor: 'LOCAL_CREATOR'; reason: string };
+  reviewDecision?: { decision: 'APPROVED' | 'REJECTED'; sha256: string; inputHash: string; at: string; actor: 'LOCAL_CREATOR' | 'AUTHORIZED_AGENT'; reason: string; agentReview?: AgentReviewEvidence };
   cleanup?: CleanupReceipt;
   basicReview?: { sha256: string; checkedAt: string; technical: MediaTechnicalValidation; signals?: MediaSignalAnalysis; scope: 'TECHNICAL_ONLY' };
   referenceUploads?: Array<{ characterId: string; file: string; resourceId: string }>;
@@ -70,6 +71,7 @@ export interface ShotRun {
   editorialTrim?: { startSeconds: number; endSeconds: number; reason: string };
 }
 export interface ComicProject {
+  agentReviewAuthorization?: AgentReviewAuthorization;
   localRepairPlans?: LocalRepairPlan[];
   id: string;
   title: string;
@@ -818,7 +820,7 @@ export class ComicService {
       const assets = [];
       for (const shot of shots) {
         const r = [...p.runs].reverse().find(run => run.kind !== 'REFERENCE' && run.shotId === shot.id && run.status === 'APPROVED'
-          && run.inputHash === this.hash(p, shot.id) && run.reviewDecision?.decision === 'APPROVED'
+          && run.inputHash === this.hash(p, shot.id) && acceptedReviewActor(run) && run.reviewDecision?.decision === 'APPROVED'
           && run.reviewDecision.sha256 === run.sha256 && run.reviewDecision.inputHash === run.inputHash);
         if (!r?.file || !r.sha256) throw new Error(`镜头 ${shot.id} 缺少当前版本的人工采纳`);
         const resolved = await this.asset(id, r.file);

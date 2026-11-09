@@ -1,3 +1,4 @@
+import { configureAgentReview, recordAgentReview, type AgentReviewInput } from './comic-agent-review.js';
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { createReadStream } from "node:fs";
 import path from "node:path";
@@ -197,6 +198,10 @@ export async function comicRoute(
       return send({ project: view(await service.recordBilling(id, body.receipt as Omit<BillingReceipt, 'recordedAt' | 'source'>)) });
     if (action === 'harness-policy')
       return send({ project: view(await service.configureHarness(id, body.policy as HarnessPolicy)) });
+    if (action === 'agent-review-authorization')
+      return send({ project: view(await configureAgentReview(service, id, body.enabled as boolean, body.instruction as string)) });
+    if (action === 'agent-review')
+      return send({ project: view(await recordAgentReview(service, id, body as unknown as AgentReviewInput)) });
     if (action === 'reject-review')
       return send({ project: view(await service.rejectReview(id, String(body.runId), String(body.sha256 ?? ''), String(body.reason ?? ''))) });
     if (action === 'acknowledge-review')

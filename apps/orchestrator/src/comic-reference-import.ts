@@ -1,3 +1,4 @@
+import { acceptedReviewActor } from './comic-agent-review.js';
 import { createHash, randomUUID } from 'node:crypto';
 import { writeFile, readFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
@@ -29,7 +30,7 @@ export async function bindReferenceSet(service: ComicService, id: string, input:
       const r = p.runs.find(r => r.id === item.runId);
       if (!r || r.kind !== 'REFERENCE' || r.status !== 'APPROVED' || !r.file ||
           r.sha256 !== item.sha256 || r.inputHash !== item.sourceInputHash ||
-          r.reviewDecision?.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR' ||
+          r.reviewDecision?.decision !== 'APPROVED' || !acceptedReviewActor(r) ||
           r.reviewDecision.sha256 !== item.sha256 || r.reviewDecision.inputHash !== item.sourceInputHash)
         throw new Error('Exact adopted reference required');
       if (seen.has(item.sha256)) throw new Error('Duplicate reference bytes');
@@ -60,7 +61,7 @@ export async function bindReferenceCandidate(service: ComicService, id: string, 
     const r = p.runs.find(r => r.id === runId);
     if (!r || r.kind !== 'REFERENCE' || r.status !== 'APPROVED' || !r.file ||
         r.sha256 !== sha256 || r.reviewDecision?.sha256 !== sha256 ||
-        r.reviewDecision.inputHash !== r.inputHash || r.reviewDecision.decision !== 'APPROVED' || r.reviewDecision.actor !== 'LOCAL_CREATOR')
+        r.reviewDecision.inputHash !== r.inputHash || r.reviewDecision.decision !== 'APPROVED' || !acceptedReviewActor(r))
       throw new Error('Exact human-adopted reference required');
     if (createHash('sha256').update(await readFile(path.join(service.directory(id), r.file))).digest('hex') !== sha256)
       throw new Error('Reference SHA changed');
