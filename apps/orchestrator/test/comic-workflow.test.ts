@@ -338,6 +338,30 @@ test('creator can correct accidental approval only for exact revision without ad
 });
 
 
+test('exact stale media can be rejected and cleaned after authoring changes, but never approved', async () => {
+  const { service, project } = await setup();
+  const bytes = Buffer.from('obsolete media after shot refinement');
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  const oldHash = service.hash(project, 's1');
+  project.runs.push({ id: 'obsolete', shotId: 's1', provider: 'external', status: 'REVIEW',
+    storyVersion: project.storyVersion, inputHash: oldHash, createdAt: new Date().toISOString(),
+    file: 'obsolete.mp4', sha256: sha });
+  await writeFile(path.join(service.directory(project.id), 'obsolete.mp4'), bytes);
+  project.story!.episodes[0]!.shots[0]!.description = 'Revised blocking';
+  await service.save(project);
+  assert.notEqual(service.hash(project, 's1'), oldHash);
+  await assert.rejects(service.approve(project.id, 'obsolete', sha));
+  await assert.rejects(service.rejectReview(project.id, 'obsolete', 'b'.repeat(64), 'Wrong actors'));
+  assert.deepEqual(await readFile(path.join(service.directory(project.id), 'obsolete.mp4')), bytes);
+  const result = await service.rejectReview(project.id, 'obsolete', sha, 'Wrong actors at 00:06; revised shot prepared');
+  const run = result.runs.find(r => r.id === 'obsolete')!;
+  assert.equal(run.status, 'REJECTED');
+  assert.equal(run.reviewDecision!.inputHash, oldHash);
+  assert.equal(run.reviewDecision!.sha256, sha);
+  assert.equal(run.cleanup!.status, 'DELETED');
+  await assert.rejects(readFile(path.join(service.directory(project.id), 'obsolete.mp4')));
+});
+
 test('missing historical rejected media does not prevent cleanup of later rejected media', async () => {
   const {service, project} = await setup();
   const bytes = Buffer.from('rejected test media');

@@ -786,7 +786,9 @@ export class ComicService {
   async rejectReview(id: string, runId: string, sha: string, reason: string) {
     return this.exclusive(id, async p => {
       const r = p.runs.find(run => run.id === runId);
-      if (!r || !['REVIEW', 'APPROVED'].includes(r.status) || !sha || r.sha256 !== sha || r.inputHash !== this.hash(p, r.shotId))
+      // Reject the exact historical bytes even after a shot is revised. Approval
+      // still requires current inputs; rejection records the run's original hash.
+      if (!r || !['REVIEW', 'APPROVED'].includes(r.status) || !sha || r.sha256 !== sha)
         throw new Error('待审版本已变化，请刷新');
       if (!reason.trim() || reason.length > 2000) throw new Error('请填写具体问题、时间码和期望改善（2000字以内）');
       if (r.status === 'APPROVED' && r.file && (Object.values(p.references).includes(r.file)
