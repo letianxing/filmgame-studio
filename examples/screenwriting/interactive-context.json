@@ -1,0 +1,14 @@
+{
+  "source": "虚构测试场景：村口起火，队长分派救火与守路。玩家随后选择引开追兵或带孩子绕行。",
+  "world": "架空古代村落；仅作工作流测试，不覆盖游戏正式剧本。",
+  "characters": "队长负责控制局势；村民急于救火；主角保护同行孩子。",
+  "style": "风格化写实；克制表演，空间可读，暖日光下保持统一光向。",
+  "lockedFacts": ["先下令，再呈现接收与执行；守路和救火由不同士卒负责。"],
+  "branches": [
+    {"id": "lure", "prerequisite": "追兵出现", "stateChanges": "escort=false", "destination": "patrol", "consequence": "主角独自面对追兵", "convergence": "后续会合仍保留同行者分离事实"},
+    {"id": "escort", "prerequisite": "孩子仍同行", "stateChanges": "escort=true", "destination": "dike", "consequence": "进入护送路线", "convergence": "后续会合仍保留护送结果"}
+  ],
+  "assets": [{"id": "village", "version": "fixture-v1", "status": "ADOPTED", "description": "测试用场景参考标识，不存在正式媒体"}],
+  "scope": "仅整理当前节点的因果与分支，禁止修改结局。",
+  "budget": {"availableCredits": null, "maxNewSeconds": 30}
+}

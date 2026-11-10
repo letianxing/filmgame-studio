@@ -1,2 +1,4 @@
 *.env.enc text eol=lf
 .sops.yaml text eol=lf
+.agents/skills/** text eol=lf
+third_party/screenwriting/* text eol=lf

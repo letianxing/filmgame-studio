@@ -37,6 +37,7 @@
     "generate:fixtures": "tsx scripts/build-runtime-fixture.ts && tsx scripts/build-production-fixture.ts",
     "check": "npm run generate:fixtures && npm run skills:check && npm run validate:schemas && npm run typecheck && npm run lint && npm run test && npm run build",
     "screenplay": "tsx scripts/screenplay.ts",
+    "authoring": "tsx scripts/interactive-authoring.ts",
     "skills:check": "node scripts/check-screenwriting-skills.mjs"
   },
   "devDependencies": {
