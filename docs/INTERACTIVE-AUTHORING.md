@@ -20,6 +20,8 @@ npm run authoring -- export --context context.json --chain chain-v3.json --outpu
 
 结果字段见 `AuthoringResult` 和 `Shot`，定义在 `packages/story-engine/src/interactive-authoring.ts`。非分镜阶段 shots 为空。每个镜头有时长、叙事目的、内容、景别、视角、运镜、表演、逐字对白、声音、光照、首尾状态、接切、参考 ID、分支 ID、生成组、复用/新增和提示词。阅读稿 prose 使用文字段落，不用表格。
 
+Windows PowerShell 的 npm 包装脚本可能吞掉双横线后的命名参数。若出现 `Missing --context`，将上述命令前缀 `npm run authoring --` 换成 `node --import tsx scripts/interactive-authoring.ts`，其余参数保持不变。实际三阶段 CLI 回归测试使用后者，不依赖 shell 包装行为。
+
 ## 版本与边界
 
 检查点记录上下文 hash、父阶段 hash 和结果 hash。输入、人物或分支改变后旧链拒绝继续；上游结果变动后旧下游提示词包拒绝提交。只修改分镜时保留前两阶段，准备新分镜包；修改第二阶段时保留第一阶段并重建下游。不要覆盖历史文件。共同上下文有变化须从第一阶段重新核对；当前未实现自动按场景计算最小失效范围。
