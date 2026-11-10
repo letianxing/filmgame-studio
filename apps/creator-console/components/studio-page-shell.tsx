@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 const navigation = [
   { id: 'drama', label: '漫剧工作台', href: '/drama', icon: Film },
   { id: 'learn', label: '制作教程', href: '/learn', icon: Play },
+  { id: 'comic', label: '漫剧', href: '/comic', icon: Film },
   { id: 'idea', label: '创意', href: '/', icon: Sparkles },
   { id: 'story', label: '故事', href: '/story', icon: GitBranch },
   { id: 'production', label: '制作', href: '/production', icon: Clapperboard },

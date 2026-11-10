@@ -1,0 +1,379 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import os from 'node:os';
+import path from 'node:path';
+import { ComicService } from '../src/comic-service.js';
+import { validateComic, type ComicStory } from '../../../packages/comic-engine/src/index.js';
+import { DreaminaAdapter, DreaminaPreflightError, dreaminaNodeId } from '../../../services/dreamina-adapter/src/index.js';
+import { MediaPipeline } from '../../../services/media-pipeline/src/index.js';
+import { RemoteVideoProvider } from '../../../services/remote-video-adapter/src/index.js';
+
+const story: ComicStory = { title: 'Test story', logline: 'A letter arrives.', visualStyle: 'ink animation', characters: [{ id: 'hero', name: 'Hero', appearance: 'red coat', voice: 'calm' }], episodes: [{ id: 'ep1', title: 'Arrival', synopsis: 'The hero opens a letter.', shots: [{ id: 's1', scene: 'Room', description: 'Open letter', camera: 'Close up', durationSeconds: 4, characterIds: ['hero'], dialogue: [{ characterId: 'hero', text: 'Who sent this?', startSeconds: 1, endSeconds: 3 }] }, { id: 's2', scene: 'Window', description: 'Looks out', camera: 'Wide', durationSeconds: 4, characterIds: [], dialogue: [] }] }] };
+
+test('shot-only references omit conflicting global images and bindings without changing cast or other hashes', async () => {
+  let saved: any;
+  let uploads = 0;
+  const cli = { auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_name: string, id: string) => ({ projectId: id, webUrl: 'https://example.test' }),
+    call: async () => { uploads++; throw Error('Unexpected global upload'); },
+    saveVideo: async (input: unknown) => { saved = input; },
+    quote: async () => ({ confirmable: true, items: [{ nodeId: saved.nodeId, maxCredits: 10 }], totalMaxCredits: 10 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, cli);
+  project.references.hero = 'morning.jpg';
+  project.shotReferences = { s1: [{ nodeId: 'node_123456789a', file: 'dusk.png', mediaType: 'image', role: 'Approved dusk staging with hero identity' }] };
+  const oldHash = service.hash(project, 's1'), otherHash = service.hash(project, 's2');
+  project.shotReferenceOnly = { s1: true };
+  assert.notEqual(service.hash(project, 's1'), oldHash);
+  assert.equal(service.hash(project, 's2'), otherHash);
+  await service.save(project);
+  const prepared = await service.prepare(project.id, 's1', 'dreamina');
+  assert.equal(uploads, 0);
+  assert.deepEqual(saved.refs, ['node:node_123456789a']);
+  assert.ok(!saved.prompt.includes('morning.jpg'));
+  assert.ok(!saved.prompt.includes('red coat')); // Shot-only staging must not inherit conflicting global costume.
+  assert.deepEqual(prepared.story!.episodes[0]!.shots[0]!.characterIds, ['hero']);
+  assert.deepEqual(prepared.runs.at(-1)!.referenceUploads, []);
+  const h = service.hash(prepared, 's1');
+  prepared.references.hero = 'other-morning.jpg';
+  assert.equal(service.hash(prepared, 's1'), h);
+});
+
+test('shot-only mode refuses absent visual staging before saving a run or contacting provider', async () => {
+  const { service, project } = await setup();
+  project.shotReferenceOnly = { s1: true };
+  project.shotReferences = { s1: [{ nodeId: 'node_123456789a', file: 'voice.wav', mediaType: 'audio', role: 'voice' }] };
+  await service.save(project);
+  await assert.rejects(service.prepare(project.id, 's1', 'dreamina'), /构图图片/);
+  assert.equal((await service.get(project.id)).runs.length, 0);
+});
+
+test('default reference hashing stays compatible with previous adopted clips', async () => {
+  const { service, project } = await setup();
+  const s = project.story!.episodes[0]!.shots[0]!;
+  const legacy = createHash('sha256').update(JSON.stringify({shot:s, style:project.story!.visualStyle,
+    ratio:project.ratio, characters:project.story!.characters.filter(c=>s.characterIds.includes(c.id)),
+    references:s.characterIds.map(c=>project.references[c]??null), shotReferences:[]})).digest('hex');
+  assert.equal(service.hash(project, 's1'), legacy);
+  project.shotReferenceOnly = { s1: false };
+  assert.equal(service.hash(project, 's1'), legacy);
+});
+
+test('scene concept uses image references, exact revision review and no character adoption', async () => {
+  let saved: any;
+  const cli = { auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_name: string, id: string) => ({ projectId: id, webUrl: 'https://example.test' }),
+    saveCharacter: async (input: any) => { saved = input; return 'seedream_4.0'; },
+    quote: async (_id: string, nodeId: string) => ({ confirmable: true, items: [{ nodeId, maxCredits: 1 }], totalMaxCredits: 1 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, cli);
+  const before = service.hash(project, 'character:hero');
+  let p = await service.prepareSceneReference(project.id, 'gate', 'Village gate at dusk, west light.', ['node:node_123456789a']);
+  assert.equal(saved.ratio, '16:9');
+  assert.deepEqual(saved.refs, ['node:node_123456789a']);
+  await assert.rejects(service.prepareSceneReference(project.id, 'gate', 'Different', []), /待处理/);
+  const r = p.runs.at(-1)!;
+  const bytes = Buffer.from('scene fixture');
+  r.file = `${r.id}.jpg`; r.sha256 = createHash('sha256').update(bytes).digest('hex'); r.status = 'REVIEW';
+  await writeFile(path.join(service.directory(p.id), r.file), bytes);
+  await service.save(p);
+  await assert.rejects(service.approve(p.id, r.id, 'wrong'), /版本/);
+  p = await service.approve(p.id, r.id, r.sha256);
+  assert.equal(p.runs.at(-1)!.status, 'APPROVED');
+  assert.deepEqual(p.references, {});
+  assert.equal(service.hash(p, 'character:hero'), before);
+  p.sceneConcepts!.gate!.prompt += ' Different lighting';
+  assert.notEqual(service.hash(p, r.shotId), r.inputHash);
+});
+async function setup(video: RemoteVideoProvider | null = null, dreamina: DreaminaAdapter | null = null) {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'filmgame-comic-test-'));
+  const service = new ComicService({ root, video, dreamina, llm: null, media: new MediaPipeline({ ffmpegPath: 'ffmpeg', ffprobePath: 'ffprobe' }) });
+  let project = await service.create({ idea: 'A young hero discovers an old letter.', style: 'ink', episodeCount: 1, episodeSeconds: 15, ratio: '9:16' });
+  project = await service.apply(project.id, structuredClone(story), project.revision);
+  project = await service.configureBudgets(project.id, { credits: 100, auxiliaryReserved: 0, cny: 10 });
+  return { service, project };
+}
+test('comic domain rejects unknown roles, duplicate IDs and overlapping dialogue', () => {
+  assert.doesNotThrow(() => validateComic(story));
+  let bad = structuredClone(story); bad.episodes[0]!.shots[0]!.characterIds = ['unknown']; assert.throws(() => validateComic(bad));
+  bad = structuredClone(story); bad.episodes[0]!.shots[1]!.id = 's1'; assert.throws(() => validateComic(bad));
+  bad = structuredClone(story); bad.episodes[0]!.shots[0]!.dialogue.push({ characterId: 'hero', text: 'Overlap', startSeconds: 2, endSeconds: 4 }); assert.throws(() => validateComic(bad));
+});
+
+test('reference preparation respects project style and child identity instead of hardcoded adult watercolor', async () => {
+  let prompt = '';
+  let node = '';
+  const dreamina = {
+    auth: async () => ({ loggedIn: true }),
+    createCanvas: async (_title: string, projectId: string) => ({ projectId, webUrl: 'https://example.test/canvas' }),
+    saveCharacter: async (input: { prompt: string; nodeId: string }) => { prompt = input.prompt; node = input.nodeId; return 'seedream_4.0'; },
+    quote: async () => ({ confirmable: true, items: [{ nodeId: node, maxCredits: 2 }], totalMaxCredits: 2 }),
+  } as unknown as DreaminaAdapter;
+  const { service, project } = await setup(null, dreamina);
+  const edited = structuredClone(story);
+  edited.visualStyle = 'cinematic stylized realism';
+  edited.characters[0]!.appearance = 'eight-year-old child, plain linen tunic';
+  const current = await service.apply(project.id, edited, project.revision);
+  const prepared = await service.prepareReference(current.id, 'hero');
+  assert.ok(prompt.includes(edited.visualStyle));
+  assert.ok(prompt.includes(edited.characters[0]!.appearance));
+  assert.ok(!prompt.includes('只画一个成年人物'));
+  assert.ok(!prompt.includes('东方二维手绘动画'));
+  assert.equal(prepared.runs.at(-1)?.status, 'QUOTED');
+});
+test('story revisions are immutable; changes invalidate only affected shots and exports', async () => {
+  const { service, project } = await setup();
+  const before = ['s1','s2'].map(s => service.hash(project,s));
+  const edited = structuredClone(story); edited.characters[0]!.appearance = 'blue coat';
+  await assert.rejects(service.apply(project.id, edited, 0), /版本/);
+  const next = await service.apply(project.id, edited, project.revision);
+  assert.notEqual(service.hash(next,'s1'), before[0]); assert.equal(service.hash(next,'s2'),before[1]);
+  assert.deepEqual(JSON.parse(await readFile(path.join(service.directory(project.id),'versions','1.json'),'utf8')),story);
+  const restored = await service.apply(project.id, story, next.revision); assert.equal(restored.storyVersion,3); assert.equal(service.hash(restored,'s1'), before[0]);
+  const output = { episodeId: 'ep1', file: 'episode.mp4', subtitles: 'episode.srt', storyVersion: 3, runIds: ['r1','r2'], createdAt: '' };
+  restored.runs = ['s1','s2'].map((shotId,i) => ({ id:`r${i+1}`, shotId, provider:'seedance', status:'APPROVED', inputHash:service.hash(restored,shotId), storyVersion:3, createdAt:'' }));
+  assert.equal(service.exportIsCurrent(restored,output),true);
+  restored.references.hero = 'changed.png'; assert.equal(service.exportIsCurrent(restored,output),false);
+});
+test('ambiguous submission survives restart and cannot be resubmitted or edited', async () => {
+  let submits = 0;
+  const video = { submit: async () => { submits++; throw new Error('network interrupted'); }, lookup:async () => null } as unknown as RemoteVideoProvider;
+  const { service, project } = await setup(video);
+  const prepared = await service.prepare(project.id,'s1','seedance');
+  const run = prepared.runs[0]!; const submitted = await service.run(project.id,run.id,undefined,{ ceiling: 1, evidence: 'fixture quote' });
+  assert.equal(submitted.runs[0]!.status,'UNCERTAIN');
+  const restarted = new ComicService(service.config);
+  await restarted.sync(project.id);
+  await assert.rejects(restarted.run(project.id,run.id));
+  await assert.rejects(restarted.prepare(project.id,'s1','seedance'));
+  await assert.rejects(restarted.apply(project.id,story,(await restarted.get(project.id)).revision));
+  assert.equal(submits,1);
+});
+test('generated reference approval locks the source node; later appearance changes invalidate it', async () => {
+  const { service, project } = await setup();
+  const r = {id:'ref1',shotId:'character:hero',kind:'REFERENCE' as const,provider:'dreamina' as const,status:'REVIEW' as const,storyVersion:1,inputHash:service.hash(project,'character:hero'),createdAt:'',file:'ref1.jpg',nodeId:dreaminaNodeId()};
+  assert.match(r.nodeId,/^node_[0-9a-hjkmnp-tv-z]{10}$/);
+  const bytes = Buffer.from('reference fixture');
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  await writeFile(path.join(service.directory(project.id), r.file), bytes);
+  project.runs.push({...r, sha256: sha});await service.save(project);
+  const approved=await service.approve(project.id,r.id,sha);
+  assert.equal(approved.references.hero,'ref1.jpg');assert.equal(approved.referenceNodes?.hero?.nodeId,r.nodeId);
+  const changed=structuredClone(story);changed.characters[0]!.appearance='new face';
+  const next=await service.apply(project.id,changed,approved.revision);assert.notEqual(service.hash(next,r.shotId),r.inputHash);
+});
+test('credit confirmation failure leaves the task unsubmitted and recoverable', async () => {
+  const {service,project}=await setup(null,{run:async()=>{throw new DreaminaPreflightError('approval expired');}} as unknown as DreaminaAdapter);
+  project.runs.push({id:'run1',shotId:'s1',provider:'dreamina',status:'QUOTED',storyVersion:1,inputHash:service.hash(project,'s1'),createdAt:'',credits:20,nodeId:dreaminaNodeId(),submitId:'stable'});project.canvas={projectId:'canvas'};await service.save(project);
+  const p=await service.run(project.id,'run1',20);assert.equal(p.runs[0]!.status,'QUOTED');
+});
+test('Jimeng records operation IDs before side effects and requires explicit credit ceiling', async () => {
+  let service: ComicService; let projectId = ''; let submitted = 0;
+  const cli = {
+    auth: async () => ({loggedIn:true}), createCanvas: async (_name: string,id: string) => ({projectId:id,webUrl:'https://example.test/canvas'}),
+    saveVideo: async (input: {nodeId:string;updateId:string}) => { const p = await service.get(projectId); assert.equal(p.runs[0]!.nodeId,input.nodeId); assert.equal(p.runs[0]!.updateId,input.updateId); assert.ok(p.runs[0]!.submitId); },
+    quote: async (_canvas:string,nodeId:string) => ({totalMaxCredits:20,confirmable:true,items:[{nodeId,maxCredits:20}]}),
+    run: async () => { submitted++; },
+  } as unknown as DreaminaAdapter;
+  const fixture = await setup(null,cli); service=fixture.service;projectId=fixture.project.id;
+  const p = await service.prepare(projectId,'s1','dreamina');
+  await assert.rejects(service.run(projectId,p.runs[0]!.id)); await assert.rejects(service.run(projectId,p.runs[0]!.id,19)); assert.equal(submitted,0);
+  await service.run(projectId,p.runs[0]!.id,20); await assert.rejects(service.run(projectId,p.runs[0]!.id,20)); assert.equal(submitted,1);
+});
+test('uploaded and generated references bind the correct role to returned provider identities', async () => {
+  const returnedId = '11111111-1111-4111-8111-111111111111';
+  const nodeId = dreaminaNodeId();
+  let saved: {prompt:string; refs:string[]} | undefined;
+  let uploads = 0;
+  const cli = {
+    auth: async () => ({loggedIn:true}),
+    createCanvas: async (_name:string,id:string) => ({projectId:id,webUrl:'https://example.test/canvas'}),
+    call: async (args:string[]) => { assert.deepEqual(args.slice(0,2),['resource','upload']); uploads++; return {resourceId:returnedId}; },
+    saveVideo: async (input:{prompt:string;refs:string[]}) => { saved=input; },
+    quote: async (_canvas:string,nodeId:string) => ({totalMaxCredits:20,confirmable:true,items:[{nodeId,maxCredits:20}]}),
+  } as unknown as DreaminaAdapter;
+  const {service,project}=await setup(null,cli);
+  const revised=structuredClone(story);
+  revised.characters.push({id:'elder',name:'Elder',appearance:'elder on the left',voice:'low'});
+  revised.episodes[0]!.shots[0]!.characterIds.push('elder');
+  const p=await service.apply(project.id,revised,project.revision);
+  p.references={hero:'hero.jpg',elder:'elder.jpg'};
+  p.referenceNodes={elder:{file:'elder.jpg',nodeId}};
+  await service.save(p);
+  await service.prepare(p.id,'s1','dreamina');
+  assert.equal(uploads,1);
+  assert.deepEqual(saved!.refs,[`res:${returnedId}`,`node:${nodeId}`]);
+  assert.ok(saved!.prompt.includes(`Hero的外观严格使用 {{res:${returnedId}}}`));
+  assert.ok(saved!.prompt.includes(`Elder的外观严格使用 {{node:${nodeId}}}`));
+  assert.ok(!saved!.prompt.includes(`Elder的外观严格使用 {{res:${returnedId}}}`));
+});
+
+test('a passed video requires human approval and a matching current dependency hash', async () => {
+  const { service, project } = await setup();
+  await assert.rejects(service.exportEpisode(project.id,'ep1'));
+  const p = await service.prepare(project.id,'s1','seedance'); const run=p.runs[0]!;
+  await assert.rejects(service.approve(p.id,run.id));
+  run.status='REVIEW'; run.file='clip.mp4';
+  const bytes = Buffer.from('video fixture'); run.sha256 = createHash('sha256').update(bytes).digest('hex');
+  await writeFile(path.join(service.directory(p.id),run.file),bytes); await service.save(p);
+  await assert.rejects(service.approve(p.id,run.id,'old-sha'),/版本/);
+  const approved=await service.approve(p.id,run.id,run.sha256); assert.equal(approved.runs[0]!.status,'APPROVED');
+  const changed=structuredClone(story);changed.episodes[0]!.shots[0]!.description='Different action';
+  await service.apply(p.id,changed,approved.revision); await assert.rejects(service.approve(p.id,run.id));
+});
+
+test('reviewed handoff requires every current human decision and rejects changed bytes', async () => {
+  const { service, project } = await setup();
+  for (const shotId of ['s1', 's2']) {
+    const file = `${shotId}.mp4`;
+    const bytes = Buffer.from(`fixture ${shotId}`);
+    const sha256 = createHash('sha256').update(bytes).digest('hex');
+    await writeFile(path.join(service.directory(project.id), file), bytes);
+    project.runs.push({ id: shotId, shotId, provider: 'seedance', status: 'REVIEW', file, sha256,
+      inputHash: service.hash(project, shotId), storyVersion: 1, createdAt: new Date().toISOString() });
+  }
+  await service.save(project);
+  await assert.rejects(service.reviewedManifest(project.id), /人工采纳/);
+  const first = project.runs[0]!;
+  const second = project.runs[1]!;
+  await service.approve(project.id, first.id, first.sha256);
+  await assert.rejects(service.reviewedManifest(project.id), /s2/);
+  await service.rejectReview(project.id, second.id, second.sha256!, '00:02 hand contact wrong');
+  const restarted = new ComicService(service.config);
+  assert.equal((await restarted.get(project.id)).runs[1]!.reviewDecision?.reason, '00:02 hand contact wrong');
+  await assert.rejects(restarted.approve(project.id, second.id, second.sha256));
+  // A revised candidate must receive a new review; rejection itself cannot promote it.
+  const p = await restarted.get(project.id);
+  await writeFile(path.join(service.directory(project.id), second.file!), Buffer.from('fixture s2'));
+  p.runs.push({ ...second, id: 's2-revision', status: 'REVIEW' });
+  await restarted.save(p);
+  await restarted.approve(project.id, 's2-revision', second.sha256);
+  const manifest = await restarted.reviewedManifest(project.id);
+  assert.equal(manifest.assets.length, 2);
+  assert.equal(manifest.runtimeVerified, false);
+  await writeFile(path.join(service.directory(project.id), first.file!), 'replaced');
+  await assert.rejects(restarted.reviewedManifest(project.id), /文件已变化/);
+});
+
+test('CNY submission requires priced consent and reserves before remote side effects', async () => {
+  let submits = 0;
+  let service: ComicService;
+  let projectId = '';
+  const video = { submit: async () => {
+    submits++;
+    const persisted = await service.get(projectId);
+    assert.equal(persisted.runs[0]!.status, 'SUBMITTING');
+    assert.equal(persisted.runs[0]!.currencyCeiling, 2);
+    throw new Error('ambiguous response');
+  } } as unknown as RemoteVideoProvider;
+  const fixture = await setup(video); service = fixture.service; projectId = fixture.project.id;
+  const p = await service.prepare(projectId, 's1', 'seedance');
+  const runId = p.runs[0]!.id;
+  await assert.rejects(service.run(projectId, runId), /人民币/);
+  await assert.rejects(service.run(projectId, runId, undefined, { ceiling: 11, evidence: 'quote' }), /额度不足/);
+  await assert.rejects(service.run(projectId, runId, undefined, { ceiling: 2, evidence: '' }), /报价依据/);
+  assert.equal(submits, 0);
+  await service.run(projectId, runId, undefined, { ceiling: 2, evidence: 'checked quote' });
+  assert.equal(submits, 1);
+  await assert.rejects(service.run(projectId, runId, undefined, { ceiling: 2, evidence: 'checked quote' }));
+  assert.equal(submits, 1);
+});
+
+test('scene and voice changes invalidate only shots using those references', async () => {
+  const {service,project}=await setup();
+  const before=['s1','s2'].map(id=>service.hash(project,id));
+  project.shotReferences={s1:[{nodeId:dreaminaNodeId(),file:'room.png',mediaType:'image',role:'场景'}]};
+  assert.notEqual(service.hash(project,'s1'),before[0]);
+  assert.equal(service.hash(project,'s2'),before[1]);
+});
+
+test('project credit cap includes uncertain submissions and auxiliary assets', async () => {
+  let submissions=0;
+  const {service,project}=await setup(null,{run:async()=>{submissions++;}} as unknown as DreaminaAdapter);
+  project.creditBudget={ceiling:100,auxiliaryReserved:15};project.canvas={projectId:'canvas'};
+  project.runs.push({id:'existing',shotId:'s2',provider:'dreamina',status:'UNCERTAIN',storyVersion:1,inputHash:service.hash(project,'s2'),createdAt:'',creditCeiling:70});
+  project.runs.push({id:'new',shotId:'s1',provider:'dreamina',status:'QUOTED',storyVersion:1,inputHash:service.hash(project,'s1'),createdAt:'',credits:20,nodeId:dreaminaNodeId(),submitId:'stable'});
+  await service.save(project);
+  await assert.rejects(service.run(project.id,'new',20),/额度不足/);
+  assert.equal(submissions,0);
+});
+
+
+test('authoring hold blocks prepare and previously quoted video without provider calls or reservation', async () => {
+  const { service, project } = await setup();
+  const held = structuredClone(story);
+  held.episodes[0]!.shots[0]!.generationHold = 'Reference container: generate reviewed child shots instead';
+  validateComic(held);
+  project.story = held;
+  project.runs.push({id: 'old-quote', shotId: 's1', provider: 'dreamina', status: 'QUOTED',
+    storyVersion: project.storyVersion, inputHash: service.hash(project, 's1'), createdAt: new Date().toISOString(), credits: 70});
+  await service.save(project);
+  for (const provider of ['dreamina', 'seedance'] as const)
+    await assert.rejects(service.prepare(project.id, 's1', provider), /Reference container/);
+  await assert.rejects(service.run(project.id, 'old-quote', 70), /Reference container/);
+  const after = await service.get(project.id);
+  assert.equal(after.runs.length, 1);
+  assert.equal(after.runs[0]!.status, 'QUOTED');
+  assert.equal(after.runs[0]!.creditCeiling, undefined);
+  assert.equal(after.runs[0]!.submittedAt, undefined);
+  assert.throws(() => validateComic({...held, episodes: [{...held.episodes[0], shots: [{...held.episodes[0]!.shots[0], generationHold: 123}]}]}));
+});
+
+
+test('creator can correct accidental approval only for exact revision without adopted dependencies', async () => {
+  const { service, project } = await setup();
+  const hash = service.hash(project, 's1');
+  project.runs.push({ id: 'mistake', shotId: 's1', provider: 'external', kind: 'REFERENCE', status: 'APPROVED',
+    storyVersion: project.storyVersion, inputHash: hash, createdAt: new Date().toISOString(), sha256: 'a'.repeat(64) });
+  await service.save(project);
+  await assert.rejects(service.rejectReview(project.id, 'mistake', 'b'.repeat(64), 'extra hand'));
+  const fixed = await service.rejectReview(project.id, 'mistake', 'a'.repeat(64), 'Creator corrects accidental click: extra hand');
+  assert.equal(fixed.runs[0]!.status, 'REJECTED');
+  assert.equal(fixed.runs[0]!.reviewDecision!.decision, 'REJECTED');
+  fixed.runs[0]!.status = 'APPROVED'; fixed.runs[0]!.file = 'adopted.png';
+  fixed.references.hero = 'adopted.png'; fixed.runs[0]!.inputHash = service.hash(fixed, 's1'); await service.save(fixed);
+  await assert.rejects(service.rejectReview(project.id, 'mistake', 'a'.repeat(64), 'extra hand'), /dependencies/);
+});
+
+
+test('exact stale media can be rejected and cleaned after authoring changes, but never approved', async () => {
+  const { service, project } = await setup();
+  const bytes = Buffer.from('obsolete media after shot refinement');
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  const oldHash = service.hash(project, 's1');
+  project.runs.push({ id: 'obsolete', shotId: 's1', provider: 'external', status: 'REVIEW',
+    storyVersion: project.storyVersion, inputHash: oldHash, createdAt: new Date().toISOString(),
+    file: 'obsolete.mp4', sha256: sha });
+  await writeFile(path.join(service.directory(project.id), 'obsolete.mp4'), bytes);
+  project.story!.episodes[0]!.shots[0]!.description = 'Revised blocking';
+  await service.save(project);
+  assert.notEqual(service.hash(project, 's1'), oldHash);
+  await assert.rejects(service.approve(project.id, 'obsolete', sha));
+  await assert.rejects(service.rejectReview(project.id, 'obsolete', 'b'.repeat(64), 'Wrong actors'));
+  assert.deepEqual(await readFile(path.join(service.directory(project.id), 'obsolete.mp4')), bytes);
+  const result = await service.rejectReview(project.id, 'obsolete', sha, 'Wrong actors at 00:06; revised shot prepared');
+  const run = result.runs.find(r => r.id === 'obsolete')!;
+  assert.equal(run.status, 'REJECTED');
+  assert.equal(run.reviewDecision!.inputHash, oldHash);
+  assert.equal(run.reviewDecision!.sha256, sha);
+  assert.equal(run.cleanup!.status, 'DELETED');
+  await assert.rejects(readFile(path.join(service.directory(project.id), 'obsolete.mp4')));
+});
+
+test('missing historical rejected media does not prevent cleanup of later rejected media', async () => {
+  const {service, project} = await setup();
+  const bytes = Buffer.from('rejected test media');
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  for (const id of ['missing-old', 'present-new']) project.runs.push({id, shotId:'s1', provider:'external', kind:'REFERENCE',
+    status:'REJECTED', storyVersion:project.storyVersion, inputHash:service.hash(project,'s1'),
+    createdAt:new Date().toISOString(), file:id+'.png', sha256:sha});
+  await writeFile(path.join(service.directory(project.id),'present-new.png'), bytes);
+  await service.save(project);
+  const cleaned=await service.cleanupRejectedMedia(project.id);
+  assert.equal(cleaned.runs[0]!.cleanup!.status,'MISSING');
+  assert.equal(cleaned.runs[1]!.cleanup!.status,'DELETED');
+  assert.equal(cleaned.runs[0]!.file,undefined);
+  await assert.rejects(readFile(path.join(service.directory(project.id),'present-new.png')));
+});

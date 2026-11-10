@@ -274,7 +274,7 @@ export interface ImageProvider extends Provider {
 
 export interface VideoGenerationRequest {
   prompt: string;
-  aspectRatio?: '16:9' | '9:16' | 'adaptive';
+  aspectRatio?: '16:9' | '9:16' | '1:1' | 'adaptive';
   generateAudio?: boolean;
   resolution?: '480p' | '720p' | '1080p';
   referenceVideoUris?: string[];
@@ -287,6 +287,7 @@ export interface VideoGenerationRequest {
   referenceAssetUris: string[];
   workflowId?: string;
   seed?: number;
+  cameraFixed?: boolean;
 }
 
 export interface VideoProvider extends Provider {

@@ -109,6 +109,39 @@ export class MediaPipeline {
     return JSON.parse(result.stdout) as MediaProbe;
   }
 
+  reviewFrames(options: { inputPath: string; outputPath: string }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-vf', 'fps=1,scale=240:-1,tile=4x4:padding=4:margin=4', '-frames:v', '1', options.outputPath]);
+  }
+
+  extractSpeech(options: { inputPath: string; outputPath: string }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', options.outputPath]);
+  }
+
+  finishComic(options: { inputPath: string; musicPath: string; subtitlePath: string; outputPath: string; durationSeconds: number }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.musicPath, options.subtitlePath, options.outputPath);
+    if (!Number.isFinite(options.durationSeconds) || options.durationSeconds <= 0) throw new Error('Invalid film duration');
+    const fadeOut = Math.max(0, options.durationSeconds - 4);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-i', options.musicPath, '-filter_complex',
+      `[0:a]aresample=async=1:min_hard_comp=0.001:first_pts=0[voice];[1:a]atrim=0:${options.durationSeconds},asetpts=PTS-STARTPTS,volume=0.12,afade=t=in:d=3,afade=t=out:st=${fadeOut}:d=4[score];[voice][score]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,alimiter=limit=0.95:latency=1[a];[0:v]subtitles='${escapeFilterPath(options.subtitlePath)}'[v]`,
+      '-map', '[v]', '-map', '[a]', '-c:v', this.config.defaultVideoCodec ?? 'libopenh264', '-b:v', '5M', '-pix_fmt', 'yuv420p',
+      '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-movflags', '+faststart', options.outputPath]);
+  }
+
+  trimClip(options: { inputPath: string; outputPath: string; startSeconds: number; endSeconds: number }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.outputPath);
+    if (!Number.isFinite(options.startSeconds) || !Number.isFinite(options.endSeconds) || options.startSeconds < 0 || options.endSeconds <= options.startSeconds)
+      throw new Error('Invalid editorial trim');
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-ss', String(options.startSeconds), '-t', String(options.endSeconds - options.startSeconds), '-map', '0:v:0', '-map', '0:a:0',
+      '-c:v', this.config.defaultVideoCodec ?? 'libopenh264', '-b:v', '5M', '-pix_fmt', 'yuv420p',
+      '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-movflags', '+faststart', options.outputPath]);
+  }
+
   async validateTechnical(
     inputPath: string,
     policy: MediaValidationPolicy = {},
@@ -379,6 +412,28 @@ export class MediaPipeline {
       this.config.defaultTimeoutMs,
       options.signal,
     );
+  }
+
+  /** Normalize shot streams before episode concatenation, preserving native sound. */
+  normalizeReference(inputPath: string, outputPath: string): Promise<MediaCommandResult> {
+    assertPaths(inputPath, outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', inputPath, '-frames:v', '1', '-vf', 'scale=768:768:force_original_aspect_ratio=decrease', '-q:v', '5', outputPath]);
+  }
+
+  normalizeEpisodeClip(options: { inputPath: string; outputPath: string; width: number; height: number }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.outputPath);
+    if (![options.width, options.height].every(n => Number.isInteger(n) && n >= 64 && n <= 4096)) throw new Error('Invalid dimensions');
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath,
+      '-map', '0:v:0', '-map', '0:a:0', '-vf', `scale=${options.width}:${options.height}:force_original_aspect_ratio=decrease,pad=${options.width}:${options.height}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=24`,
+      '-c:v', this.config.defaultVideoCodec ?? 'libopenh264', '-b:v', '5000k', '-pix_fmt', 'yuv420p',
+      '-c:a', 'aac', '-ar', '48000', '-ac', '2', '-movflags', '+faststart', options.outputPath]);
+  }
+
+  attachSubtitleTrack(options: { inputPath: string; subtitlePath: string; outputPath: string }): Promise<MediaCommandResult> {
+    assertPaths(options.inputPath, options.subtitlePath, options.outputPath);
+    return this.#run(this.config.ffmpegPath, ['-hide_banner', '-nostdin', '-y', '-i', options.inputPath, '-i', options.subtitlePath,
+      '-map', '0:v:0', '-map', '0:a:0', '-map', '1:0', '-c:v', 'copy', '-c:a', 'copy', '-c:s', 'mov_text',
+      '-metadata:s:s:0', 'language=zho', '-movflags', '+faststart', options.outputPath]);
   }
 
   createTestPattern(options: {

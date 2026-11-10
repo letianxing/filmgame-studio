@@ -123,6 +123,7 @@ export type HandlerRegistry = Partial<Record<ProductionJobType, JobHandler>>;
 export type ProductionResource = 'GENERATIVE_GPU' | 'MEDIA_CPU' | 'GENERAL';
 
 export interface ProductionOrchestratorOptions {
+  requireHumanReview?: boolean;
   resourceConcurrency?: Partial<Record<ProductionResource, number>>;
   auditSink?: ProductionAuditSink;
   runStore?: import('./run-store.js').ProductionRunStore;
@@ -376,6 +377,7 @@ export class ProductionOrchestrator {
     blocked: number;
     cancelled: number;
     paused: number;
+    awaitingReview: number;
     total: number;
   }> {
     const maximumCycles = this.plan.graph
@@ -391,10 +393,11 @@ export class ProductionOrchestrator {
       blocked: jobs.filter((job) => job.status === 'BLOCKED').length,
       cancelled: jobs.filter((job) => job.status === 'CANCELLED').length,
       paused: jobs.filter((job) => job.status === 'PAUSED').length,
+      awaitingReview: jobs.filter((job) => job.status === 'WAITING' && job.humanReview?.decision === 'PENDING').length,
       total: jobs.length,
     };
     await this.#persist(
-      summary.paused
+      summary.awaitingReview ? 'AWAITING_REVIEW' : summary.paused
         ? 'PAUSED_BUDGET'
         : summary.failed || summary.blocked
           ? 'FAILED'
@@ -433,7 +436,9 @@ export class ProductionOrchestrator {
     });
     try {
       const output = await handler.run(job, controller.signal);
-      this.plan.graph.succeed(job.id, output);
+      if (this.options.requireHumanReview && ['IMAGE', 'STORYBOARD', 'VIDEO', 'MEDIA_RENDER'].includes(job.type))
+        this.plan.graph.awaitHumanReview(job.id, output);
+      else this.plan.graph.succeed(job.id, output);
       const actual = costFromOutput(output);
       const estimate = Math.max(0, this.options.estimateCost?.(job) ?? 0);
       this.#actualCost += actual > 0 ? actual : estimate;
@@ -451,7 +456,10 @@ export class ProductionOrchestrator {
     } catch (cause) {
       const message = cause instanceof Error ? cause.message : String(cause);
       this.plan.graph.fail(job.id, message);
-      this.#reservedCost = Math.max(0, this.#reservedCost - (this.options.estimateCost?.(job) ?? 0));
+      if (this.options.requireHumanReview) {
+        // A failed response does not establish that a remote provider did not charge.
+        if (this.plan.graph.get(job.id).status === 'RETRYING') this.plan.graph.pause(job.id, `Needs reconciliation: ${message}`);
+      } else this.#reservedCost = Math.max(0, this.#reservedCost - (this.options.estimateCost?.(job) ?? 0));
       await this.#persist('RUNNING');
       await this.#recordAudit({
         eventId: crypto.randomUUID(),

@@ -444,6 +444,7 @@ export type JobStatus =
   | 'BLOCKED';
 
 export interface ProductionJob {
+  humanReview?: { digest: string; decision: 'PENDING' | 'APPROVED' | 'REJECTED'; decidedAt?: string; reason?: string };
   id: EntityId;
   projectId?: EntityId;
   type: ProductionJobType;

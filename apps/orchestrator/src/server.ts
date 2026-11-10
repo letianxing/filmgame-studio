@@ -4,6 +4,7 @@ import { DramaHttp } from './drama-http.js';
 import { createDramaProviders } from './drama-providers.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import path from 'node:path';
+import { createComicService, comicRoute } from './comic-routes.js';
 
 import {
   ComfyUIClient,
@@ -59,7 +60,7 @@ import {
 } from './index.js';
 
 type GenerationStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
-type ExecutionStatus = GenerationStatus | 'PAUSED_BUDGET' | 'CANCELLED';
+type ExecutionStatus = GenerationStatus | 'PAUSED_BUDGET' | 'AWAITING_REVIEW' | 'CANCELLED';
 
 interface GenerationJob {
   id: string;
@@ -88,6 +89,7 @@ interface ProductionPlanningJob {
     blocked: number;
     cancelled: number;
     paused: number;
+    awaitingReview: number;
     total: number;
   };
   executionError?: string;
@@ -101,6 +103,7 @@ const provider = createProvider();
 const dramaStore = new DramaStore(path.resolve(process.env.DRAMA_STORAGE_ROOT || path.join(process.cwd(), '.local', 'drama')));
 await dramaStore.init();
 const dramaHttp = new DramaHttp(dramaStore, provider, (backend) => createDramaProviders(dramaStore.root, backend));
+const comicService = createComicService(provider);
 const workflow = provider ? new StoryGenerationWorkflow(provider) : null;
 const productionWorkflow = provider ? new ProductionPlanningWorkflow(provider) : null;
 const jobs = new Map<string, GenerationJob>();
@@ -120,6 +123,7 @@ const server = createServer(async (request, response) => {
     if (!authorize(request)) return send(response, 401, { error: 'UNAUTHORIZED' });
     const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
     if (await dramaHttp.handle(request, response, url)) return;
+    if (await comicRoute(comicService, request, response, url)) return;
 
     if (request.method === 'GET' && url.pathname === '/health') {
       const health: ProviderHealth = provider
@@ -214,6 +218,20 @@ const server = createServer(async (request, response) => {
 
 
     const productionMatch = url.pathname.match(/^\/v1\/production\/plans\/([^/]+)$/u);
+    const reviewMatch = url.pathname.match(/^\/v1\/production\/plans\/([^/]+)\/review$/u);
+    if (request.method === 'POST' && reviewMatch) {
+      const job = productionJobs.get(decodeURIComponent(reviewMatch[1]!));
+      if (!job?.result) return send(response, 404, { error: 'PRODUCTION_PLAN_NOT_FOUND' });
+      if (['RUNNING', 'QUEUED'].includes(job.executionStatus ?? '')) return send(response, 409, { error: 'PRODUCTION_RUNNING' });
+      const body = await readJson(request);
+      if (typeof body.approve !== 'boolean' || typeof body.reason !== 'string' || body.reason.length > 2000)
+        return send(response, 400, { error: 'REVIEW_DECISION_REQUIRED' });
+      const snapshot = await productionRunStore.load(job.id);
+      if (!snapshot) return send(response, 409, { error: 'DURABLE_SNAPSHOT_REQUIRED' });
+      job.result.plan.graph.decideHumanReview(String(body.jobId), String(body.digest ?? ''), body.approve, body.reason);
+      await productionRunStore.save({ ...snapshot, jobs: job.result.plan.graph.list(), transitions: job.result.plan.graph.transitions(), updatedAt: new Date().toISOString() });
+      return send(response, 200, { job: publicProductionJob(job) });
+    }
     if (request.method === 'GET' && productionMatch) {
       const job = productionJobs.get(decodeURIComponent(productionMatch[1]!));
       return job
@@ -262,6 +280,9 @@ const server = createServer(async (request, response) => {
           estimate: job.costEstimate,
         });
       }
+      if (!job.maxBudget || !job.costEstimate) return send(response, 409, { error: 'CONFIRMED_BUDGET_AND_ESTIMATE_REQUIRED' });
+      if (job.result.plan.graph.list().some((task) => task.humanReview?.decision === 'PENDING'))
+        return send(response, 409, { error: 'HUMAN_REVIEW_PENDING' });
       const blockers = productionExecutionBlockers(job.story);
       if (blockers.length) {
         return send(response, 409, { error: 'PRODUCTION_NOT_ADMITTED', blockers });
@@ -666,7 +687,10 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
     const auditPath = path.resolve(
       process.env.PRODUCTION_AUDIT_LOG ?? path.join(mediaWorkRoot, '..', 'audit', 'production.jsonl'),
     );
+    const priorBudget = (await productionRunStore.load(job.id))?.budget;
     const orchestrator = new ProductionOrchestrator(plan, handlers, {
+      requireHumanReview: true,
+      ...(priorBudget ? { initialBudgetState: priorBudget } : {}),
       auditSink: new JsonLinesProductionAuditSink(auditPath),
       runStore: productionRunStore,
       runId: job.id,
@@ -679,7 +703,11 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
         : {}),
     });
     job.executionSummary = await orchestrator.runUntilSettled(2);
-    if (job.executionSummary.failed || job.executionSummary.blocked) {
+    if (job.executionSummary.awaitingReview) {
+      job.executionStatus = 'AWAITING_REVIEW';
+    } else if (job.executionSummary.paused) {
+      job.executionStatus = 'PAUSED_BUDGET';
+    } else if (job.executionSummary.failed || job.executionSummary.blocked) {
       job.executionStatus = 'FAILED';
       job.executionError = 'One or more production jobs failed or were blocked';
     } else {
@@ -696,13 +724,17 @@ async function runProductionExecution(job: ProductionPlanningJob): Promise<void>
 async function recoverPersistedProductionJobs(): Promise<string[]> {
   const resumed: string[] = [];
   for (const snapshot of await productionRunStore.list()) {
-    if (!['QUEUED', 'RUNNING'].includes(snapshot.executionStatus)) continue;
+    if (!['QUEUED', 'RUNNING', 'AWAITING_REVIEW', 'PAUSED_BUDGET'].includes(snapshot.executionStatus)) continue;
     const plan = createProductionPlan(
       snapshot.story,
       snapshot.productionVersion,
       snapshot.breakdowns,
     );
-    plan.graph = new JobGraph(snapshot.jobs, { recoverRunning: true });
+    plan.graph = new JobGraph(snapshot.jobs);
+    for (const task of plan.graph.list()) {
+      if (task.status === 'RUNNING' || (task.status === 'WAITING' && !task.humanReview))
+        plan.graph.pause(task.id, 'Interrupted remote work requires reconciliation; do not resubmit automatically');
+    }
     const job: ProductionPlanningJob = {
       id: snapshot.runId,
       projectId: snapshot.projectId,
@@ -716,7 +748,8 @@ async function recoverPersistedProductionJobs(): Promise<string[]> {
         trace: [],
         plan,
       },
-      executionStatus: 'QUEUED',
+      costEstimate: estimateProductionCost(plan, productionCostRates),
+      executionStatus: snapshot.executionStatus === 'AWAITING_REVIEW' ? 'AWAITING_REVIEW' : 'PAUSED_BUDGET',
       ...(snapshot.budget
         ? {
             maxBudget: {
@@ -727,7 +760,7 @@ async function recoverPersistedProductionJobs(): Promise<string[]> {
         : {}),
     };
     productionJobs.set(job.id, job);
-    resumed.push(job.id);
+    // Recovery makes the durable plan visible but never silently restarts paid work.
   }
   return resumed;
 }

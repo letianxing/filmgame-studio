@@ -22,7 +22,7 @@ interface SubmitResponse {
   generationId: string;
 }
 
-interface StatusResponse {
+export interface StatusResponse {
   status: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED';
   asset?: GeneratedAsset;
   error?: string;
@@ -66,6 +66,12 @@ export class RemoteVideoProvider implements VideoProvider {
         message: cause instanceof Error ? cause.message : 'Remote video service unavailable',
       };
     }
+  }
+  async lookup(idempotencyKey: string): Promise<string | null> {
+    const result = await this.#request<{ generationId: string | null }>(`/v1/video/operations/${encodeURIComponent(idempotencyKey)}`, {
+      headers: this.#headers(), signal: AbortSignal.timeout(20_000),
+    });
+    return result.generationId;
   }
 
   async generateVideo(
@@ -127,6 +133,23 @@ export class RemoteVideoProvider implements VideoProvider {
       await delay(this.#pollIntervalMs, context.signal);
     }
     throw new ProviderError(this.id, 'TIMEOUT', 'Remote video generation timed out', true);
+  }
+
+  /** Split submit/poll lets durable orchestrators resume without submitting twice. */
+  async submit(request: VideoGenerationRequest, context: ProviderContext): Promise<string> {
+    const result = await this.#request<SubmitResponse>('/v1/video/generations', {
+      method: 'POST', headers: { 'content-type': 'application/json', ...this.#headers() },
+      body: JSON.stringify({ model: this.config.model, request, context }),
+      signal: AbortSignal.timeout(45_000),
+    });
+    if (!result.generationId) throw new Error('Video gateway omitted generationId');
+    return result.generationId;
+  }
+
+  async status(generationId: string): Promise<StatusResponse> {
+    return this.#request<StatusResponse>(`/v1/video/generations/${encodeURIComponent(generationId)}`, {
+      headers: this.#headers(), signal: AbortSignal.timeout(20_000),
+    });
   }
 
   #headers(): Record<string, string> {

@@ -18,6 +18,8 @@ IDEA -> DESIGN -> GENERATE -> PLAYTEST -> REFINE -> BUILD -> PUBLISH
 
 ## What is working
 
+- Local [Comic Studio](docs/COMIC_STUDIO.md) at `/comic`: linear scripts, character references, Jimeng/Seedance native video nodes, shot review, and episode MP4/SRT export.
+
 - Creator Console with Idea, Story, Production, Playtest and Publish surfaces.
 - SIWC-aware project API with D1 persistence and R2 asset boundary.
 - Versioned Story Model, Production, Runtime Package and Asset Manifest JSON Schemas.

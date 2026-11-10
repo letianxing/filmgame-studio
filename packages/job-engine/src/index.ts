@@ -81,6 +81,28 @@ export class JobGraph {
     this.refreshReadiness();
     return structuredClone(job);
   }
+  awaitHumanReview(jobId: EntityId, output: ProductionJob['output']): ProductionJob {
+    const job = this.#required(jobId);
+    if (job.status !== 'RUNNING') throw new Error('Only a running job can request review');
+    job.output = structuredClone(output ?? {});
+    const digest = createHash('sha256').update(JSON.stringify({ inputHash: job.inputHash, output: job.output })).digest('hex');
+    job.humanReview = { digest, decision: 'PENDING' };
+    job.progress = 1;
+    this.#transition(job, 'WAITING', 'Awaiting human adoption of this exact output');
+    return structuredClone(job);
+  }
+
+  decideHumanReview(jobId: EntityId, digest: string, approve: boolean, reason: string): void {
+    const job = this.#required(jobId);
+    const actual = createHash('sha256').update(JSON.stringify({ inputHash: job.inputHash, output: job.output })).digest('hex');
+    if (job.status !== 'WAITING' || job.humanReview?.decision !== 'PENDING' || !digest
+      || job.humanReview.digest !== digest || actual !== digest) throw new Error('Review version mismatch');
+    if (!reason.trim()) throw new Error('Review reason required');
+    job.humanReview = { digest, decision: approve ? 'APPROVED' : 'REJECTED', reason, decidedAt: new Date().toISOString() };
+    job.completedAt = new Date().toISOString();
+    this.#transition(job, approve ? 'SUCCEEDED' : 'FAILED', reason);
+    this.refreshReadiness();
+  }
 
   cancel(jobId: EntityId, reason = 'Cancelled'): void {
     const job = this.#required(jobId);
@@ -131,6 +153,7 @@ export class JobGraph {
     let recovered = 0;
     for (const job of this.#jobs.values()) {
       if (job.status !== 'RUNNING' && job.status !== 'WAITING') continue;
+      if (job.status === 'WAITING' && job.humanReview?.decision === 'PENDING') continue;
       job.error = 'Worker interrupted; safe retry scheduled from durable snapshot';
       job.lastHeartbeat = at;
       this.#transition(job, 'RETRYING', job.error);
