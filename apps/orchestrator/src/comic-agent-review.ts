@@ -7,24 +7,32 @@ import { cleanupRejected } from './comic-cleanup.js';
 export const REVIEW_GATES = ['identity', 'scene_light', 'physical_action', 'story_causality', 'performance', 'audio', 'continuity', 'delivery'] as const;
 export interface AgentReviewAuthorization { enabled: boolean; instruction: string; at: string; }
 export interface AgentReviewInput {
+  scope?: 'MEDIA' | 'STATIC_REFERENCE';
   runId: string; sha256: string; inputHash: string; decision: 'APPROVED' | 'REJECTED';
   reviewer: string; reason: string;
   gates: Record<string, 'PASS' | 'FAIL' | 'UNVERIFIED'>;
   evidence: Array<{ reference: string; sha256: string }>;
 }
 export interface AgentReviewEvidence {
+  scope?: AgentReviewInput['scope'];
   reviewer: string; authorization: AgentReviewAuthorization;
   gates: AgentReviewInput['gates']; evidence: AgentReviewInput['evidence'];
 }
-function validEvidence(a: AgentReviewEvidence | undefined) {
+const STATIC_GATES = ['identity', 'scene_light', 'physical_action', 'story_causality', 'continuity'] as const;
+function validEvidence(a: AgentReviewEvidence | undefined, kind?: ShotRun['kind']) {
+  const staticOnly = a?.scope === 'STATIC_REFERENCE';
   return !!a && a.authorization?.enabled === true && !!a.authorization.instruction?.trim()
+    && (a.scope === undefined || a.scope === 'MEDIA' || (staticOnly && kind === 'REFERENCE'))
     && !!a.reviewer?.trim() && Array.isArray(a.evidence) && a.evidence.length > 0
     && a.evidence.every(e => typeof e.reference === 'string' && !!e.reference.trim() && /^[a-f0-9]{64}$/.test(e.sha256))
-    && REVIEW_GATES.every(g => a.gates?.[g] === 'PASS');
+    && (staticOnly
+      ? STATIC_GATES.every(g => a.gates?.[g] === 'PASS')
+        && ['performance', 'audio', 'delivery'].every(g => a.gates?.[g] === 'UNVERIFIED')
+      : REVIEW_GATES.every(g => a.gates?.[g] === 'PASS'));
 }
 export function acceptedReviewActor(r: ShotRun) {
   return r.reviewDecision?.actor === 'LOCAL_CREATOR'
-    || (r.reviewDecision?.actor === 'AUTHORIZED_AGENT' && validEvidence(r.reviewDecision.agentReview));
+    || (r.reviewDecision?.actor === 'AUTHORIZED_AGENT' && validEvidence(r.reviewDecision.agentReview, r.kind));
 }
 export async function configureAgentReview(service: ComicService, id: string, enabled: boolean, instruction: string) {
   if (typeof enabled !== 'boolean' || typeof instruction !== 'string' || !instruction.trim() || instruction.length > 2000)
@@ -44,12 +52,16 @@ export async function recordAgentReview(service: ComicService, id: string, input
     if (!['APPROVED', 'REJECTED'].includes(input.decision) || typeof input.reason !== 'string' || !input.reason.trim()
       || input.reason.length > 2000 || typeof input.reviewer !== 'string' || !input.reviewer.trim())
       throw new Error('Decision, reviewer and reason required');
-    const a = { reviewer: input.reviewer, authorization: { ...p.agentReviewAuthorization }, gates: input.gates, evidence: input.evidence };
+    if (input.scope !== undefined && input.scope !== 'MEDIA' && input.scope !== 'STATIC_REFERENCE')
+      throw new Error('Unknown review scope');
+    if (input.scope === 'STATIC_REFERENCE' && r.kind !== 'REFERENCE')
+      throw new Error('Static reference review cannot approve video or audio media');
+    const a = { scope: input.scope, reviewer: input.reviewer, authorization: { ...p.agentReviewAuthorization }, gates: input.gates, evidence: input.evidence };
     if (!Array.isArray(input.evidence) || !input.evidence.length || input.evidence.some(e => !e.reference?.trim() || !/^[a-f0-9]{64}$/.test(e.sha256)))
       throw new Error('Evidence references and SHA256 required');
     if (!REVIEW_GATES.every(g => ['PASS','FAIL','UNVERIFIED'].includes(input.gates?.[g] ?? ''))) throw new Error('All review gates required');
-    if (input.decision === 'APPROVED' && (!validEvidence(a) || r.inputHash !== service.hash(p, r.shotId)))
-      throw new Error('Approval requires current inputs and every gate PASS');
+    if (input.decision === 'APPROVED' && (!validEvidence(a, r.kind) || r.inputHash !== service.hash(p, r.shotId)))
+      throw new Error('Approval requires current inputs and every gate PASS for media; static references require static gates PASS and performance/audio/delivery UNVERIFIED');
     const file = path.resolve(service.directory(id), r.file);
     if (path.dirname(file) !== path.resolve(service.directory(id)) || createHash('sha256').update(await readFile(file)).digest('hex') !== input.sha256)
       throw new Error('Media path or bytes changed');

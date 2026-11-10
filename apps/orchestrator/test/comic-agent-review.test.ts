@@ -35,6 +35,24 @@ test('delegation is explicit; exact source, evidence, all gates and actor surviv
   assert.equal(p.shotReferences!.s![0]!.sha256,sha);
   const forged=structuredClone(p.runs[0]!); delete forged.reviewDecision!.agentReview;
   assert.equal(acceptedReviewActor(forged),false);
+  // A still-frame reference must not attest to motion, sound or final delivery.
+  const staticInput:AgentReviewInput={...input,inputHash:service.hash(p,'s'),runId:'static',scope:'STATIC_REFERENCE',
+    gates:{...input.gates,performance:'UNVERIFIED',audio:'UNVERIFIED',delivery:'UNVERIFIED'}};
+  const pendingStatic={...p.runs[0]!,id:'static',inputHash:staticInput.inputHash,status:'REVIEW' as const};
+  delete pendingStatic.reviewDecision; p.runs.push(pendingStatic);
+  await service.save(p);
+  await assert.rejects(recordAgentReview(service,p.id,{...staticInput,gates:{...staticInput.gates,identity:'UNVERIFIED'}}),/static gates/);
+  await assert.rejects(recordAgentReview(service,p.id,{...staticInput,gates:input.gates}),/UNVERIFIED/);
+  p=await recordAgentReview(service,p.id,staticInput);
+  const staticRun=p.runs.find(r=>r.id==='static')!;
+  assert.equal(acceptedReviewActor(staticRun),true);
+  assert.equal(staticRun.reviewDecision!.agentReview!.gates.audio,'UNVERIFIED');
+  p=await bindReferenceSet(service,p.id,{revision:p.revision,shotId:'s',targetInputHash:service.hash(p,'s'),referenceOnly:true,references:[{runId:'static',sha256:sha,sourceInputHash:staticInput.inputHash,role:'Static pose only; motion/audio/delivery unverified'}]});
+  const forgedMedia=structuredClone(staticRun); delete forgedMedia.kind;
+  assert.equal(acceptedReviewActor(forgedMedia),false);
+  const pendingMedia={...forgedMedia,id:'video',status:'REVIEW' as const}; delete pendingMedia.reviewDecision;
+  p.runs.push(pendingMedia); await service.save(p);
+  await assert.rejects(recordAgentReview(service,p.id,{...staticInput,runId:'video'}),/cannot approve video/);
   await configureAgentReview(service,p.id,false,'User revoked agent review');
   await assert.rejects(recordAgentReview(service,p.id,input),/not delegated/);
  } finally {await rm(root,{recursive:true,force:true});}
