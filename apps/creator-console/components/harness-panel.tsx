@@ -38,7 +38,8 @@ export function HarnessPanel({ progress, asset, action, disabled }: {
     <p>先审概念与关键帧，再生成短镜头；优先复用已采纳素材。复杂动作先做最短可验片段，通过后扩展时长。模型选择以实际报价和样片为准。</p>
     <p>已生成 {progress.generatedShots}/{progress.totalShots} · 人工采纳 {progress.humanApprovedShots}/{progress.totalShots} · 待审 {progress.review.length}</p>
     <p>计划片长 {progress.plannedSeconds} 秒 · 已采纳 {progress.acceptedSeconds} 秒</p>
-    <p>即梦预算 {progress.budget.ceiling ?? '未设置'} · 已占用 {progress.budget.committedCeiling} 积分</p>
+    <p>即梦累计额度上限 {progress.budget.ceiling ?? '未设置'} · 累计报价及预留占用 {progress.budget.committedCeiling} 积分</p>
+    <p>这是本项目的累计账本，包含历史任务，不是单个节点预算，也不是账户实时余额。报价占用不代表实际扣费。</p>
     {progress.ledger.map(row => <p key={row.unit}>{row.unit === 'CNY' ? '火山人民币' : '即梦积分'}：预留 {row.reserved} · 已确认扣费 {row.charged} · 已确认退款 {row.refunded} · 待核对金额的任务 {row.unknownReservations}</p>)}
     <small>{progress.budget.note} Runtime 接入/验收尚未回传。</small>
     <p><button type="button" onClick={() => dialog.current?.showModal()}>打开审片队列（{progress.review.length}）</button></p>
@@ -48,12 +49,12 @@ export function HarnessPanel({ progress, asset, action, disabled }: {
         e.preventDefault(); const f = new FormData(e.currentTarget);
         void send('budgets', { credits: Number(f.get('credits')), auxiliaryReserved: Number(f.get('auxiliary')), cny: Number(f.get('cny')) });
       }}>
-        <label>即梦项目总额（积分）<input name="credits" type="number" min="0" step="1" required defaultValue={progress.budget.ceiling ?? 0} /></label>
+        <label>即梦累计额度上限（含历史占用，积分）<input name="credits" type="number" min="0" step="1" required defaultValue={progress.budget.ceiling ?? 0} /></label>
         <label>其他素材预留（积分）<input name="auxiliary" type="number" min="0" step="1" required defaultValue={progress.budget.auxiliaryReserved} /></label>
         <label>火山项目总额（元）<input name="cny" type="number" min="0" step="0.01" required defaultValue={progress.budget.cnyCeiling ?? 0} /></label>
         <button disabled={locked}>保存项目预算</button>
       </form>
-      <p>项目总额包括已消费和预留，并非钱包剩余额度；不自动充值。</p>
+      <p>上限覆盖历史任务的报价占用及素材预留，并非钱包剩余额度。新余额需与历史占用核对后再填写，不能直接把钱包余额填作累计上限；不自动充值。</p>
       <form key={JSON.stringify(progress.policy)} onSubmit={e => {
         e.preventDefault(); const form = new FormData(e.currentTarget);
         void send('harness-policy', { policy: {
