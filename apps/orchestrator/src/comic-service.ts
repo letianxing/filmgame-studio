@@ -416,6 +416,7 @@ export class ComicService {
           title: shot.id,
           prompt: [nativePrompt(story, shot, { appearanceFromReference: !!p.shotReferenceOnly?.[shotId] }), ...bindings].join('\n'),
           model: run.model,
+          ...(shot.generationMode ? { mode: shot.generationMode } : {}),
           ratio: p.ratio,
           resolution: "720p",
           duration: shot.durationSeconds,

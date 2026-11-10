@@ -10,6 +10,7 @@ export interface ComicCharacter {
 export interface ComicShot {
   /** Explicit authoring hold: references remain usable, video generation is blocked. */
   generationHold?: string;
+  generationMode?: 't2v' | 'm2v' | 'first_last_frame';
   id: string;
   scene: string;
   description: string;
@@ -61,6 +62,7 @@ export const shotSchema = object({
 });
 // Optional for compatibility with existing stories and provider structured outputs.
 (shotSchema.properties as Record<string, unknown>).generationHold = text;
+(shotSchema.properties as Record<string, unknown>).generationMode = { type: 'string', enum: ['t2v', 'm2v', 'first_last_frame'] };
 export const outlineSchema = object({
   title: text,
   logline: text,

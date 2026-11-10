@@ -158,10 +158,25 @@ export class DreaminaAdapter {
     duration: number;
     refs?: string[];
     referenceTypes?: Array<'image' | 'audio' | 'video'>;
+    mode?: 't2v' | 'm2v' | 'first_last_frame';
   }) {
-    const mode = input.refs?.length ? "m2v" : "t2v";
+    const mode = input.mode ?? (input.refs?.length ? "m2v" : "t2v");
+    const refs = input.refs ?? [];
+    const types = input.referenceTypes ?? refs.map(() => 'image' as const);
+    if (types.length !== refs.length) throw new Error('Reference types do not match references');
+    if (mode === 'first_last_frame' && (refs.length < 1 || refs.length > 2 || types.some(t => t !== 'image')))
+      throw new Error('First/last frame mode requires one or two ordered image references');
+    if (mode === 't2v' && refs.length) throw new Error('Text-to-video cannot use references');
     const models = await this.models();
-    const spec = models.find((m) => m.model === input.model)?.modes.find((m) => m.name === mode);
+    // The catalog may publish separate one-frame and two-frame entries for the same mode.
+    const spec = models.find((m) => m.model === input.model)?.modes.find((m) =>
+      m.name === mode && (refs.length === 0 ? !m.references || m.references.min === 0 :
+        !!m.references && refs.length >= m.references.min && refs.length <= m.references.max &&
+        types.every(t => m.references!.types?.some(r => r.mediaType === t)) &&
+        m.references.types?.every(t => {
+          const count = types.filter(v => v === t.mediaType).length;
+          return count >= t.min && count <= t.max;
+        })));
     if (!spec) throw new Error("当前即梦目录不支持所选模型与模式");
     if (input.refs?.length) {
       const types = input.referenceTypes ?? input.refs.map(() => 'image' as const);
@@ -231,6 +246,7 @@ export class DreaminaAdapter {
           nodeId: string;
           generation?: {
             model?: string;
+            mode?: string;
             prompt?: string;
             durationSeconds?: number;
             ratio?: string;
@@ -244,11 +260,14 @@ export class DreaminaAdapter {
     if (
       !generation ||
       generation.model !== input.model ||
+      generation.mode !== mode ||
       generation.prompt !== input.prompt ||
       generation.durationSeconds !== input.duration ||
       generation.ratio !== input.ratio ||
       generation.resolution !== input.resolution ||
       generation.references.some((r) => r.unavailableCode) ||
+      (mode === 'first_last_frame' && (generation.references.length !== refs.length ||
+        refs.some((r, i) => generation.references[i]?.id !== r.slice(r.indexOf(':') + 1)))) ||
       (input.refs ?? []).some(
         (r) => !generation.references.some((g) => g.id === r.slice(r.indexOf(":") + 1)),
       )

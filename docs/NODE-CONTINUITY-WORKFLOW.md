@@ -301,3 +301,9 @@ Confirmed failure: Windows PowerShell piped Chinese Python source as question ma
 
 Before generating a missing camera angle, name the exact action phase it covers. An elder emerging between villagers is not yet an elder confronting the captain. A side-angle insert must preserve that intermediate blocking: nearby villagers still flank the elder; the captain remains ahead along the lane, outside a tight frame if necessary. Do not invent a new face-to-face tableau just to include every character. Validate world-space light after changing camera angle. Review the actual incoming/outgoing action phase before assembling; an approved still is not evidence of a valid moving cut. Source: n03 user rejection of side insert 9b35140f; accepted middle 8726171a retained.
 
+## 2026-11-10 首尾姿态与多模态参考分开声明
+
+剧情镜头可显式设置 `generationMode: "first_last_frame"`：本镜参考按数组顺序仅绑定首帧，或首帧、尾帧两张图；使用 `referenceOnly` 排除额外全局人物图和音频参考。适配器按实时目录选择匹配数量的规格，并回读校验模式、参考顺序和数量，失败不得报价运行。未指定模式仍保持原有 m2v/t2v 行为。
+
+不要用 m2v 中“这是首帧/那是尾帧”的文字冒充服务端端点约束。端点固定也不证明中间动作正确：人物行走、持械接触和摄影轴线仍须全片检查。关键接触先确保手、刃、目标部位无遮挡；按身体朝向核解剖左右，不按画面左右指定伤处。未来姿态参考与起始参考混用导致倒置、宽景遮挡导致接触缺失，均已有兵至拒收证据。先修构图再短片验证，不重复提交同一复杂宽景。
+
