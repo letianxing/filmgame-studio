@@ -17,7 +17,7 @@ export interface ComicShot {
   camera: string;
   durationSeconds: number;
   characterIds: string[];
-  dialogue: Array<{ characterId: string; text: string; startSeconds: number; endSeconds: number }>;
+  dialogue: Array<{ characterId: string; text: string; startSeconds: number; endSeconds: number; delivery?: 'on_screen' | 'off_screen' | 'voice_over' }>;
 }
 export interface ComicEpisode {
   id: string;
@@ -42,6 +42,14 @@ const object = (properties: Record<string, unknown>) => ({
   required: Object.keys(properties),
 });
 export const characterSchema = object({ id, name: text, appearance: text, voice: text });
+const dialogueSchema = object({
+  characterId: id,
+  text,
+  startSeconds: { type: "number", minimum: 0 },
+  endSeconds: { type: "number", minimum: 0 },
+});
+// Optional: legacy dialogue keeps its original prompt and input identity.
+dialogueSchema.properties.delivery = { type: 'string', enum: ['on_screen', 'off_screen', 'voice_over'] };
 export const shotSchema = object({
   id,
   scene: text,
@@ -52,12 +60,7 @@ export const shotSchema = object({
   dialogue: {
     type: "array",
     maxItems: 12,
-    items: object({
-      characterId: id,
-      text,
-      startSeconds: { type: "number", minimum: 0 },
-      endSeconds: { type: "number", minimum: 0 },
-    }),
+    items: dialogueSchema,
   },
 });
 // Optional for compatibility with existing stories and provider structured outputs.
@@ -148,10 +151,19 @@ export function nativePrompt(story: ComicStory, shot: ComicShot, options: { appe
     `表演：${shot.description}`,
     `镜头：${shot.camera}`,
     ...shot.dialogue.map(
-      (d) =>
-        `${d.startSeconds}–${d.endSeconds}秒，${story.characters.find((c) => c.id === d.characterId)?.name}用中文说：“${d.text}”。口型与对白同步。`,
+      (d) => {
+        const speaker = story.characters.find((c) => c.id === d.characterId)?.name;
+        const prefix = `${d.startSeconds}–${d.endSeconds}秒，${speaker}`;
+        if (d.delivery === 'off_screen') return `${prefix}在画外用中文说：“${d.text}”。声源属于现场，但说话者此时不入画；画内人物不代说、不做该句口型。`;
+        if (d.delivery === 'voice_over') return `${prefix}的中文画外叙述或内心独白：“${d.text}”。不作现场发声，画内人物不做该句口型，不因独白凭空转头寻找声源。`;
+        return `${prefix}用中文说：“${d.text}”。口型与对白同步。`;
+      },
     ),
+    ...(shot.dialogue.some((d) => d.delivery === 'off_screen' || d.delivery === 'voice_over') ? [
+      "按上述逐句声源生成对白与同期环境音；仅画内对白同步对应人物口型，画外对白与独白不驱动画内口型，也不要求说话者入画。不添加未安排的旁白或额外台词。保持角色外形与声音一致。配乐统一在后期制作，本镜头不生成音乐。不要生成画面文字、水印、字幕。",
+    ] : [
     "原生生成上述对白与同期环境音；未安排对白的镜头不说话，不添加旁白或额外台词。只让指定说话者在指定时间开口，其他人嘴闭合。保持角色外形与声音一致。配乐统一在后期制作，本镜头不生成音乐。不要生成画面文字、水印、字幕。",
+    ]),
   ].join("\n");
 }
 export function schemaJson(schema: Record<string, unknown>): Record<string, JsonValue> {
