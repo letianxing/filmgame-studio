@@ -63,6 +63,23 @@ Malformed model text is now explicitly marked invalid/incomplete.
 This is not yet an automatic Studio review service. Adding a provider does not prove
 that it meets the game's cinematic quality gate.
 
+## Sequential coverage
+
+Use `scripts/review-omni-sequence.py` as the guarded launcher's worker with
+`--input`, `--work`, `--model-dir`, and `--prompt-file`. It reviews six-second
+windows with one-second overlap sequentially, resetting model context per window.
+It limits clips to 120 seconds and retains fractional tails. `sequence.json`
+records every planned window and actual submission; progress survives a later
+failure. The existing server guard still owns memory limits and shutdown.
+
+`completeInputCoverage` means only that all planned audio and sampled visual
+inputs were submitted. It is never a full-motion, listening, or quality verdict.
+Invalid observations remain visible instead of triggering regeneration.
+The real 11.192-second n03 orders test completed three windows. It recovered the
+later farmer dialogue, but confused the captain and guard and fabricated timing;
+retain advisory status and cross-check roles against the image and script.
+Evidence: `.local/av-review/orders-sequence-01/sequence.json`.
+
 ## Observed pilot, 2026-11-11
 
 The Windows binary reports build `74 (4d28373)`; binary SHA256 is
