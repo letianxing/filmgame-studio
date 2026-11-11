@@ -8,7 +8,10 @@ import type { harnessProgress } from '../../orchestrator/src/comic-harness';
 
 type Progress = ReturnType<typeof harnessProgress>;
 
-export function HarnessPanel({ progress, asset, action, disabled }: {
+type ReviewContext = { sha256: string; scene: string; description: string; before: string; after: string; promptNote: string; sources: Array<{ runId: string; description: string; scene: string; edit: string }> };
+
+export function HarnessPanel({ progress, asset, action, disabled, projectId }: {
+  projectId: string;
   progress: Progress;
   asset: (file: string) => string;
   action: (name: string, body: unknown) => Promise<unknown>;
@@ -17,6 +20,16 @@ export function HarnessPanel({ progress, asset, action, disabled }: {
   const dialog = useRef<HTMLDialogElement>(null);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [contexts, setContexts] = useState<Record<string, ReviewContext>>({});
+  const reviewKeys = progress.review.map(r => r.key).join('|');
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/review-context/${encodeURIComponent(projectId)}.json`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : {})
+      .then(data => { if (!cancelled) setContexts(data); })
+      .catch(() => { if (!cancelled) setContexts({}); });
+    return () => { cancelled = true; };
+  }, [projectId, reviewKeys]);
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const shown = useRef(new Set<string>());
   const pending = progress.review.filter(r => !r.acknowledged);
@@ -95,6 +108,18 @@ export function HarnessPanel({ progress, asset, action, disabled }: {
       {progress.review.length === 0 && <p>当前没有待审候选。</p>}
       {progress.review.map(r => <article key={r.key} style={{ borderTop: '1px solid #888', padding: 12 }}>
         <h3>{r.shotId} · {r.kind === 'CONCEPT' ? '概念定妆' : '视频候选'}</h3>
+        {contexts[r.runId]?.sha256 === r.sha256 ? <section aria-label="本片场景与提示词" style={{ background: '#222c32', padding: 14, borderRadius: 8 }}>
+          <h4>场景与剧情位置</h4>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{contexts[r.runId].scene}</p>
+          <p>前段：{contexts[r.runId].before}</p><p>后段：{contexts[r.runId].after}</p>
+          <details open><summary>本片分镜提示词与审核依据</summary>
+            <p>{contexts[r.runId].promptNote}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{contexts[r.runId].description}</p>
+          </details>
+          {contexts[r.runId].sources.map(source => <details key={source.runId}><summary>来源片段 {source.runId}：生成时分镜／剪辑说明</summary>
+            <p>{source.scene}</p><p>{source.edit}</p><p style={{ whiteSpace: 'pre-wrap' }}>{source.description}</p>
+          </details>)}
+        </section> : <p>本版本场景／提示词说明尚未绑定，请勿沿用其他版本的说明。</p>}
         {r.file && (r.kind === 'CONCEPT'
           // Native img intentionally avoids proxying local, versioned review assets.
           // eslint-disable-next-line @next/next/no-img-element

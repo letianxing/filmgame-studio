@@ -287,7 +287,7 @@ export function ComicStudio() {
           </div>
         </header>
         <div className="comic-content">
-          {project?.harness && <HarnessPanel key={project.id} progress={project.harness} asset={asset} action={action} disabled={Boolean(locked)} />}
+          {project?.harness && <HarnessPanel key={project.id} projectId={project.id} progress={project.harness} asset={asset} action={action} disabled={Boolean(locked)} />}
           {project?.story && <p><a href={`/api/comic/projects/${project.id}/reviewed-manifest`} download={`${project.id}-reviewed-media.json`}>下载已审核素材交付清单</a><small> · 所有镜头须通过当前版本人工审核；这是素材清单，不代表 runtime 验收。</small></p>}
           <div className="comic-heading">
             <div>
