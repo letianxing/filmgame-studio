@@ -1,3 +1,4 @@
+import { importVideoAssembly, type AssemblySource } from './comic-video-assembly.js';
 import { configureAgentReview, recordAgentReview, type AgentReviewInput } from './comic-agent-review.js';
 import { importVideoDerivative } from './comic-video-import.js';
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -167,7 +168,15 @@ export async function comicRoute(
     if (request.method === 'GET' && action === 'local-repair-capabilities')
       return send({ capabilities: localRepairCapabilities });
     if (request.method !== "POST") return send({ error: "不支持此操作" }, 405);
-    const body = await readBody(request, action === 'import-video-derivative' ? 41_000_000 : ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    const body = await readBody(request, ['import-video-derivative', 'import-video-assembly'].includes(action) ? 41_000_000 : ['import-reference-candidate', 'bind-voice-reference'].includes(action) ? 7_000_000 : 2_000_000);
+    if (action === 'import-video-assembly')
+      return send({ project: view(await importVideoAssembly(service, id, {
+        revision: Number(body.revision), targetShotId: String(body.targetShotId ?? ''),
+        targetInputHash: String(body.targetInputHash ?? ''), sources: body.sources as AssemblySource[],
+        data: Buffer.from(String(body.base64 ?? ''), 'base64'), sha256: String(body.sha256 ?? ''),
+        editDescription: String(body.editDescription ?? ''), ledger: String(body.ledger ?? ''),
+        durationSeconds: Number(body.durationSeconds),
+      })) });
     if (action === 'import-video-derivative')
       return send({ project: view(await importVideoDerivative(service, id, {
         revision: Number(body.revision), sourceRunId: String(body.sourceRunId ?? ''),

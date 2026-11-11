@@ -1,0 +1,58 @@
+﻿import assert from 'node:assert/strict';
+import test from 'node:test';
+import { mkdtemp, writeFile, rm, readdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import os from 'node:os';
+import path from 'node:path';
+import { ComicService } from '../src/comic-service.js';
+import { MediaPipeline } from '../../../services/media-pipeline/src/index.js';
+import { importVideoAssembly, validateAssemblySources } from '../src/comic-video-assembly.js';
+
+test('assembly preserves ordered lineage and blocks unapproved, stale, altered or rejected sources', async () => {
+ const root=await mkdtemp(path.join(os.tmpdir(),'filmgame-video-import-'));
+ const media=new MediaPipeline({ffmpegPath:'unused',ffprobePath:'unused'});
+ let valid=true;
+ media.validateTechnical=async()=>({valid,issues:[],durationSeconds:4.125});
+ const service=new ComicService({root,llm:null,video:null,dreamina:null,media});
+ const sha=(b:Buffer)=>createHash('sha256').update(b).digest('hex');
+ try {
+  let p=await service.create({idea:'A village in morning',style:'film',ratio:'16:9',episodeCount:1,episodeSeconds:15});
+  p=await service.apply(p.id,{title:'Village',logline:'Morning',visualStyle:'film',characters:[{id:'hero',name:'Hero',appearance:'coat',voice:'silent'}],episodes:[{id:'e',title:'Morning',synopsis:'Arrival',shots:[{id:'s',scene:'Village',description:'Arrival',camera:'Wide',durationSeconds:5,characterIds:[],dialogue:[]}]}]},p.revision);
+  const original=Buffer.from('source'),data=Buffer.concat([Buffer.from([0,0,0,24]),Buffer.from('ftypisomDERIVATIVE')]);
+  await writeFile(path.join(service.directory(p.id),'source.mp4'),original);
+  p.runs.push({id:'source',shotId:'s',provider:'dreamina',status:'REVIEW',inputHash:service.hash(p,'s'),storyVersion:p.storyVersion,createdAt:new Date().toISOString(),file:'source.mp4',sha256:sha(original),durationSeconds:9}); await service.save(p);
+  p.runs.push({...p.runs[0]!,id:'source2'}); await service.save(p);
+  const sources=p.runs.map(r=>({runId:r.id,sha256:r.sha256!,inputHash:r.inputHash}));
+  const input={revision:p.revision,targetShotId:'s',targetInputHash:service.hash(p,'s'),sources,data,sha256:sha(data),editDescription:'Two shots with an audio overlap',ledger:'edit.json',durationSeconds:4.125};
+  await assert.rejects(importVideoAssembly(service,p.id,{...input,revision:-1}),/revision/);
+  await assert.rejects(importVideoAssembly(service,p.id,{...input,sources:[]}),/bounded/);
+  await assert.rejects(importVideoAssembly(service,p.id,{...input,targetInputHash:'bad'}),/Target/);
+  await assert.rejects(importVideoAssembly(service,p.id,{...input,sources:[{...sources[0]!,inputHash:'a'.repeat(64)},sources[1]!]}),/stale/);
+  const before=await readdir(service.directory(p.id)); valid=false;
+  await assert.rejects(importVideoAssembly(service,p.id,input),/technical/);
+  assert.deepEqual(await readdir(service.directory(p.id)),before);valid=true;
+  p=await importVideoAssembly(service,p.id,input);
+  const r=p.runs.at(-1)!;
+  assert.equal(r.status,'REVIEW');assert.equal(r.reviewDecision,undefined);assert.equal(r.credits,undefined);
+  assert.deepEqual(r.assembly!.sources,sources);
+  await assert.rejects(service.approve(p.id,r.id,r.sha256),/exact approval/);
+  p=await importVideoAssembly(service,p.id,{...input,revision:p.revision});assert.equal(p.runs.length,3);
+  await assert.rejects(importVideoAssembly(service,p.id,{...input,revision:p.revision,sources:[sources[1]!,sources[0]!]}),/provenance differs/);
+  for(const source of sources)p=await service.approve(p.id,source.runId,source.sha256);
+  p=await service.approve(p.id,r.id,r.sha256);
+  assert.equal((await service.reviewedManifest(p.id)).assets[0]!.revision,r.id);
+  await writeFile(path.join(service.directory(p.id),'source.mp4'),'changed');
+  await assert.rejects(service.reviewedManifest(p.id),/source bytes/);
+  await writeFile(path.join(service.directory(p.id),'source.mp4'),original);
+  p.runs[0]!.status='REJECTED';await service.save(p);
+  await assert.rejects(service.reviewedManifest(p.id),/rejected or stale/);
+  await assert.rejects(service.exportEpisode(p.id,'e'),/rejected or stale/);
+  p.runs[0]!.status='APPROVED';p.runs[0]!.inputHash='changed';
+  await assert.rejects(validateAssemblySources(service,p,r),/rejected or stale/);
+  p.runs[0]!.inputHash=sources[0]!.inputHash;
+  const derivative={...r,id:'derived',derivative:{sourceRunId:r.id,sourceSha256:r.sha256!,editDescription:'edit',ledger:'edit.json'}};
+  delete derivative.assembly;
+  p.runs[0]!.status='REJECTED';
+  await assert.rejects(validateAssemblySources(service,p,derivative),/rejected or stale/);
+ } finally {await rm(root,{recursive:true,force:true});}
+});

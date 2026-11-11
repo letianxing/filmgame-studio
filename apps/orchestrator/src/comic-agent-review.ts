@@ -1,3 +1,4 @@
+import { validateAssemblySources } from './comic-video-assembly.js';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -65,6 +66,7 @@ export async function recordAgentReview(service: ComicService, id: string, input
     const file = path.resolve(service.directory(id), r.file);
     if (path.dirname(file) !== path.resolve(service.directory(id)) || createHash('sha256').update(await readFile(file)).digest('hex') !== input.sha256)
       throw new Error('Media path or bytes changed');
+    if (input.decision === 'APPROVED') await validateAssemblySources(service, p, r);
     // Character promotion requires a separately reviewed binding, never implicit mutation here.
     r.status = input.decision;
     r.reviewDecision = { decision: input.decision, sha256: input.sha256, inputHash: r.inputHash,

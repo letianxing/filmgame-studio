@@ -1,3 +1,4 @@
+import { validateAssemblySources, type VideoAssembly } from './comic-video-assembly.js';
 import { acceptedReviewActor, type AgentReviewAuthorization, type AgentReviewEvidence } from './comic-agent-review.js';
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile, rename, readdir, stat, copyFile } from "node:fs/promises";
@@ -57,6 +58,7 @@ export interface ShotRun {
   file?: string;
   sha256?: string;
   durationSeconds?: number;
+  assembly?: VideoAssembly;
   derivative?: { sourceRunId: string; sourceSha256: string; editDescription: string; ledger: string; sourceInterval?: { startSeconds: number; endSeconds: number } };
   error?: string;
   createdAt: string;
@@ -748,6 +750,7 @@ export class ComicService {
         throw new Error('审核版本已变化，请刷新后重新查看');
       if (r.sha256 && await checksum(path.join(this.directory(id), r.file)) !== r.sha256)
         throw new Error('素材内容已变化，不能沿用之前的审核');
+      await validateAssemblySources(this, p, r);
       r.status = "APPROVED";
       r.reviewDecision = { decision: 'APPROVED', sha256: expectedSha, inputHash: r.inputHash,
         at: new Date().toISOString(), actor: 'LOCAL_CREATOR', reason: 'Creator adopted this exact revision' };
@@ -825,6 +828,7 @@ export class ComicService {
           && run.inputHash === this.hash(p, shot.id) && acceptedReviewActor(run) && run.reviewDecision?.decision === 'APPROVED'
           && run.reviewDecision.sha256 === run.sha256 && run.reviewDecision.inputHash === run.inputHash);
         if (!r?.file || !r.sha256) throw new Error(`镜头 ${shot.id} 缺少当前版本的人工采纳`);
+        await validateAssemblySources(this, p, r);
         const resolved = await this.asset(id, r.file);
         if (await checksum(resolved.absolute) !== r.sha256) throw new Error(`镜头 ${shot.id} 文件已变化`);
         assets.push({ assetId: shot.id, revision: r.id, sha256: r.sha256, file: r.file,
@@ -893,6 +897,7 @@ export class ComicService {
       let cue = 0;
       for (let i = 0; i < selected.length; i++) {
         const r = selected[i]!;
+        await validateAssemblySources(this, p, r);
         const clip = `clip-${i}.mp4`;
         const original = path.join(this.directory(id), r.file!);
         if ((await checksum(original)) !== r.sha256) throw new Error("镜头校验值变化，请重新检查");
