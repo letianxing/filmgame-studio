@@ -93,6 +93,8 @@ def prepare(source, work, start, seconds, fps, ffmpeg='ffmpeg', ffprobe='ffprobe
 def review(evidence, work, base, prompt, model_dir):
     if sha256(evidence['source']) != evidence['sha256']:
         raise ValueError('Source changed after preparation')
+    if evidence['sampledFps'] != 1:
+        raise ValueError('Legacy joint AV inference requires 1 sampled FPS; higher FPS is preparation-only. Fractional chunks can insert silence inside speech.')
     result = dict(evidence, reviewer='AGENT_MINICPM_O_LOCAL', completed=False, observations=[], submittedChunks=0,
                   promptSha256=hashlib.sha256(prompt.encode('utf-8')).hexdigest(),
                   modelDirectory=str(model_dir.resolve()))
@@ -137,6 +139,8 @@ def review(evidence, work, base, prompt, model_dir):
             raise RuntimeError('Model produced no text evidence')
         text = ''.join(item.get('content', '') for item in result['observations'])
         result['evidenceIssues'] = temporal_issues(text, evidence['windowStart'], evidence['windowSeconds'])
+        if '\ufffd' in text:
+            result['evidenceIssues'].append('Model output contains Unicode replacement characters; transcription is incomplete')
         if len(text.split('</think>')[-1].strip()) < 80:
             result['evidenceIssues'].append('Response too short for the requested multi-dimension review; inspect for acknowledgement-only output')
         result['evidenceStatus'] = 'INVALID_OR_INCOMPLETE' if result['evidenceIssues'] else 'UNCALIBRATED_ADVISORY'
@@ -156,7 +160,7 @@ if __name__ == '__main__':
     p.add_argument('--work', type=Path, required=True)
     p.add_argument('--start', type=float, default=0)
     p.add_argument('--seconds', type=float, default=6)
-    p.add_argument('--fps', type=int, default=2)
+    p.add_argument('--fps', type=int, default=1)
     p.add_argument('--endpoint', default='http://127.0.0.1:19080')
     p.add_argument('--prepare-only', action='store_true')
     p.add_argument('--prompt-file', type=Path)

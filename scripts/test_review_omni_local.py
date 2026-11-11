@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 import unittest
 import wave
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('review_omni', Path(__file__).with_name('review-omni-local.py'))
 module = importlib.util.module_from_spec(spec)
@@ -32,6 +33,10 @@ class ReviewTests(unittest.TestCase):
                     actual.extend(audio.readframes(audio.getnframes()))
             self.assertEqual(actual, expected)
             self.assertFalse(evidence['fullMotionVerified'])
+            with patch.object(module, 'post') as request:
+                with self.assertRaisesRegex(ValueError, 'requires 1 sampled FPS'):
+                    module.review(evidence, root/'prepared', 'http://127.0.0.1:1', 'test', root)
+                request.assert_not_called()
             video.write_bytes(b'changed')
             with self.assertRaisesRegex(ValueError, 'Source changed'):
                 module.review(evidence, root/'prepared', 'http://127.0.0.1:1', 'test', root)

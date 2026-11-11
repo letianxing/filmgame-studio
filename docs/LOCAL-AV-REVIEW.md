@@ -37,6 +37,19 @@ events and source metadata in `review.json`, always with `approval: NOT_APPROVED
 
 ## Calibration and acceptance
 
+Legacy joint inference now defaults to and requires **1 FPS**. Higher FPS remains
+available for preparation/contact sheets only. Actual bundled-server logs for
+the 4 FPS approach test show each 4000-sample / 250ms chunk padded to 4800 samples
+/ 300ms, inserting silence throughout speech. This invalidates earlier assumptions
+that contiguous source WAV chunks imply uninterrupted encoder input. The upstream
+README recommends one second of audio with one screenshot per iteration. A controlled
+1 FPS rerun of the same first six seconds had no such padding warnings; its output
+still contained replacement characters and unreliable details, so it is NOT approval.
+Do not infer this explains all hallucinated timestamps. Dense motion inspection
+must use a separately validated visual path, not increased joint-prefill frequency.
+Evidence: `.local/av-review/{server-approach-01,server-approach-1fps}/server.stderr.log`.
+Malformed model text is now explicitly marked invalid/incomplete.
+
 1. Run a short real clip to establish that both vision AND audio are actually consumed.
 2. Compare known accepted and known defective examples without putting their verdicts
    into the prompt. Include wrong action causality, lighting seams and missing dialogue.
